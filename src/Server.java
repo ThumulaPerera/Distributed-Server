@@ -1,34 +1,19 @@
-import java.net.*;
 import java.io.*;
+import java.net.*;
 
 public class Server {
-    private Socket socket;
-    private ServerSocket server;
-
-    public Server(int port){
-        try {
-            server = new ServerSocket(port);
-            System.out.println("Server started on port " + port);
-
-            socket = server.accept();
-            System.out.println("Client connected");
-
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-                String line;
-                while ( (line = br.readLine()) != null) {
-                    System.out.println(line);
-                }
+    public static void main(String[] args) {
+        int port = 5000;
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Server is listening on port " + port);
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("New client connected : " + socket);
+                new ServerThread(socket).start();
             }
-
-            socket.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            System.out.println("Server exception: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        new Server(5000);
-    }
-
 }
