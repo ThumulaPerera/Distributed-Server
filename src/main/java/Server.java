@@ -1,3 +1,4 @@
+import config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -5,11 +6,11 @@ import java.io.*;
 import java.net.*;
 
 
-public class Server {
+public class Server implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
-    public static void main(String[] args) {
-        int port = 5000;
+    public void run() {
+        int port = Config.getClientsPort();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             LOGGER.info("Server is listening on port {}", port);
             while (true) {

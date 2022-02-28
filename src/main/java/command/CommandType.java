@@ -3,8 +3,10 @@ package command;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CommandType {
+    // client commands
     NEW_IDENTITY("newidentity"),
     MESSAGE("message"),
+    // server commands
     ;
 
     public final String label;
