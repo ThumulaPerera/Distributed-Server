@@ -1,3 +1,5 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.JsonParser;
 
 import java.io.*;
@@ -7,6 +9,8 @@ import java.net.*;
  * This thread is responsible to handle client connection. * * @author www.codejava.net
  */
 public class ServerThread extends Thread {
+    private static Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
+
     private Socket socket;
 
     public ServerThread(Socket socket) {
@@ -21,7 +25,7 @@ public class ServerThread extends Thread {
             ) {
                 String json;
                 while ((json = br.readLine()) != null) {
-                    System.out.println(json);
+                    LOGGER.debug("Received: " + json);
 
                     System.out.println(JsonParser.parse(json).get("type"));
 
