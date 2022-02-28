@@ -1,9 +1,12 @@
+import command.inputcommand.InputCommand;
+import command.inputcommand.InputCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.JsonParser;
 
 import java.io.*;
 import java.net.*;
+import java.util.Objects;
 
 /**
  * This thread is responsible to handle client connection. * * @author www.codejava.net
@@ -27,7 +30,8 @@ public class ServerThread extends Thread {
                 while ((json = br.readLine()) != null) {
                     LOGGER.debug("Received: " + json);
 
-                    System.out.println(JsonParser.parse(json).get("type"));
+                    InputCommand command = InputCommandFactory.createInputCommand(json);
+                    command.execute();
 
                     pw.println("{\"type\" : \"newidentity\", \"approved\" : \"true\"}");
                 }
