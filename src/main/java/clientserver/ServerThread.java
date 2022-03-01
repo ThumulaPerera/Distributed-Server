@@ -1,9 +1,12 @@
 package clientserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import command.Command;
 import command.ExecutableCommand;
 import clientserver.command.clienttoserver.C2SCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.JsonParser;
 
 import java.io.*;
 import java.net.*;
@@ -13,6 +16,7 @@ import java.net.*;
  */
 public class ServerThread extends Thread {
     private static Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
+    private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
     private Socket socket;
 
@@ -30,10 +34,10 @@ public class ServerThread extends Thread {
                 while ((json = br.readLine()) != null) {
                     LOGGER.debug("Received: " + json);
 
-                    ExecutableCommand command = C2SCommandFactory.createInputCommand(json);
-                    command.execute();
+                    ExecutableCommand command = C2SCommandFactory.createC2SCommand(json);
+                    Command outputMessage = command.execute();
 
-                    pw.println("{\"type\" : \"newidentity\", \"approved\" : \"true\"}");
+                    pw.println(MAPPER.writeValueAsString(outputMessage));
                 }
             } catch (IOException ex) {
                 System.out.println("clientserver.Server exception: " + ex.getMessage());

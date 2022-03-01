@@ -6,5 +6,5 @@ public abstract class ExecutableCommand extends Command {
         super(type);
     }
 
-    public abstract void execute();
+    public abstract Command execute();
 }

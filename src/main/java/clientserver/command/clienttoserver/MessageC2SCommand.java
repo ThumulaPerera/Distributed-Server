@@ -1,5 +1,6 @@
 package clientserver.command.clienttoserver;
 
+import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
 import org.slf4j.Logger;
@@ -15,8 +16,9 @@ public class MessageC2SCommand extends ExecutableCommand {
     }
 
     @Override
-    public void execute() {
-        LOGGER.info("Executing MessageInputCommand with content: {}", content);
+    public Command execute() {
+        LOGGER.debug("Executing MessageInputCommand with content: {}", content);
+        return this;
     }
 
     public String getContent() {

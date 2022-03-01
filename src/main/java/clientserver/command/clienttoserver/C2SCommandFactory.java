@@ -12,18 +12,18 @@ import java.util.Objects;
 
 public class C2SCommandFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(C2SCommandFactory.class);
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
-    public static ExecutableCommand createInputCommand(String json) {
+    public static ExecutableCommand createC2SCommand(String json) {
         String type = Objects.requireNonNull(JsonParser.parse(json)).get("type").toString();
         CommandType commandType = CommandType.getCommandType(type);
 
-        ExecutableCommand inputCommand = null;
+        ExecutableCommand command = null;
 
         try {
             switch (commandType) {
-                case NEW_IDENTITY -> inputCommand = MAPPER.readValue(json, NewIdentityC2SCommand.class);
-                case MESSAGE -> inputCommand = MAPPER.readValue(json, MessageC2SCommand.class);
+                case NEW_IDENTITY -> command = MAPPER.readValue(json, NewIdentityC2SCommand.class);
+                case MESSAGE -> command = MAPPER.readValue(json, MessageC2SCommand.class);
             }
         }
         catch (JsonProcessingException e) {
@@ -31,7 +31,7 @@ public class C2SCommandFactory {
             e.printStackTrace();
         }
 
-        return inputCommand;
+        return command;
     }
 
 

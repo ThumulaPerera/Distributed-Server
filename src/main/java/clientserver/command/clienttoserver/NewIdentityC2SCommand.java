@@ -1,5 +1,7 @@
 package clientserver.command.clienttoserver;
 
+import clientserver.command.servertoclient.NewIdentityS2CCommand;
+import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
 import org.slf4j.Logger;
@@ -15,8 +17,10 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
     }
 
     @Override
-    public void execute() {
-        LOGGER.info("Executing NewIdentityInputCommand with identity: {}", identity);
+    public Command execute() {
+        LOGGER.debug("Executing NewIdentityInputCommand with identity: {}", identity);
+
+        return new NewIdentityS2CCommand(isIdentityValid());
     }
 
     public String getIdentity() {
@@ -25,5 +29,10 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
 
     public void setIdentity(String identity) {
         this.identity = identity;
+    }
+
+    private boolean isIdentityValid() {
+        // TODO: implement
+        return true;
     }
 }
