@@ -1,5 +1,6 @@
 import clientserver.Server;
 import config.Config;
+import serverserver.Receiver;
 import utils.CliArgParser;
 
 import java.nio.file.Path;
@@ -10,6 +11,9 @@ public class Application {
 
     public static void main(String[] args) {
         initConfig(args);
+
+        Thread serverToServerReceiver = new Thread(new Receiver());
+        serverToServerReceiver.start();
 
         Thread serverThread = new Thread(new Server());
         serverThread.start();

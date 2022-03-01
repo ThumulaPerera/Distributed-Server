@@ -1,9 +1,13 @@
 package serverserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import command.Command;
 import command.ExecutableCommand;
 import clientserver.command.clienttoserver.C2SCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.followertoleader.F2LCommandFactory;
+import utils.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +20,7 @@ import java.net.Socket;
  */
 public class ReceiverThread extends Thread {
     private static Logger LOGGER = LoggerFactory.getLogger(ReceiverThread.class);
+    private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
     private Socket socket;
 
@@ -30,21 +35,24 @@ public class ReceiverThread extends Thread {
                 PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
             ) {
                 String json;
-                while ((json = br.readLine()) != null) {
-                    LOGGER.debug("Received: " + json);
+                json = br.readLine();
 
-                    ExecutableCommand command = C2SCommandFactory.createInputCommand(json);
-                    command.execute();
+                LOGGER.debug("Received: " + json);
 
-                    pw.println("{\"type\" : \"newidentity\", \"approved\" : \"true\"}");
+                ExecutableCommand command = F2LCommandFactory.createF2LCommand(json);
+                Command outputMessage = command.execute();
+
+                if (outputMessage != null) {
+                    pw.println(MAPPER.writeValueAsString(outputMessage));
                 }
+
             } catch (IOException ex) {
-                System.out.println("clientserver.Server exception: " + ex.getMessage());
+                System.out.println("serverserver.Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
             socket.close();
         } catch (IOException ex) {
-            System.out.println("clientserver.Server exception: " + ex.getMessage());
+            System.out.println("serverserver.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
