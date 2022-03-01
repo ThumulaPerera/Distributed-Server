@@ -18,7 +18,7 @@ public class MessageC2SCommand extends ExecutableCommand {
     @Override
     public Command execute() {
         LOGGER.debug("Executing MessageInputCommand with content: {}", content);
-        return this;
+        return null;
     }
 
     public String getContent() {

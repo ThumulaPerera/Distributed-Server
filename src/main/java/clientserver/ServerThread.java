@@ -37,7 +37,9 @@ public class ServerThread extends Thread {
                     ExecutableCommand command = C2SCommandFactory.createC2SCommand(json);
                     Command outputMessage = command.execute();
 
-                    pw.println(MAPPER.writeValueAsString(outputMessage));
+                    if (outputMessage != null) {
+                        pw.println(MAPPER.writeValueAsString(outputMessage));
+                    }
                 }
             } catch (IOException ex) {
                 System.out.println("clientserver.Server exception: " + ex.getMessage());
