@@ -1,12 +1,12 @@
-import command.inputcommand.InputCommand;
-import command.inputcommand.InputCommandFactory;
+package clientserver;
+
+import command.ExecutableCommand;
+import clientserver.command.clienttoserver.C2SCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.JsonParser;
 
 import java.io.*;
 import java.net.*;
-import java.util.Objects;
 
 /**
  * This thread is responsible to handle client connection. * * @author www.codejava.net
@@ -30,18 +30,18 @@ public class ServerThread extends Thread {
                 while ((json = br.readLine()) != null) {
                     LOGGER.debug("Received: " + json);
 
-                    InputCommand command = InputCommandFactory.createInputCommand(json);
+                    ExecutableCommand command = C2SCommandFactory.createInputCommand(json);
                     command.execute();
 
                     pw.println("{\"type\" : \"newidentity\", \"approved\" : \"true\"}");
                 }
             } catch (IOException ex) {
-                System.out.println("Server exception: " + ex.getMessage());
+                System.out.println("clientserver.Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
             socket.close();
         } catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
+            System.out.println("clientserver.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
     }

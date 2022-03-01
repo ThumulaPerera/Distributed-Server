@@ -54,8 +54,8 @@ public class Config {
 
     private static void printDebugConfig() {
         LOGGER.debug("==== Config ====");
-        LOGGER.debug("Server ID         : " + getServerId());
-        LOGGER.debug("Server Address    : " + getServerAddress());
+        LOGGER.debug("clientserver.Server ID         : " + getServerId());
+        LOGGER.debug("clientserver.Server Address    : " + getServerAddress());
         LOGGER.debug("Clients Port      : " + getClientsPort());
         LOGGER.debug("Coordination Port : " + getCoordinationPort());
         LOGGER.debug("=================");

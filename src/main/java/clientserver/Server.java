@@ -1,3 +1,5 @@
+package clientserver;
+
 import config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +14,14 @@ public class Server implements Runnable {
     public void run() {
         int port = Config.getClientsPort();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            LOGGER.info("Server is listening on port {}", port);
+            LOGGER.info("clientserver.Server is listening on port {}", port);
             while (true) {
                 Socket socket = serverSocket.accept();
                 LOGGER.info("New client connected : {}", socket);
                 new ServerThread(socket).start();
             }
         } catch (IOException e) {
-            LOGGER.error("Server exception: {}", e.getMessage());
+            LOGGER.error("clientserver.Server exception: {}", e.getMessage());
             e.printStackTrace();
         }
     }

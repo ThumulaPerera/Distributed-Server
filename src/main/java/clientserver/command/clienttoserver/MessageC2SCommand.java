@@ -1,15 +1,16 @@
-package command.inputcommand;
+package clientserver.command.clienttoserver;
 
 import command.CommandType;
+import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageInputCommand extends InputCommand {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageInputCommand.class);
+public class MessageC2SCommand extends ExecutableCommand {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageC2SCommand.class);
 
     private String content;
 
-    public MessageInputCommand() {
+    public MessageC2SCommand() {
         super(CommandType.MESSAGE);
     }
 
