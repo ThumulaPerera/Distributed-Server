@@ -25,6 +25,7 @@ public class F2LCommandFactory {
         try {
             switch (commandType) {
                 case CHECK_IDENTITY -> command = MAPPER.readValue(json, CheckIdentityF2LCommand.class);
+                case HEARTBEAT -> command = MAPPER.readValue(json, HeartbeatF2LCommand.class);
             }
         }
         catch (JsonProcessingException e) {
