@@ -8,6 +8,7 @@ public enum CommandType {
     MESSAGE("message"),
     // server-server commands
     CHECK_IDENTITY("checkidentity"),
+    HEARTBEAT("heartbeat"),
     ;
 
     public final String label;
