@@ -3,9 +3,13 @@ package clientserver.command.clienttoserver;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
+@Setter
 public class MessageC2SCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageC2SCommand.class);
 
@@ -21,11 +25,4 @@ public class MessageC2SCommand extends ExecutableCommand {
         return null;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

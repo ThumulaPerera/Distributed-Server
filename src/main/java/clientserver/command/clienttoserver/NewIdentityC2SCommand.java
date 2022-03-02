@@ -4,9 +4,13 @@ import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
+@Setter
 public class NewIdentityC2SCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
 
@@ -21,14 +25,6 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
         LOGGER.debug("Executing NewIdentityInputCommand with identity: {}", identity);
 
         return new NewIdentityS2CCommand(isIdentityValid());
-    }
-
-    public String getIdentity() {
-        return identity;
-    }
-
-    public void setIdentity(String identity) {
-        this.identity = identity;
     }
 
     private boolean isIdentityValid() {

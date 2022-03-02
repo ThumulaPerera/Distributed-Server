@@ -3,9 +3,13 @@ package serverserver.command.leadertofollower;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
+@Setter
 public class CheckIdentityL2FCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckIdentityL2FCommand.class);
 
@@ -26,21 +30,5 @@ public class CheckIdentityL2FCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing Check Identity L2F with identity: {}", identity);
         return this;
-    }
-
-    public String getIdentity() {
-        return identity;
-    }
-
-    public void setIdentity(String identity) {
-        this.identity = identity;
-    }
-
-    public boolean isApproved() {
-        return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
     }
 }

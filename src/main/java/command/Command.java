@@ -1,5 +1,8 @@
 package command;
 
+import lombok.Getter;
+
+@Getter
 public abstract class Command {
     private CommandType type;
 
@@ -7,7 +10,4 @@ public abstract class Command {
         this.type = type;
     }
 
-    public CommandType getType() {
-        return type;
-    }
 }

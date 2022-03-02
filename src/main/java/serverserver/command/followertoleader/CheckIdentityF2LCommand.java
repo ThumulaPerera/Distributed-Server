@@ -4,10 +4,14 @@ import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 
+@Getter
+@Setter
 public class CheckIdentityF2LCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckIdentityF2LCommand.class);
 
@@ -24,14 +28,6 @@ public class CheckIdentityF2LCommand extends ExecutableCommand {
         LOGGER.debug("Executing Check Identity F2L with identity: {}", identity);
 
         return new CheckIdentityL2FCommand(identity, isIdentityValid());
-    }
-
-    public String getIdentity() {
-        return identity;
-    }
-
-    public void setIdentity(String identity) {
-        this.identity = identity;
     }
 
     private boolean isIdentityValid() {
