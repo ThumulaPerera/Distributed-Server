@@ -44,6 +44,12 @@ public class Config {
         return PROPERTIES.getProperty("server_address");
     }
 
+    public static String getServerAddress(String id) {
+        //TODO implement properly
+        return "localhost";
+    }
+
+
     public static int getClientsPort() {
         return Integer.parseInt(PROPERTIES.getProperty("clients_port"));
     }
@@ -51,6 +57,22 @@ public class Config {
     public static int getCoordinationPort() {
         return Integer.parseInt(PROPERTIES.getProperty("coordination_port"));
     }
+
+    public static int getCoordinationPort(String id) {
+        //TODO implement properly
+        return switch (id) {
+            case "s1" -> 5555;
+            case "s2" -> 5556;
+            case "s3" -> 5557;
+            default -> 0;
+        };
+    }
+
+    public static String getLeaderServerId(){
+        //TODO implement properly
+        return "s1";
+    }
+
 
     private static void printDebugConfig() {
         LOGGER.debug("==== Config ====");
