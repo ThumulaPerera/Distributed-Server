@@ -49,7 +49,6 @@ class BooleanSerializer extends JsonSerializer<Boolean> {
     @Override
     public void serialize(Boolean value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonGenerationException {
-        LOGGER.debug("serializing boolean value as a String {}", value);
         jgen.writeString(value.toString());
     }
 

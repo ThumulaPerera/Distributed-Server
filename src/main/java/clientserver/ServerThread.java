@@ -32,22 +32,25 @@ public class ServerThread extends Thread {
             ) {
                 String json;
                 while ((json = br.readLine()) != null) {
-                    LOGGER.debug("Received: " + json);
+                    LOGGER.debug("Received from client: " + json);
 
                     ExecutableCommand command = C2SCommandFactory.createC2SCommand(json);
                     Command outputMessage = command.execute();
 
                     if (outputMessage != null) {
-                        pw.println(MAPPER.writeValueAsString(outputMessage));
+                        String jsonOutputMessage = MAPPER.writeValueAsString(outputMessage);
+                        LOGGER.debug("Sending to client: " + jsonOutputMessage);
+                        pw.println(jsonOutputMessage);
                     }
                 }
             } catch (IOException ex) {
-                System.out.println("clientserver.Server exception: " + ex.getMessage());
+                LOGGER.error("clientserver.Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
+            LOGGER.debug("Closing connection with client : {}", socket.getRemoteSocketAddress());
             socket.close();
         } catch (IOException ex) {
-            System.out.println("clientserver.Server exception: " + ex.getMessage());
+            LOGGER.error("clientserver.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
     }

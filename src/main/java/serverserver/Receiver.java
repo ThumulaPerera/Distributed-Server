@@ -18,10 +18,10 @@ public class Receiver implements Runnable {
     public void run() {
         int port = Config.getCoordinationPort();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            LOGGER.info("clientserver.Server is listening on port {}", port);
+            LOGGER.info("serverserver.Receiver is listening on port {}", port);
             while (true) {
                 Socket socket = serverSocket.accept();
-                LOGGER.info("New client connected : {}", socket);
+                LOGGER.info("New peer connected : {}", socket.getRemoteSocketAddress());
                 new ReceiverThread(socket).start();
             }
         } catch (IOException e) {
