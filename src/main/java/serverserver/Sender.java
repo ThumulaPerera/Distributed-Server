@@ -36,11 +36,11 @@ public class Sender {
             pw.println(sentMessage);
             LOGGER.debug("Sending message to leader: " + sentMessage);
 
-            String receivedMessage;
-            receivedMessage = br.readLine();
-            LOGGER.debug("Received message from leader: " + receivedMessage);
+//            String receivedMessage;
+//            receivedMessage = br.readLine();
+//            LOGGER.debug("Received message from leader: " + receivedMessage);
 
-            response = L2FCommandFactory.createL2FCommand(receivedMessage);
+//            response = L2FCommandFactory.createL2FCommand(receivedMessage);
 
             LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
