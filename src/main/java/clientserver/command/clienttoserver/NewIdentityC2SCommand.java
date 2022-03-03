@@ -8,6 +8,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.Sender;
+import serverserver.command.followertoleader.CheckIdentityF2LCommand;
+import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
+import state.StateManager;
+import state.StateManagerImpl;
 
 @Getter
 @Setter
@@ -22,13 +27,23 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing NewIdentityInputCommand with identity: {}", identity);
+        LOGGER.debug("Executing client request for new identity with identity: {}", identity);
 
         return new NewIdentityS2CCommand(isIdentityValid());
     }
 
     private boolean isIdentityValid() {
-        // TODO: implement
-        return true;
+        Sender sender = new Sender();
+        StateManager stateManager = StateManagerImpl.getInstance();
+        if (stateManager.isLeader()){
+            // TODO: implement
+            return false;
+        } else {
+            Command response = sender.sendCommandToLeader(new CheckIdentityF2LCommand(identity));
+            if (response instanceof CheckIdentityL2FCommand) {
+                return ((CheckIdentityL2FCommand) response).isApproved();
+            }
+        }
+        return false;
     }
 }
