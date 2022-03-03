@@ -29,7 +29,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public boolean isLeader() {
         boolean isLeader = self == leader;
-        LOGGER.debug("Is leader: {}", isLeader);
+//        LOGGER.debug("Is leader: {}", isLeader);
         return isLeader;
     }
 
@@ -41,6 +41,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public void setLeader(String leaderId) {
         leader = servers.get(leaderId);
+//        leader.getHbdThread().start();
     }
 
     @Override
