@@ -14,7 +14,7 @@ import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 public class HeartbeatF2LCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatF2LCommand.class);
 
-    private String serverID;
+    private String from;
 
     public HeartbeatF2LCommand() {
         super(CommandType.HEARTBEAT);
@@ -22,12 +22,12 @@ public class HeartbeatF2LCommand extends ExecutableCommand {
 
     public HeartbeatF2LCommand(String serverID) {
         this();
-        this.serverID = serverID;
+        this.from = serverID;
     }
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing Heartbeat from Server {}", serverID);
+        LOGGER.debug("Executing Heartbeat from Server {}", from);
         return this;
     }
 }
