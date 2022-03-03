@@ -1,5 +1,6 @@
 package state;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.Map;
 @Getter
 public class ChatRoomModel {
     private final String id;
+    @Getter(AccessLevel.NONE)
     private final Map<String, ClientModel> clients;
 
     public ChatRoomModel(String id) {

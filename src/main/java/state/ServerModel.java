@@ -1,20 +1,22 @@
 package state;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.*;
 
 @Getter
 public class ServerModel {
-    private final String serverId;
-    private final String serverAddress;
+    private final String id;
+    private final String address;
     private final int clientsPort;
     private final int coordinationPort;
+    @Getter(AccessLevel.NONE)
     private final Map<String, ChatRoomModel> chatRooms;
 
     public ServerModel(String serverId, String serverAddress, int clientsPort, int coordinationPort) {
-        this.serverId = serverId;
-        this.serverAddress = serverAddress;
+        this.id = serverId;
+        this.address = serverAddress;
         this.clientsPort = clientsPort;
         this.coordinationPort = coordinationPort;
         chatRooms = Collections.synchronizedMap(new HashMap<>());
