@@ -3,7 +3,6 @@ package serverserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import command.ExecutableCommand;
-import clientserver.command.clienttoserver.C2SCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.followertoleader.F2LCommandFactory;
@@ -31,8 +30,8 @@ public class ReceiverThread extends Thread {
     public void run() {
         try {
             try (
-                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
+                    BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
             ) {
                 String json;
                 json = br.readLine();
