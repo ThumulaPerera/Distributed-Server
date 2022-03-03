@@ -21,6 +21,11 @@ public class CheckIdentityF2LCommand extends ExecutableCommand {
         super(CommandType.CHECK_IDENTITY);
     }
 
+    public CheckIdentityF2LCommand(String identity) {
+        this();
+        this.identity = identity;
+    }
+
     @Override
     public Command execute() {
         // executed by leader only

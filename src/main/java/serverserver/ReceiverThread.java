@@ -36,22 +36,25 @@ public class ReceiverThread extends Thread {
                 String json;
                 json = br.readLine();
 
-                LOGGER.debug("Received: " + json);
+                LOGGER.debug("Received from peer: " + json);
 
                 ExecutableCommand command = F2LCommandFactory.createF2LCommand(json);
                 Command outputMessage = command.execute();
 
                 if (outputMessage != null) {
-                    pw.println(MAPPER.writeValueAsString(outputMessage));
+                    String outputMessageJson = MAPPER.writeValueAsString(outputMessage);
+                    LOGGER.debug("Sending to peer: " + outputMessageJson);
+                    pw.println(outputMessageJson);
                 }
 
             } catch (IOException ex) {
-                System.out.println("serverserver.Server exception: " + ex.getMessage());
+                LOGGER.error("serverserver.Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
+            LOGGER.debug("Closing connection: " + socket.getRemoteSocketAddress());
             socket.close();
         } catch (IOException ex) {
-            System.out.println("serverserver.Server exception: " + ex.getMessage());
+            LOGGER.error("serverserver.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
