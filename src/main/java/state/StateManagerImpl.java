@@ -6,15 +6,14 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class StateManagerImpl implements StateManager, StateInitializer {
     private static Logger LOGGER = LoggerFactory.getLogger(StateManagerImpl.class);
     private static StateManagerImpl instance = new StateManagerImpl();
-    private Map<String, ServerModel> servers;
+    @Getter private Map<String, ServerModel> servers;
+    @Getter private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
     private ServerModel leader;
     private ServerModel self;
 
@@ -57,5 +56,13 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public void addServer(String serverId, String serverAddress, int clientPort, int coordinationPort) {
         servers.put(serverId, new ServerModel(serverId, serverAddress, clientPort, coordinationPort));
+    }
+
+    public void addAvailableServer(String serverId){
+        this.availableServers.add(serverId);
+    }
+
+    public void removeAvailableServer(String serverId){
+        this.availableServers.remove(serverId);
     }
 }

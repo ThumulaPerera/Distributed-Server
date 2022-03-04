@@ -10,6 +10,11 @@ public enum CommandType {
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),
     HEARTBEAT("heartbeat"),
+
+    //fast bully commands
+    IAMUP("iamup"),
+    VIEW("view"),
+    COORDINATOR("coordinator"),
     ;
 
     public final String label;

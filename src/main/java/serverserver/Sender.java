@@ -18,7 +18,11 @@ public class Sender {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
-    public Command sendCommandToLeaderAndReceive(Command command) {
+    public static Command sendCommandToLeaderAndReceive(Command command){
+        return sendCommandToPeerAndReceive(command, STATE_MANAGER.getLeader());
+    }
+
+    public static Command sendCommandToPeerAndReceive(Command command, ServerModel peer) {
         Command response = null;
 
         if (command == null) {
@@ -26,49 +30,52 @@ public class Sender {
             return null;
         }
 
-        ServerModel leader = STATE_MANAGER.getLeader();
+//        ServerModel leader = STATE_MANAGER.getLeader();
 
-        try (Socket socket = new Socket(leader.getAddress(), leader.getCoordinationPort());
+        try (Socket socket = new Socket(peer.getAddress(), peer.getCoordinationPort());
              BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
         ) {
             String sentMessage = MAPPER.writeValueAsString(command);
             pw.println(sentMessage);
-            LOGGER.debug("Sending message to leader: " + sentMessage);
+            LOGGER.debug("Sending message to peer: " + sentMessage);
 
             String receivedMessage;
             receivedMessage = br.readLine();
-            LOGGER.debug("Received message from leader: " + receivedMessage);
+            LOGGER.debug("Received message from peer: " + receivedMessage);
 
             response = S2SCommandFactory.createCommand(receivedMessage);
 
-            LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
+            LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
             System.out.println(e);
         }
 
         return response;
     }
+    public static boolean sendCommandToLeader(Command command) {
+        return sendCommandToPeer(command, STATE_MANAGER.getLeader());
+    }
 
 
-    public boolean sendCommandToLeader(Command command) {
+    public static boolean sendCommandToPeer(Command command, ServerModel peer) {
 
         if (command == null) {
             LOGGER.error("Command is null");
             return false;
         }
 
-        ServerModel leader = STATE_MANAGER.getLeader();
+//        ServerModel leader = STATE_MANAGER.getLeader();
 
-        try (Socket socket = new Socket(leader.getAddress(), leader.getCoordinationPort());
+        try (Socket socket = new Socket(peer.getAddress(), peer.getCoordinationPort());
              BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
         ) {
             String sentMessage = MAPPER.writeValueAsString(command);
             pw.println(sentMessage);
-            LOGGER.debug("Sending message to leader: " + sentMessage);
+            LOGGER.debug("Sending message to peer: " + sentMessage);
 
-            LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
+            LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
             System.out.println(e);
         }
