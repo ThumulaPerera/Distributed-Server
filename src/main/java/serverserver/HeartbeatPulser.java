@@ -17,23 +17,19 @@ public class HeartbeatPulser {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatPulser.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
-    public HeartbeatPulser() {
-    }
-
     public void initiatePulse() {
-        Sender sender = new Sender();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if(!STATE_MANAGER.isLeader()) {
-                    sendPulse(sender);
+                    sendPulse();
                 }
             }
         }, 0, HEARTBEAT_PULSE_INTERVAL);
     }
 
-    private void sendPulse(Sender sender) {
-        sender.sendCommandToLeader(new HeartbeatF2LCommand(STATE_MANAGER.getSelf().getId()));
+    private void sendPulse() {
+        Sender.sendCommandToLeader(new HeartbeatF2LCommand(STATE_MANAGER.getSelf().getId()));
     }
 }
