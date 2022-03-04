@@ -9,9 +9,6 @@ import state.StateManagerImpl;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * This thread is responsible to handle client connection. * * @author www.codejava.net
- */
 public class HeartbeatPulser {
     private static final int HEARTBEAT_PULSE_INTERVAL = 5000;
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatPulser.class);
