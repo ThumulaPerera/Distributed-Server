@@ -3,10 +3,9 @@ package serverserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import command.ExecutableCommand;
-import clientserver.command.clienttoserver.C2SCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import serverserver.command.followertoleader.F2LCommandFactory;
+import serverserver.command.S2SCommandFactory;
 import utils.JsonParser;
 
 import java.io.BufferedReader;
@@ -39,7 +38,7 @@ public class ReceiverThread extends Thread {
 
                 LOGGER.debug("Received from peer: " + json);
 
-                ExecutableCommand command = F2LCommandFactory.createF2LCommand(json);
+                ExecutableCommand command = S2SCommandFactory.createCommand(json);
                 Command outputMessage = command.execute();
 
                 if (outputMessage != null) {

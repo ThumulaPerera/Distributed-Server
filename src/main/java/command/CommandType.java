@@ -8,7 +8,8 @@ public enum CommandType {
     MESSAGE("message"),
     LIST("list"),
     // server-server commands
-    CHECK_IDENTITY("checkidentity"),
+    CHECK_IDENTITY_F2L("checkidentityf2l"),
+    CHECK_IDENTITY_L2F("checkidentityl2f"),
     ;
 
     public final String label;
