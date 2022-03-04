@@ -17,7 +17,7 @@ public class CheckIdentityL2FCommand extends ExecutableCommand {
     private boolean approved;
 
     public CheckIdentityL2FCommand() {
-        super(CommandType.CHECK_IDENTITY);
+        super(CommandType.CHECK_IDENTITY_L2F);
     }
 
     public CheckIdentityL2FCommand(String identity, boolean approved) {

@@ -37,6 +37,7 @@ public class ServerModel {
     public boolean containsChatRoom(String chatRoomId) {
         return chatRooms.containsKey(chatRoomId);
     }
+
     public Map<String, ChatRoomModel> getChatRooms() {
         return chatRooms;
     }
