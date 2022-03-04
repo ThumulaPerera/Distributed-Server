@@ -29,7 +29,7 @@ public class ListC2SCommand extends ExecutableCommand {
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing ListInputCommand with content");
+        LOGGER.debug("Executing ListInputCommand");
         return new ListS2CCommand(getRoomList());
     }
 
