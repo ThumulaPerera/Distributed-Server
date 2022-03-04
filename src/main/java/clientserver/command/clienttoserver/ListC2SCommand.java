@@ -1,7 +1,6 @@
 package clientserver.command.clienttoserver;
 
 import clientserver.command.servertoclient.ListS2CCommand;
-import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
@@ -9,8 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.Getter;
 import lombok.Setter;
+import state.ChatRoomModel;
+import state.ServerModel;
+import state.StateManager;
+import state.StateManagerImpl;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -31,7 +35,15 @@ public class ListC2SCommand extends ExecutableCommand {
 
     private ArrayList<String> getRoomList() {
         ArrayList<String> rooms = new ArrayList<String>();
-//        TODO: Get all the available rooms
+        StateManager stateManager = StateManagerImpl.getInstance();
+        ServerModel myServer = stateManager.getSelf();
+
+        Map<String, ChatRoomModel> chatRooms = myServer.getChatRooms();
+        for (var entry : chatRooms.entrySet()) {
+            rooms.add(entry.getKey());
+        }
+
+//        TODO: Remove hardcoded rooms
         rooms.add("A");
         rooms.add("B");
         rooms.add("C");
