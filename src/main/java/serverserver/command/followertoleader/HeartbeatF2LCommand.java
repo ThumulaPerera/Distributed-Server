@@ -32,6 +32,7 @@ public class HeartbeatF2LCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing Heartbeat from Server {}", from);
         STATE_MANAGER.getLeader().getHeartbeatDetector().updateTime(from,System.currentTimeMillis());
-        return this;
+        //TODO send the ack message
+        return null;
     }
 }
