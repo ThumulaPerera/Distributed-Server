@@ -10,6 +10,8 @@ public enum CommandType {
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),
     HEARTBEAT("heartbeat"),
+    HEARTBEAT_STATUS_CHECK("statuscheck"),
+    HEARTBEAT_STATUS_REPLY("statuscheckreply"),
     ;
 
     public final String label;
