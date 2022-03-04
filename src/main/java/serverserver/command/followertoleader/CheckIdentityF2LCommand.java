@@ -18,7 +18,7 @@ public class CheckIdentityF2LCommand extends ExecutableCommand {
     private String identity;
 
     public CheckIdentityF2LCommand() {
-        super(CommandType.CHECK_IDENTITY);
+        super(CommandType.CHECK_IDENTITY_F2L);
     }
 
     public CheckIdentityF2LCommand(String identity) {

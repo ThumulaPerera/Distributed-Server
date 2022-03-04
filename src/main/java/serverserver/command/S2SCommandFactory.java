@@ -1,22 +1,22 @@
-package serverserver.command.followertoleader;
+package serverserver.command;
 
-import clientserver.command.clienttoserver.MessageC2SCommand;
-import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.CommandType;
 import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.followertoleader.CheckIdentityF2LCommand;
+import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 import utils.JsonParser;
 
 import java.util.Objects;
 
-public class F2LCommandFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(F2LCommandFactory.class);
+public class S2SCommandFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(S2SCommandFactory.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static ExecutableCommand createF2LCommand(String json) {
+    public static ExecutableCommand createCommand(String json) {
         String type = Objects.requireNonNull(JsonParser.parse(json)).get("type").toString();
         CommandType commandType = CommandType.getCommandType(type);
 
@@ -24,8 +24,8 @@ public class F2LCommandFactory {
 
         try {
             switch (commandType) {
-                case CHECK_IDENTITY -> command = MAPPER.readValue(json, CheckIdentityF2LCommand.class);
-                case HEARTBEAT -> command = MAPPER.readValue(json, HeartbeatF2LCommand.class);
+                case CHECK_IDENTITY_F2L -> command = MAPPER.readValue(json, CheckIdentityF2LCommand.class);
+                case CHECK_IDENTITY_L2F -> command = MAPPER.readValue(json, CheckIdentityL2FCommand.class);
             }
         }
         catch (JsonProcessingException e) {

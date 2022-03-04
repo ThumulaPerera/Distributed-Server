@@ -40,7 +40,7 @@ public class Sender {
 //            receivedMessage = br.readLine();
 //            LOGGER.debug("Received message from leader: " + receivedMessage);
 
-//            response = L2FCommandFactory.createL2FCommand(receivedMessage);
+            response = S2SCommandFactory.createCommand(receivedMessage);
 
             LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {

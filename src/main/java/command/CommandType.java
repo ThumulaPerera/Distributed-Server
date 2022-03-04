@@ -7,7 +7,8 @@ public enum CommandType {
     NEW_IDENTITY("newidentity"),
     MESSAGE("message"),
     // server-server commands
-    CHECK_IDENTITY("checkidentity"),
+    CHECK_IDENTITY_F2L("checkidentityf2l"),
+    CHECK_IDENTITY_L2F("checkidentityl2f"),
     HEARTBEAT("heartbeat"),
     ;
 
