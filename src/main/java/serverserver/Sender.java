@@ -18,7 +18,7 @@ public class Sender {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
-    public Command sendCommandToLeaderAndReceive(Command command) {
+    public static Command sendCommandToLeaderAndReceive(Command command) {
         Command response = null;
 
         if (command == null) {
@@ -51,7 +51,7 @@ public class Sender {
     }
 
 
-    public boolean sendCommandToLeader(Command command) {
+    public static boolean sendCommandToLeader(Command command) {
 
         if (command == null) {
             LOGGER.error("Command is null");
