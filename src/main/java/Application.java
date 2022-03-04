@@ -15,11 +15,7 @@ public class Application {
         Thread serverToServerReceiver = new Thread(new Receiver());
         serverToServerReceiver.start();
 
-        String leader = Config.getLeaderServerId();
-        int port = Config.getCoordinationPort(leader);
-        String address = Config.getServerAddress(leader);
-
-        new HeartbeatPulser(address, port).initiatePulse();
+        new HeartbeatPulser().initiatePulse();
 
         Thread serverThread = new Thread(new Server());
         serverThread.start();
