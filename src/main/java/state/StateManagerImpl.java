@@ -58,4 +58,9 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     public void addServer(String serverId, String serverAddress, int clientPort, int coordinationPort) {
         servers.put(serverId, new ServerModel(serverId, serverAddress, clientPort, coordinationPort));
     }
+
+    @Override
+    public ServerModel getServer(String serverId) {
+        return servers.get(serverId);
+    }
 }

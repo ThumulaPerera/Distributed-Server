@@ -9,6 +9,7 @@ public interface StateManager {
     void setLeader(String leaderId);
     ServerModel getSelf();
     void setSelf(String selfId);
+    ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);
 //    Map<String, ChatRoomModel> getLocalChatRooms();
