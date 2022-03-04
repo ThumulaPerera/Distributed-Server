@@ -2,6 +2,7 @@ package serverserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
 import state.ServerAvailability;
 
 import java.util.HashMap;
@@ -10,12 +11,13 @@ import java.util.TimerTask;
 
 public class HeartbeatDetector {
     private static final int HEARTBEAT_CHECK_INTERVAL = 10000;
+    private static final float HEARTBEAT_CHECK_FRACTION = 0.9f;
     private static final int HEARTBEAT_FUNC_CONFIRM_INTERVAL = 3000;
 
     private static Logger LOGGER = LoggerFactory.getLogger(HeartbeatDetector.class);
     private HashMap<String, Long> serverUpdateTimes = new HashMap<>();
     private HashMap<String, ServerAvailability> serverAvailabilityStatus = new HashMap<>();
-    private HashMap<String, checkHbIntervalTask> serverTimeCheckTasks = new HashMap<>();
+    private HashMap<String, TimerTask> serverTimeCheckTasks = new HashMap<>();
     private Timer taskScheduler = new Timer();
 
     public void updateTime(String serverID, long time) {
@@ -36,6 +38,20 @@ public class HeartbeatDetector {
             serverTimeCheckTasks.put(serverID,task);
         }
         LOGGER.debug(serverID + " time updated to: " + time);
+    }
+
+    public void handleHbStatusReply(String serverID){
+        switch (serverAvailabilityStatus.get(serverID)){
+            case ACTIVE -> {/*ignore*/}
+            case SUSPICIOUS, INACTIVE -> {
+                markActive(serverID);
+                LOGGER.debug("Server "+serverID+" marked : ACTIVE");
+                serverTimeCheckTasks.get(serverID).cancel();
+                checkHbIntervalTask task = new checkHbIntervalTask(serverID);
+                taskScheduler.schedule(task, HEARTBEAT_CHECK_INTERVAL);
+                serverTimeCheckTasks.replace(serverID,task);
+            }
+        }
     }
 
     public void markSuspicious(String serverID) {
@@ -60,10 +76,18 @@ public class HeartbeatDetector {
 
         @Override
         public void run() {
-            //make sure interval exceeded
-            if(System.currentTimeMillis()-serverUpdateTimes.get(serverID) > HEARTBEAT_CHECK_INTERVAL){
+
+            long dif = System.currentTimeMillis()-serverUpdateTimes.get(serverID);
+            if(dif > HEARTBEAT_CHECK_FRACTION * HEARTBEAT_CHECK_INTERVAL){
                 markSuspicious(serverID);
                 LOGGER.debug("Server "+serverID+" marked : SUSPICIOUS");
+                Sender.sendCommandToFollowerAndReceive(new HbStatusCheckL2FCommand(), serverID);
+                serverTimeCheckTasks.get(serverID).cancel();
+                checkFunctionalityTask task = new checkFunctionalityTask(serverID);
+                serverTimeCheckTasks.replace(serverID,task);
+                taskScheduler.schedule(task,HEARTBEAT_FUNC_CONFIRM_INTERVAL);
+            }else{
+                LOGGER.debug("Server "+serverID+" not marked");
             }
         }
     }
@@ -78,11 +102,8 @@ public class HeartbeatDetector {
 
         @Override
         public void run() {
-            //make sure interval exceeded
-            if(System.currentTimeMillis()-serverUpdateTimes.get(serverID) > HEARTBEAT_CHECK_INTERVAL){
-                markSuspicious(serverID);
-                LOGGER.debug("Server "+serverID+" marked : SUSPICIOUS");
-            }
+            markInactive(serverID);
+            LOGGER.debug("Server "+serverID+" marked : INACTIVE");
         }
     }
 
