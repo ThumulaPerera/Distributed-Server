@@ -1,19 +1,11 @@
 package serverserver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.followertoleader.HeartbeatF2LCommand;
 import state.StateManager;
 import state.StateManagerImpl;
-import utils.JsonParser;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
