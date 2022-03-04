@@ -31,6 +31,7 @@ public class ListC2SCommand extends ExecutableCommand {
 
     private ArrayList<String> getRoomList() {
         ArrayList<String> rooms = new ArrayList<String>();
+//        TODO: Get all the available rooms
         rooms.add("A");
         rooms.add("B");
         rooms.add("C");
