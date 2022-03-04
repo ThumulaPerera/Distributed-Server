@@ -74,4 +74,36 @@ public class Sender {
         }
         return true;
     }
+
+    public static Command sendCommandToFollowerAndReceive(Command command, String serverId) {
+        Command response = null;
+
+        if (command == null) {
+            LOGGER.error("Command is null");
+            return null;
+        }
+
+        ServerModel follower = STATE_MANAGER.getServer(serverId);
+
+        try (Socket socket = new Socket(follower.getAddress(), follower.getCoordinationPort());
+             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            String sentMessage = MAPPER.writeValueAsString(command);
+            pw.println(sentMessage);
+            LOGGER.debug("Sending message to leader: " + sentMessage);
+
+            String receivedMessage;
+            receivedMessage = br.readLine();
+            LOGGER.debug("Received message from leader: " + receivedMessage);
+
+            response = S2SCommandFactory.createCommand(receivedMessage);
+
+            LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
+        }catch(IOException e) {
+            System.out.println(e);
+        }
+
+        return response;
+    }
 }
