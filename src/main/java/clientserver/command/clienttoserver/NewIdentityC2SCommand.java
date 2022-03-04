@@ -39,7 +39,7 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
             // TODO: implement
             return false;
         } else {
-            Command response = sender.sendCommandToLeader(new CheckIdentityF2LCommand(identity));
+            Command response = sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
             if (response instanceof CheckIdentityL2FCommand) {
                 return ((CheckIdentityL2FCommand) response).isApproved();
             }

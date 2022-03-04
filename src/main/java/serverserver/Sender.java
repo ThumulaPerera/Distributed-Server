@@ -18,7 +18,7 @@ public class Sender {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
-    public Command sendCommandToLeader(Command command) {
+    public Command sendCommandToLeaderAndReceive(Command command) {
         Command response = null;
 
         if (command == null) {
@@ -36,11 +36,11 @@ public class Sender {
             pw.println(sentMessage);
             LOGGER.debug("Sending message to leader: " + sentMessage);
 
-//            String receivedMessage;
-//            receivedMessage = br.readLine();
-//            LOGGER.debug("Received message from leader: " + receivedMessage);
-//
-//            response = S2SCommandFactory.createCommand(receivedMessage);
+            String receivedMessage;
+            receivedMessage = br.readLine();
+            LOGGER.debug("Received message from leader: " + receivedMessage);
+
+            response = S2SCommandFactory.createCommand(receivedMessage);
 
             LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
@@ -48,5 +48,30 @@ public class Sender {
         }
 
         return response;
+    }
+
+
+    public boolean sendCommandToLeader(Command command) {
+
+        if (command == null) {
+            LOGGER.error("Command is null");
+            return false;
+        }
+
+        ServerModel leader = STATE_MANAGER.getLeader();
+
+        try (Socket socket = new Socket(leader.getAddress(), leader.getCoordinationPort());
+             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            String sentMessage = MAPPER.writeValueAsString(command);
+            pw.println(sentMessage);
+            LOGGER.debug("Sending message to leader: " + sentMessage);
+
+            LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
+        }catch(IOException e) {
+            System.out.println(e);
+        }
+        return true;
     }
 }
