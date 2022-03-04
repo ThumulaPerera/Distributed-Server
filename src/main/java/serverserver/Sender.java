@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import serverserver.command.leadertofollower.L2FCommandFactory;
+import serverserver.command.S2SCommandFactory;
 import state.ServerModel;
 import state.StateManager;
 import state.StateManagerImpl;
@@ -39,8 +39,8 @@ public class Sender {
 //            String receivedMessage;
 //            receivedMessage = br.readLine();
 //            LOGGER.debug("Received message from leader: " + receivedMessage);
-
-            response = S2SCommandFactory.createCommand(receivedMessage);
+//
+//            response = S2SCommandFactory.createCommand(receivedMessage);
 
             LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
