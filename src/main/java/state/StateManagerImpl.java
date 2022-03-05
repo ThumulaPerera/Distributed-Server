@@ -14,8 +14,10 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     private static StateManagerImpl instance = new StateManagerImpl();
     @Getter private Map<String, ServerModel> servers;
     @Getter private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
-    private ServerModel leader;
+    @Getter @Setter private volatile boolean electionAllowed = false;
+    private volatile ServerModel leader;
     private ServerModel self;
+
 
     private StateManagerImpl() {
         servers = Collections.synchronizedMap(new HashMap<>());

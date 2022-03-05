@@ -15,6 +15,9 @@ public enum CommandType {
     IAMUP("iamup"),
     VIEW("view"),
     COORDINATOR("coordinator"),
+    ELECTION("election"),
+    ANSWER("answer"),
+    NOMINATION("nomination")
     ;
 
     public final String label;

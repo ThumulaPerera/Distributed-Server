@@ -17,6 +17,7 @@ public class CoordinatorCommand extends ExecutableCommand {
     public Command execute() {
         StateManagerImpl STATE_MANAGER = StateManagerImpl.getInstance();
         STATE_MANAGER.setLeader(from);
+        STATE_MANAGER.setElectionAllowed(false);
         return null;
     }
 }

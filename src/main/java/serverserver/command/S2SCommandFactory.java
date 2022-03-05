@@ -6,9 +6,7 @@ import command.CommandType;
 import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import serverserver.command.fastbully.CoordinatorCommand;
-import serverserver.command.fastbully.IamUpCommand;
-import serverserver.command.fastbully.ViewCommand;
+import serverserver.command.fastbully.*;
 import serverserver.command.followertoleader.CheckIdentityF2LCommand;
 import serverserver.command.followertoleader.HeartbeatF2LCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
@@ -34,6 +32,10 @@ public class S2SCommandFactory {
                 case IAMUP -> command = MAPPER.readValue(json, IamUpCommand.class);
                 case VIEW -> command = MAPPER.readValue(json, ViewCommand.class);
                 case COORDINATOR -> command = MAPPER.readValue(json, CoordinatorCommand.class);
+                case ELECTION -> command = MAPPER.readValue(json, ElectionCommand.class);
+                case ANSWER -> command = MAPPER.readValue(json, AnswerCommand.class);
+                case NOMINATION -> command = MAPPER.readValue(json, NominationCommand.class);
+
             }
         }
         catch (JsonProcessingException e) {

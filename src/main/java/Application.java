@@ -2,6 +2,7 @@ import clientserver.Server;
 import config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.HeartbeatPulser;
 import serverserver.Receiver;
 import serverserver.Sender;
@@ -27,45 +28,31 @@ public class Application {
         Thread serverToServerReceiver = new Thread(new Receiver());
         serverToServerReceiver.start();
 
-//         sending Iamup messages on start
-        // TODO: setup T2 timeout for this
-        STATE_MANAGER.getServers().forEach((serverId, server) -> {
-            ViewCommand viewCommand = (ViewCommand) Sender.sendCommandToPeerAndReceive(
-                    new IamUpCommand(), server);
-
-            if (viewCommand != null) {
-                viewCommand.execute();
-            }
-        });
-        STATE_MANAGER.addAvailableServer(STATE_MANAGER.getSelf().getId());
-        Set<String> availableServers = STATE_MANAGER.getAvailableServers();
-        synchronized (availableServers){
-            String possibleLeader = Collections.max(STATE_MANAGER.getAvailableServers());
-            if (possibleLeader.equals(STATE_MANAGER.getSelf().getId())){
-                STATE_MANAGER.setLeader(possibleLeader);
-                // sending coordinator message to lower ranked processes
-                CoordinatorCommand command = new CoordinatorCommand();
-                command.setFrom(possibleLeader);
-                for(String serverId: availableServers){
-                    if (serverId.compareTo(possibleLeader) < 0){
-                        Sender.sendCommandToPeer(command, STATE_MANAGER.getServers().get(serverId));
-                    }
-                }
-            }
-        }
+        FastBully.executeStartup();
+        STATE_MANAGER.setElectionAllowed(false);
+        LOGGER.debug("servers: " + STATE_MANAGER.getAvailableServers().toString() +
+                "\tLeader: " + STATE_MANAGER.getLeader().getId());
 
 
-        STATE_MANAGER.setLeader(Collections.max(STATE_MANAGER.getAvailableServers()));
-        LOGGER.debug("servers: " + STATE_MANAGER.getAvailableServers().toString() + "\tLeader: " + STATE_MANAGER.getLeader().getId());
+        new HeartbeatPulser().initiatePulse();
+
+//        if (STATE_MANAGER.getSelf().getId().equals("s1")){
+//            new Thread(()->{
+//                try {
+//                    Thread.sleep(20000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                FastBully.startElection();}).start();
+//        }
 
 
-//        new HeartbeatPulser().initiatePulse();
 
         Thread serverThread = new Thread(new Server());
         serverThread.start();
-        while(true){
-            LOGGER.debug("Leader: "+ STATE_MANAGER.getLeader().getId());
-            Thread.sleep(3000);
+        while (true) {
+            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
+            Thread.sleep(2000);
         }
     }
 
