@@ -29,8 +29,8 @@ public class HbStatusReplyF2LCommand extends ExecutableCommand {
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing Heartbeat status check from Leader");
-        //TODO Evaluate and change the avl status
+        LOGGER.debug("Executing Heartbeat status reply to Leader");
+        STATE_MANAGER.getLeader().getHeartbeatDetector().handleHbStatusReply(from);
         return null;
     }
 }
