@@ -23,19 +23,6 @@ public class Config {
 
 
         try {
-
-//            Files.lines(path)
-//                    .filter(line -> line.split("\t", 4)[0].equals(serverID))
-//                    .findFirst()
-//                    .map(line -> {
-//                        String[] arrOfStr = line.split("\t", 4);
-//                        PROPERTIES.setProperty("serverid", arrOfStr[0]);
-//                        PROPERTIES.setProperty("server_address", arrOfStr[1]);
-//                        PROPERTIES.setProperty("clients_port", arrOfStr[2]);
-//                        PROPERTIES.setProperty("coordination_port", arrOfStr[3]);
-//                        printDebugConfig();
-//                        return null;
-//                    });
             Files.lines(path)
                     .forEach(line -> {
                         LOGGER.debug("read config line: " + line);
@@ -73,12 +60,6 @@ public class Config {
         return STATE_MANAGER.getSelf().getAddress();
     }
 
-    public static String getServerAddress(String id) {
-        //TODO implement properly
-        return "localhost";
-    }
-
-
     public static int getClientsPort() {
 //        return Integer.parseInt(PROPERTIES.getProperty("clients_port"));
         return STATE_MANAGER.getSelf().getClientsPort();
@@ -87,21 +68,6 @@ public class Config {
     public static int getCoordinationPort() {
 //        return Integer.parseInt(PROPERTIES.getProperty("coordination_port"));
         return STATE_MANAGER.getSelf().getCoordinationPort();
-    }
-
-    public static int getCoordinationPort(String id) {
-        //TODO implement properly
-        return switch (id) {
-            case "s1" -> 5555;
-            case "s2" -> 5556;
-            case "s3" -> 5557;
-            default -> 0;
-        };
-    }
-
-    public static String getLeaderServerId(){
-        //TODO implement properly
-        return "s1";
     }
 
 
