@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NewIdentityS2CCommand extends ExecutableCommand {
+public class NewIdentityS2CCommand extends Command {
     private boolean approved;
 
     public NewIdentityS2CCommand() {
@@ -18,10 +18,5 @@ public class NewIdentityS2CCommand extends ExecutableCommand {
     public NewIdentityS2CCommand(boolean approved) {
         this();
         this.approved = approved;
-    }
-
-    @Override
-    public Command execute() {
-        return null;
     }
 }
