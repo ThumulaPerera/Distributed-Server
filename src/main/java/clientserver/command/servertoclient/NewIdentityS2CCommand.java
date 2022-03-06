@@ -2,12 +2,13 @@ package clientserver.command.servertoclient;
 
 import command.Command;
 import command.CommandType;
+import command.ExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class NewIdentityS2CCommand extends Command {
+public class NewIdentityS2CCommand extends ExecutableCommand {
     private boolean approved;
 
     public NewIdentityS2CCommand() {
@@ -19,4 +20,8 @@ public class NewIdentityS2CCommand extends Command {
         this.approved = approved;
     }
 
+    @Override
+    public Command execute() {
+        return null;
+    }
 }
