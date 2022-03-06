@@ -1,5 +1,7 @@
 package serverserver;
 
+import command.Command;
+import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
@@ -22,22 +24,16 @@ public class HeartbeatDetector {
 
     public void updateTime(String serverID, long time) {
         if (serverUpdateTimes.containsKey(serverID)) {
-            serverUpdateTimes.replace(serverID, time);
-            serverTimeCheckTasks.get(serverID).cancel();
+            serverUpdateTimes.put(serverID, time);
             if (serverAvailabilityStatus.get(serverID) != ServerAvailability.ACTIVE) {
-                serverAvailabilityStatus.replace(serverID, ServerAvailability.ACTIVE);
+                LOGGER.debug("Server " + serverID + " again marked : ACTIVE");
+                markActive(serverID);
             }
-            checkHbIntervalTask task = new checkHbIntervalTask(serverID);
-            taskScheduler.schedule(task, HEARTBEAT_CHECK_INTERVAL);
-            serverTimeCheckTasks.replace(serverID, task);
         } else {
             serverUpdateTimes.put(serverID, time);
-            serverAvailabilityStatus.put(serverID, ServerAvailability.ACTIVE);
-            checkHbIntervalTask task = new checkHbIntervalTask(serverID);
-            taskScheduler.schedule(task, HEARTBEAT_CHECK_INTERVAL);
-            serverTimeCheckTasks.put(serverID, task);
+            markActive(serverID);
         }
-        LOGGER.debug(serverID + " time updated to: " + time);
+        scheduleHbCheckTask(serverID);
     }
 
     public void handleHbStatusReply(String serverID) {
@@ -45,25 +41,41 @@ public class HeartbeatDetector {
             case ACTIVE -> {/*ignore*/}
             case SUSPICIOUS, INACTIVE -> {
                 markActive(serverID);
-                LOGGER.debug("Server " + serverID + " marked : ACTIVE");
-                serverTimeCheckTasks.get(serverID).cancel();
-                checkHbIntervalTask task = new checkHbIntervalTask(serverID);
-                taskScheduler.schedule(task, HEARTBEAT_CHECK_INTERVAL);
-                serverTimeCheckTasks.replace(serverID, task);
+                scheduleHbCheckTask(serverID);
             }
         }
     }
 
     public void markSuspicious(String serverID) {
-        serverAvailabilityStatus.replace(serverID, ServerAvailability.SUSPICIOUS);
+        serverAvailabilityStatus.put(serverID, ServerAvailability.SUSPICIOUS);
     }
 
     public void markInactive(String serverID) {
-        serverAvailabilityStatus.replace(serverID, ServerAvailability.INACTIVE);
+        serverAvailabilityStatus.put(serverID, ServerAvailability.INACTIVE);
     }
 
     public void markActive(String serverID) {
-        serverAvailabilityStatus.replace(serverID, ServerAvailability.ACTIVE);
+        serverAvailabilityStatus.put(serverID, ServerAvailability.ACTIVE);
+    }
+
+    private void scheduleHbCheckTask(String serverID){
+        TimerTask current = serverTimeCheckTasks.get(serverID);
+        checkHbIntervalTask task = new checkHbIntervalTask(serverID);
+        if(current != null){
+            current.cancel();
+        }
+        serverTimeCheckTasks.put(serverID, task);
+        taskScheduler.schedule(task, HEARTBEAT_CHECK_INTERVAL);
+    }
+
+    private void scheduleStatusCheckTask(String serverID){
+        TimerTask current = serverTimeCheckTasks.get(serverID);
+        checkFunctionalityTask task = new checkFunctionalityTask(serverID);
+        if(current != null){
+            current.cancel();
+        }
+        serverTimeCheckTasks.put(serverID, task);
+        taskScheduler.schedule(task, HEARTBEAT_FUNC_CONFIRM_INTERVAL);
     }
 
     private class checkHbIntervalTask extends TimerTask {
@@ -81,11 +93,12 @@ public class HeartbeatDetector {
             if (dif > HEARTBEAT_CHECK_FRACTION * HEARTBEAT_CHECK_INTERVAL) {
                 markSuspicious(serverID);
                 LOGGER.debug("Server " + serverID + " marked : SUSPICIOUS");
-                Sender.sendCommandToFollowerAndReceive(new HbStatusCheckL2FCommand(), serverID);
-                serverTimeCheckTasks.get(serverID).cancel();
-                checkFunctionalityTask task = new checkFunctionalityTask(serverID);
-                serverTimeCheckTasks.replace(serverID, task);
-                taskScheduler.schedule(task, HEARTBEAT_FUNC_CONFIRM_INTERVAL);
+                ExecutableCommand statusReply = Sender.sendCommandToFollowerAndReceive(new HbStatusCheckL2FCommand(), serverID);
+                //TODO is there a better way to handle
+                if(statusReply != null) {
+                    statusReply.execute();
+                }
+                scheduleStatusCheckTask(serverID);
             } else {
                 LOGGER.debug("Server " + serverID + " not marked");
             }
