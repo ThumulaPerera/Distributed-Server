@@ -2,6 +2,7 @@ package serverserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
+import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.S2SCommandFactory;
@@ -18,8 +19,8 @@ public class Sender {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
-    public static Command sendCommandToLeaderAndReceive(Command command) {
-        Command response = null;
+    public static ExecutableCommand sendCommandToLeaderAndReceive(Command command) {
+        ExecutableCommand response = null;
 
         if (command == null) {
             LOGGER.error("Command is null");
@@ -75,8 +76,8 @@ public class Sender {
         return true;
     }
 
-    public static Command sendCommandToFollowerAndReceive(Command command, String serverId) {
-        Command response = null;
+    public static ExecutableCommand sendCommandToFollowerAndReceive(Command command, String serverId) {
+        ExecutableCommand response = null;
 
         if (command == null) {
             LOGGER.error("Command is null");
