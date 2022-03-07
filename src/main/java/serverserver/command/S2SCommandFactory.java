@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.followertoleader.CheckIdentityF2LCommand;
@@ -16,11 +17,11 @@ public class S2SCommandFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(S2SCommandFactory.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static ExecutableCommand createCommand(String json) {
+    public static S2SExecutableCommand createCommand(String json) {
         String type = Objects.requireNonNull(JsonParser.parse(json)).get("type").toString();
         CommandType commandType = CommandType.getCommandType(type);
 
-        ExecutableCommand command = null;
+        S2SExecutableCommand command = null;
 
         try {
             switch (commandType) {

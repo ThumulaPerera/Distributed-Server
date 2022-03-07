@@ -3,6 +3,7 @@ package serverserver.command.leadertofollower;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -10,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
-public class CheckIdentityL2FCommand extends ExecutableCommand {
+public class CheckIdentityL2FCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckIdentityL2FCommand.class);
 
     private String identity;

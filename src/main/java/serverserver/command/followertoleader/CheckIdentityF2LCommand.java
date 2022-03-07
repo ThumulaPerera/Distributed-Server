@@ -4,6 +4,7 @@ import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 
 @Getter
 @Setter
-public class CheckIdentityF2LCommand extends ExecutableCommand {
+public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckIdentityF2LCommand.class);
 
     private String identity;
