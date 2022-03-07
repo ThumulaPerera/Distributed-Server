@@ -20,6 +20,7 @@ public class ServerModel {
         this.clientsPort = clientsPort;
         this.coordinationPort = coordinationPort;
         chatRooms = Collections.synchronizedMap(new HashMap<>());
+        chatRooms.put("MainHall-" + id, new ChatRoomModel("MainHall-" + id, null));
     }
 
     public void addChatRoom(ChatRoomModel chatRoom) {
@@ -40,5 +41,9 @@ public class ServerModel {
 
     public Map<String, ChatRoomModel> getChatRooms() {
         return chatRooms;
+    }
+
+    public void addClientToMainHall(ClientModel client) {
+        chatRooms.get("MainHall-" + id).addClient(client);
     }
 }

@@ -1,14 +1,13 @@
 package state;
 
-import java.util.List;
-import java.util.Map;
-
 public interface StateManager {
     boolean isLeader();
     ServerModel getLeader();
     void setLeader(String leaderId);
     ServerModel getSelf();
     void setSelf(String selfId);
+    boolean checkValidityAndAddClient(String clientId, String serverId);
+
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);
 //    Map<String, ChatRoomModel> getLocalChatRooms();

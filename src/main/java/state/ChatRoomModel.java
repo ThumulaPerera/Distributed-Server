@@ -10,11 +10,13 @@ import java.util.Map;
 @Getter
 public class ChatRoomModel {
     private final String id;
+    private final ClientModel owner;
     @Getter(AccessLevel.NONE)
     private final Map<String, ClientModel> clients;
 
-    public ChatRoomModel(String id) {
+    public ChatRoomModel(String id, ClientModel owner) {
         this.id = id;
+        this.owner = owner;
         clients = Collections.synchronizedMap(new HashMap<>());
     }
 

@@ -14,7 +14,7 @@ import java.util.Map;
 public class StateManagerImpl implements StateManager, StateInitializer {
     private static Logger LOGGER = LoggerFactory.getLogger(StateManagerImpl.class);
     private static StateManagerImpl instance = new StateManagerImpl();
-    private Map<String, ServerModel> servers;
+    private final Map<String, ServerModel> servers;
     private ServerModel leader;
     private ServerModel self;
 
@@ -51,6 +51,20 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public void setSelf(String selfId) {
         self = servers.get(selfId);
+    }
+
+    @Override
+    public boolean checkValidityAndAddClient(String clientId, String serverId) {
+        synchronized (servers) {
+            for (Map.Entry<String, ServerModel> server: servers.entrySet()) {
+                for (Map.Entry<String, ChatRoomModel> room: server.getValue().getChatRooms().entrySet()) {
+                    ChatRoomModel chatRoom = room.getValue();
+                    if (chatRoom.containsClient(clientId)) return false;
+                }
+            }
+            servers.get(serverId).addClientToMainHall(new ClientModel(clientId));
+            return true;
+        }
     }
 
     @Override

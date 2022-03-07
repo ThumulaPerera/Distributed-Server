@@ -18,6 +18,7 @@ import state.StateManagerImpl;
 @Setter
 public class NewIdentityC2SCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
+    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
     private String identity;
 
@@ -36,8 +37,7 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
         Sender sender = new Sender();
         StateManager stateManager = StateManagerImpl.getInstance();
         if (stateManager.isLeader()){
-            // TODO: implement
-            return false;
+            return STATE_MANAGER.checkValidityAndAddClient(identity, STATE_MANAGER.getSelf().getId());
         } else {
             Command response = sender.sendCommandToLeader(new CheckIdentityF2LCommand(identity));
             if (response instanceof CheckIdentityL2FCommand) {
