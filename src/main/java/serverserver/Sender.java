@@ -44,7 +44,8 @@ public class Sender {
 
             LOGGER.debug("Closing connection to leader: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
-            System.out.println(e);
+            LOGGER.error("Error while sending command to leader: {}", e.getMessage());
+            e.printStackTrace();
         }
 
         return response;
