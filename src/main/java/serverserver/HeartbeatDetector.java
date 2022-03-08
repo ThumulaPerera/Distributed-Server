@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
 import state.ServerAvailability;
+import state.StateManagerImpl;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -17,6 +18,7 @@ public class HeartbeatDetector {
     private static final int HEARTBEAT_FUNC_CONFIRM_INTERVAL = 3000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatDetector.class);
+    private final StateManagerImpl STATE_MANAGER = StateManagerImpl.getInstance();
     private final HashMap<String, Long> serverUpdateTimes = new HashMap<>();
     private final HashMap<String, ServerAvailability> serverAvailabilityStatus = new HashMap<>();
     private final HashMap<String, TimerTask> serverTimeCheckTasks = new HashMap<>();
@@ -58,20 +60,20 @@ public class HeartbeatDetector {
         serverAvailabilityStatus.put(serverID, ServerAvailability.ACTIVE);
     }
 
-    private void scheduleHbCheckTask(String serverID){
+    private void scheduleHbCheckTask(String serverID) {
         TimerTask current = serverTimeCheckTasks.get(serverID);
         checkHbIntervalTask task = new checkHbIntervalTask(serverID);
-        if(current != null){
+        if (current != null) {
             current.cancel();
         }
         serverTimeCheckTasks.put(serverID, task);
         taskScheduler.schedule(task, HEARTBEAT_CHECK_INTERVAL);
     }
 
-    private void scheduleStatusCheckTask(String serverID){
+    private void scheduleStatusCheckTask(String serverID) {
         TimerTask current = serverTimeCheckTasks.get(serverID);
         checkFunctionalityTask task = new checkFunctionalityTask(serverID);
-        if(current != null){
+        if (current != null) {
             current.cancel();
         }
         serverTimeCheckTasks.put(serverID, task);
@@ -93,9 +95,10 @@ public class HeartbeatDetector {
             if (dif > HEARTBEAT_CHECK_FRACTION * HEARTBEAT_CHECK_INTERVAL) {
                 markSuspicious(serverID);
                 LOGGER.debug("Server " + serverID + " marked : SUSPICIOUS");
-                ExecutableCommand statusReply = Sender.sendCommandToFollowerAndReceive(new HbStatusCheckL2FCommand(), serverID);
+                ExecutableCommand statusReply = Sender.sendCommandToPeerAndReceive(
+                        new HbStatusCheckL2FCommand(), STATE_MANAGER.getServer(serverID));
                 //TODO is there a better way to handle
-                if(statusReply != null) {
+                if (statusReply != null) {
                     statusReply.execute();
                 }
                 scheduleStatusCheckTask(serverID);
