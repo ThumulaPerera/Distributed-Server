@@ -14,7 +14,7 @@ public class ListS2CCommand extends Command {
     private ArrayList<String> rooms;
 
     public ListS2CCommand() {
-        super(CommandType.LIST);
+        super(CommandType.ROOM_LIST);
     }
 
     public ListS2CCommand(ArrayList<String> rooms) {
