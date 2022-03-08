@@ -6,6 +6,7 @@ public enum CommandType {
     // client-server commands
     NEW_IDENTITY("newidentity"),
     MESSAGE("message"),
+    LIST("list"),
     // server-server commands
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),

@@ -24,6 +24,7 @@ public class C2SCommandFactory {
             switch (commandType) {
                 case NEW_IDENTITY -> command = MAPPER.readValue(json, NewIdentityC2SCommand.class);
                 case MESSAGE -> command = MAPPER.readValue(json, MessageC2SCommand.class);
+                case LIST -> command = MAPPER.readValue(json, ListC2SCommand.class);
             }
         }
         catch (JsonProcessingException e) {
