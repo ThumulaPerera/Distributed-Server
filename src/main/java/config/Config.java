@@ -1,5 +1,6 @@
 package config;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.StateInitializer;
@@ -17,25 +18,16 @@ public class Config {
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
     private static Properties PROPERTIES;
 
+    @Getter private static final int FASTBULLY_T1 = 5000;
+    @Getter private static final int FASTBULLY_T2 = 5000;
+    @Getter private static final int FASTBULLY_T3 = 5000;
+
     public static void loadProperties(String serverID, Path path) {
 //        PROPERTIES = new Properties();
         StateInitializer stateInitializer = StateManagerImpl.getInstance();
 
 
         try {
-
-//            Files.lines(path)
-//                    .filter(line -> line.split("\t", 4)[0].equals(serverID))
-//                    .findFirst()
-//                    .map(line -> {
-//                        String[] arrOfStr = line.split("\t", 4);
-//                        PROPERTIES.setProperty("serverid", arrOfStr[0]);
-//                        PROPERTIES.setProperty("server_address", arrOfStr[1]);
-//                        PROPERTIES.setProperty("clients_port", arrOfStr[2]);
-//                        PROPERTIES.setProperty("coordination_port", arrOfStr[3]);
-//                        printDebugConfig();
-//                        return null;
-//                    });
             Files.lines(path)
                     .forEach(line -> {
                         LOGGER.debug("read config line: " + line);
@@ -82,6 +74,7 @@ public class Config {
 //        return Integer.parseInt(PROPERTIES.getProperty("coordination_port"));
         return STATE_MANAGER.getSelf().getCoordinationPort();
     }
+
 
     private static void printDebugConfig() {
         LOGGER.debug("==== Config ====");

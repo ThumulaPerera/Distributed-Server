@@ -2,7 +2,7 @@ package state;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-
+import serverserver.HeartbeatDetector;
 import java.util.*;
 
 @Getter
@@ -11,6 +11,7 @@ public class ServerModel {
     private final String address;
     private final int clientsPort;
     private final int coordinationPort;
+    private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
     private final String mainHall;
     @Getter(AccessLevel.NONE)
     private final Map<String, ChatRoomModel> chatRooms;

@@ -2,6 +2,7 @@ package clientserver.command.servertoclient;
 
 import command.Command;
 import command.CommandType;
+import command.ExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +19,4 @@ public class NewIdentityS2CCommand extends Command {
         this();
         this.approved = approved;
     }
-
 }

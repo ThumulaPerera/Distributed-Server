@@ -8,6 +8,7 @@ public interface StateManager {
     void setSelf(String selfId);
     boolean checkValidityAndAddClient(String clientId, String serverId);
 
+    ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);
 //    Map<String, ChatRoomModel> getLocalChatRooms();

@@ -9,13 +9,16 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class StateManagerImpl implements StateManager, StateInitializer {
     private static Logger LOGGER = LoggerFactory.getLogger(StateManagerImpl.class);
     private static StateManagerImpl instance = new StateManagerImpl();
-    private final Map<String, ServerModel> servers;
-    private ServerModel leader;
+    @Getter private final Map<String, ServerModel> servers;
+    @Getter private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
+    @Getter @Setter private volatile boolean electionAllowed = false;
+    private volatile ServerModel leader;
     private ServerModel self;
 
     private StateManagerImpl() {
@@ -29,7 +32,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public boolean isLeader() {
         boolean isLeader = self == leader;
-        LOGGER.debug("Is leader: {}", isLeader);
+//        LOGGER.debug("Is leader: {}", isLeader);
         return isLeader;
     }
 
@@ -41,6 +44,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public void setLeader(String leaderId) {
         leader = servers.get(leaderId);
+//        leader.getHbdThread().start();
     }
 
     @Override
@@ -70,5 +74,18 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public void addServer(String serverId, String serverAddress, int clientPort, int coordinationPort) {
         servers.put(serverId, new ServerModel(serverId, serverAddress, clientPort, coordinationPort));
+    }
+
+    public void addAvailableServer(String serverId){
+        this.availableServers.add(serverId);
+    }
+
+    public void removeAvailableServer(String serverId){
+        this.availableServers.remove(serverId);
+    }
+
+    @Override
+    public ServerModel getServer(String serverId) {
+        return servers.get(serverId);
     }
 }

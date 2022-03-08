@@ -30,8 +30,8 @@ public class ReceiverThread extends Thread {
     public void run() {
         try {
             try (
-                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
+                    BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
             ) {
                 String json;
                 json = br.readLine();
