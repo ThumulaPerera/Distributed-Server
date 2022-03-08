@@ -3,6 +3,7 @@ package serverserver.command.fastbully;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.StateManagerImpl;
@@ -11,7 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class IamUpCommand extends ExecutableCommand {
+public class IamUpCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(IamUpCommand.class);
 
     public IamUpCommand() {

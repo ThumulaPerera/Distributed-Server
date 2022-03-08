@@ -19,11 +19,14 @@ public class FastBully {
 
         // TODO: setup T2 timeout for this
         STATE_MANAGER.getServers().forEach((serverId, server) -> {
-            ViewCommand viewCommand = (ViewCommand) Sender.sendCommandToPeerAndReceive(
-                    new IamUpCommand(), server);
+            // send only to other peers
+            if (!serverId.equals(STATE_MANAGER.getSelf().getId())) {
+                ViewCommand viewCommand = (ViewCommand) Sender.sendCommandToPeerAndReceive(
+                        new IamUpCommand(), server);
 
-            if (viewCommand != null) {
-                viewCommand.execute();
+                if (viewCommand != null) {
+                    viewCommand.execute();
+                }
             }
         });
         STATE_MANAGER.addAvailableServer(STATE_MANAGER.getSelf().getId());
@@ -52,7 +55,7 @@ public class FastBully {
         String selfId = STATE_MANAGER.getSelf().getId();
 
         STATE_MANAGER.getServers().forEach((serverId, server) -> {
-            if(!STATE_MANAGER.isElectionAllowed()) return;
+            if (!STATE_MANAGER.isElectionAllowed()) return;
             // send only to higher priority peers
             if (serverId.compareTo(selfId) > 0) {
                 AnswerCommand answerCommand = (AnswerCommand) Sender.sendCommandToPeerAndReceive(
@@ -66,7 +69,7 @@ public class FastBully {
         Collections.sort(candidates);
         boolean electionSuccess = false;
         while (candidates.size() > 0) {
-            if(!STATE_MANAGER.isElectionAllowed()) return;
+            if (!STATE_MANAGER.isElectionAllowed()) return;
             String serverId = candidates.remove(candidates.size() - 1);
             CoordinatorCommand coordinatorCommand = (CoordinatorCommand) Sender.sendCommandToPeerAndReceive(
                     new NominationCommand(), STATE_MANAGER.getServers().get(serverId));
@@ -83,16 +86,17 @@ public class FastBully {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(!STATE_MANAGER.isElectionAllowed()) return;
+            if (!STATE_MANAGER.isElectionAllowed()) return;
             FastBully.startElection();
-        };
+        }
+        ;
 
     }
 
-    public static void sendCoordinatorCommandToOtherLowerPeers(CoordinatorCommand coordinatorCommand, String excludeServer){
+    public static void sendCoordinatorCommandToOtherLowerPeers(CoordinatorCommand coordinatorCommand, String excludeServer) {
         String selfId = STATE_MANAGER.getSelf().getId();
         STATE_MANAGER.getServers().forEach((serverId, server) -> {
-            if (serverId.compareTo(selfId) < 0 && !serverId.equals(excludeServer)){
+            if (serverId.compareTo(selfId) < 0 && !serverId.equals(excludeServer)) {
                 Sender.sendCommandToPeer(coordinatorCommand, server);
             }
         });

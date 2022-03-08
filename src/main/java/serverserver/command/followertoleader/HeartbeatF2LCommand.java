@@ -2,7 +2,7 @@ package serverserver.command.followertoleader;
 
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import state.StateManagerImpl;
 
 @Getter
 @Setter
-public class HeartbeatF2LCommand extends ExecutableCommand {
+public class HeartbeatF2LCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatF2LCommand.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 

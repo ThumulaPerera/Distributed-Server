@@ -3,6 +3,7 @@ package serverserver.command.fastbully;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ViewCommand extends ExecutableCommand {
+public class ViewCommand extends S2SExecutableCommand {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewCommand.class);
     private static final StateManagerImpl STATE_MANAGER = StateManagerImpl.getInstance();

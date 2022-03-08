@@ -50,7 +50,7 @@ public class Sender {
 
             LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
         }catch(IOException e) {
-            LOGGER.error("Error while sending command to leader: {}", e.getMessage());
+            LOGGER.error("Error while sending command to peer: {}", e.getMessage());
             e.printStackTrace();
         }
 

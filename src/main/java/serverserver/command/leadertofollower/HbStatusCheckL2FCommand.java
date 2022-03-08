@@ -3,6 +3,7 @@ package serverserver.command.leadertofollower;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import state.StateManagerImpl;
 
 @Getter
 @Setter
-public class HbStatusCheckL2FCommand extends ExecutableCommand {
+public class HbStatusCheckL2FCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(HbStatusCheckL2FCommand.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
