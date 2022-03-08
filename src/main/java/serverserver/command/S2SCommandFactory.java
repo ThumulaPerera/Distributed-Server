@@ -6,6 +6,7 @@ import command.CommandType;
 import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.fastbully.*;
 import serverserver.command.followertoleader.CheckIdentityF2LCommand;
 import serverserver.command.followertoleader.HbStatusReplyF2LCommand;
 import serverserver.command.followertoleader.HeartbeatF2LCommand;
@@ -32,6 +33,13 @@ public class S2SCommandFactory {
                 case HEARTBEAT -> command = MAPPER.readValue(json, HeartbeatF2LCommand.class);
                 case HEARTBEAT_STATUS_CHECK -> command = MAPPER.readValue(json, HbStatusCheckL2FCommand.class);
                 case HEARTBEAT_STATUS_REPLY -> command = MAPPER.readValue(json, HbStatusReplyF2LCommand.class);
+                case IAMUP -> command = MAPPER.readValue(json, IamUpCommand.class);
+                case VIEW -> command = MAPPER.readValue(json, ViewCommand.class);
+                case COORDINATOR -> command = MAPPER.readValue(json, CoordinatorCommand.class);
+                case ELECTION -> command = MAPPER.readValue(json, ElectionCommand.class);
+                case ANSWER -> command = MAPPER.readValue(json, AnswerCommand.class);
+                case NOMINATION -> command = MAPPER.readValue(json, NominationCommand.class);
+
             }
         }
         catch (JsonProcessingException e) {

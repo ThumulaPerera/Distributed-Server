@@ -1,5 +1,6 @@
 package config;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.StateInitializer;
@@ -16,6 +17,10 @@ public class Config {
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
     private static Properties PROPERTIES;
+
+    @Getter private static final int FASTBULLY_T1 = 5000;
+    @Getter private static final int FASTBULLY_T2 = 5000;
+    @Getter private static final int FASTBULLY_T3 = 5000;
 
     public static void loadProperties(String serverID, Path path) {
 //        PROPERTIES = new Properties();

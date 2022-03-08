@@ -12,6 +12,14 @@ public enum CommandType {
     HEARTBEAT("heartbeat"),
     HEARTBEAT_STATUS_CHECK("statuscheck"),
     HEARTBEAT_STATUS_REPLY("statuscheckreply"),
+
+    //fast bully commands
+    IAMUP("iamup"),
+    VIEW("view"),
+    COORDINATOR("coordinator"),
+    ELECTION("election"),
+    ANSWER("answer"),
+    NOMINATION("nomination")
     ;
 
     public final String label;
