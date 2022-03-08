@@ -11,6 +11,7 @@ public class ServerModel {
     private final String address;
     private final int clientsPort;
     private final int coordinationPort;
+    private final String mainHall;
     @Getter(AccessLevel.NONE)
     private final Map<String, ChatRoomModel> chatRooms;
 
@@ -20,7 +21,8 @@ public class ServerModel {
         this.clientsPort = clientsPort;
         this.coordinationPort = coordinationPort;
         chatRooms = Collections.synchronizedMap(new HashMap<>());
-        chatRooms.put("MainHall-" + id, new ChatRoomModel("MainHall-" + id, null));
+        mainHall = "MainHall-" + id;
+        chatRooms.put(mainHall, new ChatRoomModel(mainHall, null));
     }
 
     public void addChatRoom(ChatRoomModel chatRoom) {
@@ -44,6 +46,6 @@ public class ServerModel {
     }
 
     public void addClientToMainHall(ClientModel client) {
-        chatRooms.get("MainHall-" + id).addClient(client);
+        chatRooms.get(mainHall).addClient(client);
     }
 }
