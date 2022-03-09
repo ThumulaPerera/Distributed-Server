@@ -78,6 +78,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
 
     @Override
     public boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId) {
+        LOGGER.debug("****************** checking global rooms for roomid");
         synchronized (servers) {
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
                 if (server.getValue().containsChatRoom(roomId)) return false;

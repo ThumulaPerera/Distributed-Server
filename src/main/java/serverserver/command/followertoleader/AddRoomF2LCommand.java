@@ -31,6 +31,11 @@ public class AddRoomF2LCommand extends S2SExecutableCommand {
     }
 
     @Override
+    public String toString() {
+        return "AddRoomF2LCommand [roomid=" + roomid + ", clientId=" + clientId + "]";
+    }
+
+    @Override
     public Command execute() {
         // executed by leader only
 
@@ -40,8 +45,8 @@ public class AddRoomF2LCommand extends S2SExecutableCommand {
     }
 
     private boolean checkAndAddRoom() {
-        boolean isAdded = STATE_MANAGER.checkValidityAndAddRoom(roomid, getOrigin(), clientId);
-
+//        boolean isAdded = STATE_MANAGER.checkValidityAndAddRoom(roomid, getOrigin(), clientId);
+            boolean isAdded = true;
         if (isAdded) {
 //            TODO: Send newroom to all the servers except the origin server
         }

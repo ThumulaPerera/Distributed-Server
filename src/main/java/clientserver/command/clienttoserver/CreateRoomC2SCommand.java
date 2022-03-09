@@ -31,26 +31,33 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for create room with identity: {}", roomid);
 
-        return new CreateRoomS2CCommand(checkAndAddRoom(roomid),roomid);
+        return new CreateRoomS2CCommand(checkAndAddRoom(),roomid);
     }
 
-    private boolean checkAndAddRoom(String roomid) {
+    private boolean checkAndAddRoom() {
         Sender sender = new Sender();
         // TODO : remove hardcoded clientId
         String clientId = "client-1";
         if (STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
             return false;
         } else {
-
+            LOGGER.debug("===isLeader: {}", STATE_MANAGER.isLeader());
+            LOGGER.debug("===server : {}", STATE_MANAGER.getSelf().getId());
             if (STATE_MANAGER.isLeader()) {
+                LOGGER.debug("=================== leader ");
                 boolean isAdded = STATE_MANAGER.checkValidityAndAddRoom(roomid, STATE_MANAGER.getSelf().getId(), clientId);
 
                 if (isAdded) {
+                    LOGGER.debug("=================== leader: added room ");
                     //            TODO: Send newroom to all the servers except the origin server
                 }
                 return isAdded;
             } else {
-                Command response = sender.sendCommandToLeaderAndReceive(new AddRoomF2LCommand(roomid, clientId));
+                LOGGER.debug("===================not leader ");
+                AddRoomF2LCommand addRoomCmnd = new AddRoomF2LCommand(roomid, clientId);
+                LOGGER.debug(addRoomCmnd.toString());
+                Command response = sender.sendCommandToLeaderAndReceive(addRoomCmnd);
+                LOGGER.debug("=================== response {}", response.getType());
                 if (response instanceof AddRoomL2FCommand) {
                     return ((AddRoomL2FCommand) response).isApproved();
                 }

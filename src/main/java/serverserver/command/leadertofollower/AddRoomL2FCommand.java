@@ -17,7 +17,7 @@ public class AddRoomL2FCommand extends S2SExecutableCommand {
     private boolean approved;
 
     public AddRoomL2FCommand() {
-        super(CommandType.CHECK_IDENTITY_L2F);
+        super(CommandType.ADD_ROOM_L2F);
     }
 
     public AddRoomL2FCommand(String roomid, boolean approved) {
