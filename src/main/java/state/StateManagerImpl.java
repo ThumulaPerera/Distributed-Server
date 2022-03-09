@@ -16,9 +16,13 @@ import java.util.HashSet;
 public class StateManagerImpl implements StateManager, StateInitializer {
     private static Logger LOGGER = LoggerFactory.getLogger(StateManagerImpl.class);
     private static StateManagerImpl instance = new StateManagerImpl();
-    @Getter private final Map<String, ServerModel> servers;
-    @Getter private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
-    @Getter @Setter private volatile boolean electionAllowed = false;
+    @Getter
+    private final Map<String, ServerModel> servers;
+    @Getter
+    private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
+    @Getter
+    @Setter
+    private volatile boolean electionAllowed = false;
     private volatile ServerModel leader;
     private ServerModel self;
 
@@ -61,8 +65,8 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public boolean checkValidityAndAddClient(String clientId, String serverId) {
         synchronized (servers) {
-            for (Map.Entry<String, ServerModel> server: servers.entrySet()) {
-                for (Map.Entry<String, ChatRoomModel> room: server.getValue().getChatRooms().entrySet()) {
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                for (Map.Entry<String, ChatRoomModel> room : server.getValue().getChatRooms().entrySet()) {
                     ChatRoomModel chatRoom = room.getValue();
                     if (chatRoom.containsClient(clientId)) return false;
                 }
@@ -73,15 +77,30 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     }
 
     @Override
+    public boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId) {
+        synchronized (servers) {
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                if (server.getValue().containsChatRoom(roomId)) return false;
+            }
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId)));
+            }
+            return true;
+        }
+
+    }
+
+
+    @Override
     public void addServer(String serverId, String serverAddress, int clientPort, int coordinationPort) {
         servers.put(serverId, new ServerModel(serverId, serverAddress, clientPort, coordinationPort));
     }
 
-    public void addAvailableServer(String serverId){
+    public void addAvailableServer(String serverId) {
         this.availableServers.add(serverId);
     }
 
-    public void removeAvailableServer(String serverId){
+    public void removeAvailableServer(String serverId) {
         this.availableServers.remove(serverId);
     }
 

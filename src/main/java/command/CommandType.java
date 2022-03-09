@@ -8,9 +8,12 @@ public enum CommandType {
     MESSAGE("message"),
     LIST("list"),
     ROOM_LIST("roomlist"),
+    CREATE_ROOM("createroom"),
     // server-server commands
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),
+    ADD_ROOM_F2L("addroomf2l"),
+    ADD_ROOM_L2F("addrooml2f"),
     HEARTBEAT("heartbeat"),
     HEARTBEAT_STATUS_CHECK("statuscheck"),
     HEARTBEAT_STATUS_REPLY("statuscheckreply"),

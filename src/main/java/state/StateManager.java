@@ -2,11 +2,18 @@ package state;
 
 public interface StateManager {
     boolean isLeader();
+
     ServerModel getLeader();
+
     void setLeader(String leaderId);
+
     ServerModel getSelf();
+
     void setSelf(String selfId);
+
     boolean checkValidityAndAddClient(String clientId, String serverId);
+
+    boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId);
 
     ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
