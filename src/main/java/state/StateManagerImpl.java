@@ -84,6 +84,11 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         return clientsMap.stream().map(client -> (LocalClientModel) client).collect(Collectors.toList());
     }
 
+    @Override
+    public LocalClientModel getLocalClient(String clientId) {
+        return (LocalClientModel) self.getClient(clientId);
+    }
+
     private void addGlobalClient(String clientId, String serverId) {
         servers.get(serverId).addClientToMainHall(new ClientModel(clientId));
     }

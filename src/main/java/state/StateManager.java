@@ -13,6 +13,7 @@ public interface StateManager {
     boolean checkValidityAndAddLocalClient(String clientId, Socket socket);
     boolean checkValidityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
+    LocalClientModel getLocalClient(String clientId);
 
     ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
