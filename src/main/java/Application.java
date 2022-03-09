@@ -52,7 +52,7 @@ public class Application {
         serverThread.start();
         while (true) {
             LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
-            Thread.sleep(2000);
+            Thread.sleep(20000);
         }
     }
 

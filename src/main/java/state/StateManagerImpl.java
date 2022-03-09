@@ -1,17 +1,13 @@
 package state;
 
-import clientserver.ServerThread;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-
+import java.net.Socket;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StateManagerImpl implements StateManager, StateInitializer {
     private static Logger LOGGER = LoggerFactory.getLogger(StateManagerImpl.class);
@@ -58,18 +54,49 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         self = servers.get(selfId);
     }
 
+
     @Override
-    public boolean checkValidityAndAddClient(String clientId, String serverId) {
+    public boolean checkValidityAndAddLocalClient(String clientId, Socket socket) {
         synchronized (servers) {
-            for (Map.Entry<String, ServerModel> server: servers.entrySet()) {
-                for (Map.Entry<String, ChatRoomModel> room: server.getValue().getChatRooms().entrySet()) {
-                    ChatRoomModel chatRoom = room.getValue();
-                    if (chatRoom.containsClient(clientId)) return false;
-                }
-            }
-            servers.get(serverId).addClientToMainHall(new ClientModel(clientId));
+            if (isIdentityTaken(clientId)) return false;
+            addLocalClient(clientId, socket);
             return true;
         }
+    }
+
+    @Override
+    public void addLocalClient(String clientId, Socket socket) {
+        self.addClientToMainHall(new LocalClientModel(clientId, socket));
+    }
+
+    @Override
+    public boolean checkValidityAndAddGlobalClient(String clientId, String serverId) {
+        synchronized (servers) {
+            if (isIdentityTaken(clientId)) return false;
+            addGlobalClient(clientId, serverId);
+            return true;
+        }
+    }
+
+    @Override
+    public List<LocalClientModel> getLocalChatRoomClients(String chatRoomId) {
+        List<ClientModel> clientsMap = self.getChatRooms().get(chatRoomId).getClients();
+        return clientsMap.stream().map(client -> (LocalClientModel) client).collect(Collectors.toList());
+    }
+
+    private void addGlobalClient(String clientId, String serverId) {
+        servers.get(serverId).addClientToMainHall(new ClientModel(clientId));
+    }
+
+    // should only be called from inside a block synchronized on servers
+    private boolean isIdentityTaken(String clientId) {
+        for (Map.Entry<String, ServerModel> server: servers.entrySet()) {
+            for (Map.Entry<String, ChatRoomModel> room: server.getValue().getChatRooms().entrySet()) {
+                ChatRoomModel chatRoom = room.getValue();
+                if (chatRoom.containsClient(clientId)) return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -89,4 +116,6 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     public ServerModel getServer(String serverId) {
         return servers.get(serverId);
     }
+
+
 }

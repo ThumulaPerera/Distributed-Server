@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import command.ExecutableCommand;
 import clientserver.command.clienttoserver.C2SCommandFactory;
+import command.SocketExecutableCommand;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.JsonParser;
@@ -18,6 +20,7 @@ public class ServerThread extends Thread {
     private static Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
+    @Getter
     private Socket socket;
 
     public ServerThread(Socket socket) {
@@ -35,6 +38,11 @@ public class ServerThread extends Thread {
                     LOGGER.debug("Received from client: " + json);
 
                     ExecutableCommand command = C2SCommandFactory.createC2SCommand(json);
+
+                    if (command instanceof SocketExecutableCommand) {
+                        ((SocketExecutableCommand) command).setSocket(socket);
+                    }
+
                     Command outputMessage = command.execute();
 
                     if (outputMessage != null) {

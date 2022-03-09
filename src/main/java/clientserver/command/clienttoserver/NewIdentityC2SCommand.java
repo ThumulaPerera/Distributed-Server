@@ -4,6 +4,7 @@ import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
+import command.SocketExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import state.StateManagerImpl;
 
 @Getter
 @Setter
-public class NewIdentityC2SCommand extends ExecutableCommand {
+public class NewIdentityC2SCommand extends SocketExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
@@ -30,20 +31,33 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for new identity with identity: {}", identity);
 
-        return new NewIdentityS2CCommand(isIdentityValid());
-    }
-
-    private boolean isIdentityValid() {
-        Sender sender = new Sender();
-        StateManager stateManager = StateManagerImpl.getInstance();
-        if (stateManager.isLeader()){
-            return STATE_MANAGER.checkValidityAndAddClient(identity, STATE_MANAGER.getSelf().getId());
+        boolean isValid = false;
+        if (STATE_MANAGER.isLeader()){
+            isValid = STATE_MANAGER.checkValidityAndAddLocalClient(identity, getSocket());
         } else {
-            Command response = sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
+            Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
             if (response instanceof CheckIdentityL2FCommand) {
-                return ((CheckIdentityL2FCommand) response).isApproved();
+                isValid = ((CheckIdentityL2FCommand) response).isApproved();
+                if (isValid) {
+                    STATE_MANAGER.addLocalClient(identity, getSocket());
+                }
             }
         }
-        return false;
+
+        return new NewIdentityS2CCommand(isValid);
     }
+
+//    private boolean isIdentityValid() {
+//        Sender sender = new Sender();
+//        StateManager stateManager = StateManagerImpl.getInstance();
+//        if (stateManager.isLeader()){
+//            return STATE_MANAGER.checkValidityAndAddClient(identity, STATE_MANAGER.getSelf().getId());
+//        } else {
+//            Command response = sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
+//            if (response instanceof CheckIdentityL2FCommand) {
+//                return ((CheckIdentityL2FCommand) response).isApproved();
+//            }
+//        }
+//        return false;
+//    }
 }
