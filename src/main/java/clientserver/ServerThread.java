@@ -1,5 +1,6 @@
 package clientserver;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import command.ExecutableCommand;
@@ -21,7 +22,7 @@ public class ServerThread extends Thread {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
     @Getter
-    private Socket socket;
+    private final Socket socket;
 
     public ServerThread(Socket socket) {
         this.socket = socket;
@@ -35,31 +36,49 @@ public class ServerThread extends Thread {
             ) {
                 String json;
                 while ((json = br.readLine()) != null) {
-                    LOGGER.debug("Received from client: " + json);
-
-                    ExecutableCommand command = C2SCommandFactory.createC2SCommand(json);
-
-                    if (command instanceof SocketExecutableCommand) {
-                        ((SocketExecutableCommand) command).setSocket(socket);
-                    }
-
+                    ExecutableCommand command = getExecutableCommand(json);
+                    setSocket(command);
                     Command outputMessage = command.execute();
-
-                    if (outputMessage != null) {
-                        String jsonOutputMessage = MAPPER.writeValueAsString(outputMessage);
-                        LOGGER.debug("Sending to client: " + jsonOutputMessage);
-                        pw.println(jsonOutputMessage);
-                    }
+                    sendResponse(pw, outputMessage);
                 }
             } catch (IOException ex) {
-                LOGGER.error("clientserver.Server exception: " + ex.getMessage());
-                ex.printStackTrace();
+                handleIoException(ex);
             }
-            LOGGER.debug("Closing connection with client : {}", socket.getRemoteSocketAddress());
-            socket.close();
+            closeSocket();
         } catch (IOException ex) {
-            LOGGER.error("clientserver.Server exception: " + ex.getMessage());
-            ex.printStackTrace();
+            handleIoException(ex);
         }
     }
+
+    private void closeSocket() throws IOException {
+        LOGGER.debug("Closing connection with client : {}", socket.getRemoteSocketAddress());
+        socket.close();
+    }
+
+    private void sendResponse(PrintWriter pw, Command outputMessage) throws JsonProcessingException {
+        if (outputMessage != null) {
+            String jsonOutputMessage = MAPPER.writeValueAsString(outputMessage);
+            LOGGER.debug("Sending to client: " + jsonOutputMessage);
+            pw.println(jsonOutputMessage);
+        }
+    }
+
+    private void setSocket(ExecutableCommand command) {
+        if (command instanceof SocketExecutableCommand) {
+            ((SocketExecutableCommand) command).setSocket(socket);
+        }
+    }
+
+    private ExecutableCommand getExecutableCommand(String json) {
+        LOGGER.debug("Received from client: " + json);
+        return C2SCommandFactory.createC2SCommand(json);
+    }
+
+
+    private void handleIoException(IOException ex) {
+        LOGGER.error("clientserver.Server exception: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+
+
 }
