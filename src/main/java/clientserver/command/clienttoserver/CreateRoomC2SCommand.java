@@ -45,13 +45,8 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
             LOGGER.debug("===server : {}", STATE_MANAGER.getSelf().getId());
             if (STATE_MANAGER.isLeader()) {
                 LOGGER.debug("=================== leader ");
-                boolean isAdded = STATE_MANAGER.checkValidityAndAddRoom(roomid, STATE_MANAGER.getSelf().getId(), clientId);
+                return STATE_MANAGER.checkValidityAndAddRoom(roomid, STATE_MANAGER.getSelf().getId(), clientId);
 
-                if (isAdded) {
-                    LOGGER.debug("=================== leader: added room ");
-                    // TODO: Send newroom to all the servers except the origin server
-                }
-                return isAdded;
             } else {
                 LOGGER.debug("===================not leader ");
                 AddRoomF2LCommand addRoomCmnd = new AddRoomF2LCommand(roomid, clientId);

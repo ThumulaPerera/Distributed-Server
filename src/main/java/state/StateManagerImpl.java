@@ -1,10 +1,13 @@
 package state;
 
 import clientserver.ServerThread;
+import command.Command;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.Sender;
+import serverserver.command.leadertofollower.NewRoomL2FCommand;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,9 +86,15 @@ public class StateManagerImpl implements StateManager, StateInitializer {
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
                 if (server.getValue().containsChatRoom(roomId)) return false;
             }
+            Sender sender = new Sender();
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
-                server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId)));
+                server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId), getServer(serverId)));
+
+                //            TODO: Send newroom to all the servers except the origin server
+                sender.sendCommandToPeer(new NewRoomL2FCommand(roomId, clientId, serverId), server.getValue());
             }
+
+
             return true;
         }
 

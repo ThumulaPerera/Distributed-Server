@@ -15,6 +15,7 @@ import serverserver.command.followertoleader.HeartbeatF2LCommand;
 import serverserver.command.leadertofollower.AddRoomL2FCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
+import serverserver.command.leadertofollower.NewRoomL2FCommand;
 import utils.JsonParser;
 
 import java.util.Objects;
@@ -35,6 +36,7 @@ public class S2SCommandFactory {
                 case CHECK_IDENTITY_L2F -> command = MAPPER.readValue(json, CheckIdentityL2FCommand.class);
                 case ADD_ROOM_F2L -> command = MAPPER.readValue(json, AddRoomF2LCommand.class);
                 case ADD_ROOM_L2F -> command = MAPPER.readValue(json, AddRoomL2FCommand.class);
+                case NEW_ROOM_L2F -> command = MAPPER.readValue(json, NewRoomL2FCommand.class);
                 case HEARTBEAT -> command = MAPPER.readValue(json, HeartbeatF2LCommand.class);
                 case HEARTBEAT_STATUS_CHECK -> command = MAPPER.readValue(json, HbStatusCheckL2FCommand.class);
                 case HEARTBEAT_STATUS_REPLY -> command = MAPPER.readValue(json, HbStatusReplyF2LCommand.class);
