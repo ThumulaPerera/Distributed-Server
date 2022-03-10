@@ -35,9 +35,9 @@ public class NewRoomL2FCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing New Room L2F with roomid: {} ownerclient: {} ownerserver: {}", roomid, ownerclient, ownerserver);
+        LOGGER.debug("Executing New Room L2F with roomid: {}, ownerclient: {}, ownerserver: {}", roomid, ownerclient, ownerserver);
 
-//        TODO : Save room locally
+        // Save room locally
         StateManager STATE_MANAGER = StateManagerImpl.getInstance();
         STATE_MANAGER.getSelf().addChatRoom(new ChatRoomModel(roomid, new ClientModel(ownerclient), STATE_MANAGER.getServer(ownerserver)));
 

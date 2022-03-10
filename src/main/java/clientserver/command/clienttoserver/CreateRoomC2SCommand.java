@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.followertoleader.AddRoomF2LCommand;
 import serverserver.command.leadertofollower.AddRoomL2FCommand;
-import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 import state.StateManager;
 import state.StateManagerImpl;
 
@@ -41,18 +40,13 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
         if (STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
             return false;
         } else {
-            LOGGER.debug("===isLeader: {}", STATE_MANAGER.isLeader());
-            LOGGER.debug("===server : {}", STATE_MANAGER.getSelf().getId());
             if (STATE_MANAGER.isLeader()) {
-                LOGGER.debug("=================== leader ");
                 return STATE_MANAGER.checkValidityAndAddRoom(roomid, STATE_MANAGER.getSelf().getId(), clientId);
 
             } else {
-                LOGGER.debug("===================not leader ");
                 AddRoomF2LCommand addRoomCmnd = new AddRoomF2LCommand(roomid, clientId);
                 LOGGER.debug(addRoomCmnd.toString());
                 Command response = sender.sendCommandToLeaderAndReceive(addRoomCmnd);
-                LOGGER.debug("=================== response {}", response.getType());
                 if (response instanceof AddRoomL2FCommand) {
                     return ((AddRoomL2FCommand) response).isApproved();
                 }

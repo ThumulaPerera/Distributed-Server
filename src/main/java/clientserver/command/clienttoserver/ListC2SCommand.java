@@ -43,10 +43,6 @@ public class ListC2SCommand extends ExecutableCommand {
             rooms.add(entry.getKey());
         }
 
-//        TODO: Remove hardcoded rooms
-        rooms.add("A");
-        rooms.add("B");
-        rooms.add("C");
         return rooms;
     }
 

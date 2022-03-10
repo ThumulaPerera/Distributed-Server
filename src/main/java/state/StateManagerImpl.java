@@ -81,7 +81,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
 
     @Override
     public boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId) {
-        LOGGER.debug("****************** checking global rooms for roomid");
+        LOGGER.debug("Checking global rooms for roomid: {}", roomId);
         synchronized (servers) {
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
                 if (server.getValue().containsChatRoom(roomId)) return false;
@@ -90,7 +90,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
                 server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId), getServer(serverId)));
 
-                //            TODO: Send newroom to all the servers except the origin server
+                // Send newroom to all the servers except the origin server
                 sender.sendCommandToPeer(new NewRoomL2FCommand(roomId, clientId, serverId), server.getValue());
             }
 
