@@ -45,8 +45,7 @@ public class AddRoomF2LCommand extends S2SExecutableCommand {
     }
 
     private boolean checkAndAddRoom() {
-//        boolean isAdded = STATE_MANAGER.checkValidityAndAddRoom(roomid, getOrigin(), clientId);
-            boolean isAdded = true;
+        boolean isAdded = STATE_MANAGER.checkValidityAndAddRoom(roomid, getOrigin(), clientId);
         if (isAdded) {
 //            TODO: Send newroom to all the servers except the origin server
         }

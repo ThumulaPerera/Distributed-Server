@@ -31,7 +31,7 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for create room with identity: {}", roomid);
 
-        return new CreateRoomS2CCommand(checkAndAddRoom(),roomid);
+        return new CreateRoomS2CCommand(checkAndAddRoom(), roomid);
     }
 
     private boolean checkAndAddRoom() {
@@ -49,7 +49,7 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
 
                 if (isAdded) {
                     LOGGER.debug("=================== leader: added room ");
-                    //            TODO: Send newroom to all the servers except the origin server
+                    // TODO: Send newroom to all the servers except the origin server
                 }
                 return isAdded;
             } else {
