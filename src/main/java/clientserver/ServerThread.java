@@ -65,12 +65,17 @@ public class ServerThread extends Thread {
                 } else {
                     LOGGER.error("Unknown initial command: " + inputCommand);
                     closeSocket();
+                    return;
                 }
 
                 while ((json = br.readLine()) != null) {
                     inputCommand = getCommand(json);
-                    outputCommand = inputCommand.execute();
-                    sendResponse(pw, outputCommand);
+                    if (inputCommand instanceof NewIdentityC2SCommand || inputCommand instanceof MoveJoinC2SCommand) {
+                        LOGGER.error("Un-allowed command for already connected client: " + inputCommand);
+                    } else {
+                        outputCommand = inputCommand.execute();
+                        sendResponse(pw, outputCommand);
+                    }
                 }
             } catch (IOException ex) {
                 handleIoException(ex);
