@@ -1,6 +1,7 @@
 package clientserver.command.clienttoserver;
 
 import clientserver.command.servertoclient.CreateRoomS2CCommand;
+import command.ClientKnownExecutableCommand;
 import command.Command;
 import command.CommandType;
 import command.ExecutableCommand;
@@ -11,12 +12,13 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.followertoleader.AddRoomF2LCommand;
 import serverserver.command.leadertofollower.AddRoomL2FCommand;
+import state.ChatRoomModel;
 import state.StateManager;
 import state.StateManagerImpl;
 
 @Getter
 @Setter
-public class CreateRoomC2SCommand extends ExecutableCommand {
+public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
@@ -30,23 +32,34 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for create room with identity: {}", roomid);
 
-        // TODO : remove hardcoded clientId
-        String clientId = "client-1";
-        boolean isApproved = checkAndAddRoom(clientId);
-        if (isApproved) {
-            deleteClientOwnRoom(clientId);
-            joinRoom(clientId);
+        String clientId = getClient().getId();
+        LOGGER.debug("================== Creating Room for Client: {}", clientId);
+        String currentOwnedRoom = STATE_MANAGER.getSelf().getChatRoomByOwner(clientId);
+        boolean isApproved;
+        if (currentOwnedRoom == null) {
+            isApproved = checkAndAddRoom(clientId);
+            if (isApproved) {
+                joinRoom(clientId, roomid);
+            }
+        } else {
+            isApproved = checkAndAddRoom(clientId);
+            if (isApproved) {
+                // TODO: move others in currentOwnedRoom to Mainhall
+                // TODO: delete currentOwnedRoom
+                joinRoom(clientId, roomid);
+            }
         }
+
         return new CreateRoomS2CCommand(isApproved, roomid);
     }
 
-    private void deleteClientOwnRoom(String clientId) {
-        // TODO: check the local rooms which has client as owner and delete room if exists
+    private void deleteRoom(String roomId) {
+
+
     }
 
-    private void joinRoom(String clientId) {
-        // TODO: Leave the current the room if in a room
-        // TODO: Join the room
+    private void joinRoom(String clientId, String roomid) {
+        // TODO: JoinRoom
     }
 
     private boolean checkAndAddRoom(String clientId) {

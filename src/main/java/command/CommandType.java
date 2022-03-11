@@ -16,6 +16,7 @@ public enum CommandType {
     ADD_ROOM_F2L("addroomf2l"),
     ADD_ROOM_L2F("addrooml2f"),
     NEW_ROOM_L2F("newrooml2f"),
+    DELETE_ROOM_L2F("deleterooml2f"),
     HEARTBEAT("heartbeat"),
     HEARTBEAT_STATUS_CHECK("statuscheck"),
     HEARTBEAT_STATUS_REPLY("statuscheckreply"),

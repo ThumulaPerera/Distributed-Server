@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.Sender;
+import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
 import serverserver.command.leadertofollower.NewRoomL2FCommand;
 
 import java.net.Socket;
@@ -89,12 +90,31 @@ public class StateManagerImpl implements StateManager, StateInitializer {
                     sender.sendCommandToPeer(new NewRoomL2FCommand(roomId, clientId, serverId), server.getValue());
                 }
             }
-
-
             return true;
         }
-
     }
+
+//    @Override
+//    public boolean deleteClientOwnRoomIfExists(String clientId) {
+//        // Executed only by the leader
+//        LOGGER.debug("Checking Rooms of client {}", clientId);
+//        synchronized (servers) {
+//            Sender sender = new Sender();
+//            // delete chat room from local list of servers if exist
+//            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+//                if (server.getValue().containsChatRoom(roomId)) {
+//                    server.getValue().removeChatRoom(roomId);
+//                    LOGGER.debug("================== Deleting Room: {}", roomId);
+//
+//                    // send all the servers req to delete the chat room except leader
+//                    if (!server.getValue().getId().equals(self.getId())) {
+//                        sender.sendCommandToPeer(new DeleteRoomL2FCommand(roomId), server.getValue());
+//                    }
+//                }
+//            }
+//            return true;
+//        }
+//    }
 
 
     public void addLocalClient(String clientId, Socket socket) {
@@ -127,8 +147,8 @@ public class StateManagerImpl implements StateManager, StateInitializer {
 
     // should only be called from inside a block synchronized on servers
     private boolean isIdentityTaken(String clientId) {
-        for (Map.Entry<String, ServerModel> server: servers.entrySet()) {
-            for (Map.Entry<String, ChatRoomModel> room: server.getValue().getChatRooms().entrySet()) {
+        for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+            for (Map.Entry<String, ChatRoomModel> room : server.getValue().getChatRooms().entrySet()) {
                 ChatRoomModel chatRoom = room.getValue();
                 if (chatRoom.containsClient(clientId)) return true;
             }

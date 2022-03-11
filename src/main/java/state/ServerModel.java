@@ -3,6 +3,7 @@ package state;
 import lombok.AccessLevel;
 import lombok.Getter;
 import serverserver.HeartbeatDetector;
+
 import java.util.*;
 
 @Getter
@@ -30,12 +31,21 @@ public class ServerModel {
         chatRooms.put(chatRoom.getId(), chatRoom);
     }
 
-    public void removeChatRoom(ChatRoomModel chatRoom) {
-        chatRooms.remove(chatRoom.getId());
+    public void removeChatRoom(String roomId) {
+        chatRooms.remove(roomId);
     }
 
     public ChatRoomModel getChatRoom(String chatRoomId) {
         return chatRooms.get(chatRoomId);
+    }
+
+    public String getChatRoomByOwner(String owner) {
+        for (Map.Entry<String, ChatRoomModel> room : chatRooms.entrySet()) {
+            if (room.getValue().getOwner() != null) {
+                if (room.getValue().getOwner().getId().equals(owner)) return room.getValue().getId();
+            }
+        }
+        return null;
     }
 
     public boolean containsChatRoom(String chatRoomId) {
@@ -57,6 +67,7 @@ public class ServerModel {
         }
         return null;
     }
+
     public void addClientToMainHall(ClientModel client) {
         chatRooms.get(mainHall).addClient(client);
     }
