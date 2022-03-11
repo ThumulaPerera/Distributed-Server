@@ -3,7 +3,9 @@ package state;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class ChatRoomModel {
@@ -36,7 +38,7 @@ public class ChatRoomModel {
         return clients.containsKey(id);
     }
 
-    public List<ClientModel> getClients() {
-        return new ArrayList<ClientModel>(clients.values());
+    public Map<String, ClientModel> getClients() {
+        return clients;
     }
 }

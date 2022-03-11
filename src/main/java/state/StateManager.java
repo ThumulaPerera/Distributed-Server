@@ -1,8 +1,5 @@
 package state;
 
-import java.net.Socket;
-import java.util.List;
-
 public interface StateManager {
     boolean isLeader();
 
@@ -13,11 +10,8 @@ public interface StateManager {
     ServerModel getSelf();
 
     void setSelf(String selfId);
-    void addLocalClient(String clientId, Socket socket);
-    boolean checkValidityAndAddLocalClient(String clientId, Socket socket);
-    boolean checkValidityAndAddGlobalClient(String clientId, String serverId);
-    List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
-    LocalClientModel getLocalClient(String clientId);
+
+    boolean checkValidityAndAddClient(String clientId, String serverId);
 
     boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId);
 

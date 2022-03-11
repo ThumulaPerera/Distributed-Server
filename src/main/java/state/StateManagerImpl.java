@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.leadertofollower.NewRoomL2FCommand;
 
-import java.net.Socket;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+
 
 public class StateManagerImpl implements StateManager, StateInitializer {
     private static Logger LOGGER = LoggerFactory.getLogger(StateManagerImpl.class);
@@ -62,12 +65,11 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         self = servers.get(selfId);
     }
 
-
     @Override
-    public boolean checkValidityAndAddLocalClient(String clientId, Socket socket) {
+    public boolean checkValidityAndAddClient(String clientId, String serverId) {
         synchronized (servers) {
-            for (Map.Entry<String, ServerModel> server: servers.entrySet()) {
-                for (Map.Entry<String, ChatRoomModel> room: server.getValue().getChatRooms().entrySet()) {
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                for (Map.Entry<String, ChatRoomModel> room : server.getValue().getChatRooms().entrySet()) {
                     ChatRoomModel chatRoom = room.getValue();
                     if (chatRoom.containsClient(clientId)) return false;
                 }
@@ -76,6 +78,31 @@ public class StateManagerImpl implements StateManager, StateInitializer {
             return true;
         }
     }
+
+    @Override
+    public boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId) {
+        // Executed only by the leader
+        LOGGER.debug("Checking global rooms for roomid: {}", roomId);
+        synchronized (servers) {
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                if (server.getValue().containsChatRoom(roomId)) return false;
+            }
+            Sender sender = new Sender();
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId), getServer(serverId)));
+
+                // Send newroom to all the servers except the origin server
+                if (!server.getValue().getId().equals(self.getId())) {
+                    sender.sendCommandToPeer(new NewRoomL2FCommand(roomId, clientId, serverId), server.getValue());
+                }
+            }
+
+
+            return true;
+        }
+
+    }
+
 
     @Override
     public void addServer(String serverId, String serverAddress, int clientPort, int coordinationPort) {
@@ -94,6 +121,4 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     public ServerModel getServer(String serverId) {
         return servers.get(serverId);
     }
-
-
 }

@@ -16,12 +16,14 @@ import java.util.Properties;
 public class Config {
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static Properties PROPERTIES;
 
     @Getter private static final int FASTBULLY_T1 = 5000;
     @Getter private static final int FASTBULLY_T2 = 5000;
     @Getter private static final int FASTBULLY_T3 = 5000;
 
     public static void loadProperties(String serverID, Path path) {
+//        PROPERTIES = new Properties();
         StateInitializer stateInitializer = StateManagerImpl.getInstance();
 
 
@@ -40,6 +42,9 @@ public class Config {
                     });
             STATE_MANAGER.setSelf(serverID);
 
+            // TODO : temporary solution. Need to be changed.
+            STATE_MANAGER.setLeader("s1");
+
         } catch (ArrayIndexOutOfBoundsException e) {
             LOGGER.error("Config file is not in correct format");
             e.printStackTrace();
@@ -51,18 +56,22 @@ public class Config {
     }
 
     public static String getServerId() {
+//        return PROPERTIES.getProperty("serverid");
         return STATE_MANAGER.getSelf().getId();
     }
 
     public static String getServerAddress() {
+//        return PROPERTIES.getProperty("server_address");
         return STATE_MANAGER.getSelf().getAddress();
     }
 
     public static int getClientsPort() {
+//        return Integer.parseInt(PROPERTIES.getProperty("clients_port"));
         return STATE_MANAGER.getSelf().getClientsPort();
     }
 
     public static int getCoordinationPort() {
+//        return Integer.parseInt(PROPERTIES.getProperty("coordination_port"));
         return STATE_MANAGER.getSelf().getCoordinationPort();
     }
 
