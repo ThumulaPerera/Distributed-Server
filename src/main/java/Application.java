@@ -53,6 +53,8 @@ public class Application {
         while (true) {
 //            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
             Thread.sleep(2000);
+            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
+            Thread.sleep(20000);
         }
     }
 

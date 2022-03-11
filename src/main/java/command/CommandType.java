@@ -8,6 +8,7 @@ public enum CommandType {
     MESSAGE("message"),
     LIST("list"),
     ROOM_LIST("roomlist"),
+    MOVE_JOIN("movejoin"),
     CREATE_ROOM("createroom"),
     // server-server commands
     CHECK_IDENTITY_F2L("checkidentityf2l"),

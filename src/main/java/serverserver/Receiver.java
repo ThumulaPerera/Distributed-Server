@@ -21,7 +21,7 @@ public class Receiver implements Runnable {
             LOGGER.info("serverserver.Receiver is listening on port {}", port);
             while (true) {
                 Socket socket = serverSocket.accept();
-//                LOGGER.info("New peer connected : {}", socket.getRemoteSocketAddress());
+                LOGGER.debug("New peer connected : {}", socket.getRemoteSocketAddress());
                 new ReceiverThread(socket).start();
             }
         } catch (IOException e) {
