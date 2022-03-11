@@ -30,13 +30,28 @@ public class CreateRoomC2SCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for create room with identity: {}", roomid);
 
-        return new CreateRoomS2CCommand(checkAndAddRoom(), roomid);
-    }
-
-    private boolean checkAndAddRoom() {
-        Sender sender = new Sender();
         // TODO : remove hardcoded clientId
         String clientId = "client-1";
+        boolean isApproved = checkAndAddRoom(clientId);
+        if (isApproved) {
+            deleteClientOwnRoom(clientId);
+            joinRoom(clientId);
+        }
+        return new CreateRoomS2CCommand(isApproved, roomid);
+    }
+
+    private void deleteClientOwnRoom(String clientId) {
+        // TODO: check the local rooms which has client as owner and delete room if exists
+    }
+
+    private void joinRoom(String clientId) {
+        // TODO: Leave the current the room if in a room
+        // TODO: Join the room
+    }
+
+    private boolean checkAndAddRoom(String clientId) {
+        Sender sender = new Sender();
+
         if (STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
             return false;
         } else {
