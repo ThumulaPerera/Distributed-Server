@@ -3,6 +3,7 @@ package clientserver;
 import clientserver.command.clienttoserver.MoveJoinC2SCommand;
 import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
+import clientserver.command.servertoclient.RoomChangeS2CCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.ClientKnownExecutableCommand;
@@ -26,7 +27,6 @@ import java.net.*;
  */
 public class ServerThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
-    private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
     @Getter
@@ -55,11 +55,20 @@ public class ServerThread extends Thread {
 
                 if (inputCommand instanceof NewIdentityC2SCommand) {
                     outputCommand = inputCommand.execute();
-                    if (((NewIdentityS2CCommand) outputCommand).isApproved()){
-                        String clientId = ((NewIdentityC2SCommand) inputCommand).getIdentity();
+
+                    String clientId = ((NewIdentityC2SCommand) inputCommand).getIdentity();
+                    boolean isApproved = ((NewIdentityS2CCommand) outputCommand).isApproved();
+
+                    if (isApproved){
                         client = STATE_MANAGER.getLocalClient(clientId);
                     }
                     sendResponse(outputCommand);
+                    if (isApproved) {
+                        Broadcaster.broadcastToAllInMainHall(
+                                new RoomChangeS2CCommand(clientId, "", STATE_MANAGER.getSelf().getMainHall())
+                        );
+                    }
+
                 } else if (inputCommand instanceof MoveJoinC2SCommand) {
                     // TODO: implement
                     inputCommand.execute();

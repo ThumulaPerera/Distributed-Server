@@ -16,7 +16,7 @@ public interface StateManager {
     boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
     LocalClientModel getLocalClient(String clientId);
-
+    ChatRoomModel getLocalChatRoom(String chatRoomId);
     ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);

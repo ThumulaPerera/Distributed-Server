@@ -90,6 +90,11 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         return (LocalClientModel) self.getClient(clientId);
     }
 
+    @Override
+    public ChatRoomModel getLocalChatRoom(String chatRoomId) {
+        return self.getChatRooms().get(chatRoomId);
+    }
+
     private void addGlobalClient(String clientId, String serverId) {
         servers.get(serverId).addClientToMainHall(new ClientModel(clientId));
     }
