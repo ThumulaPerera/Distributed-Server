@@ -46,6 +46,17 @@ public class ServerModel {
         return chatRooms;
     }
 
+    protected ClientModel getClient(String clientId) {
+        synchronized (chatRooms) {
+            for (ChatRoomModel chatRoom : chatRooms.values()) {
+                ClientModel client = chatRoom.getClient(clientId);
+                if (client != null) {
+                    return client;
+                }
+            }
+        }
+        return null;
+    }
     public void addClientToMainHall(ClientModel client) {
         chatRooms.get(mainHall).addClient(client);
     }

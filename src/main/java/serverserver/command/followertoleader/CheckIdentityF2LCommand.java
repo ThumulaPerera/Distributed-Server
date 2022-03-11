@@ -1,9 +1,7 @@
 package serverserver.command.followertoleader;
 
-import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +38,6 @@ public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     }
 
     private boolean isIdentityValid() {
-        return STATE_MANAGER.checkValidityAndAddClient(identity, getOrigin());
+        return STATE_MANAGER.checkValidityAndAddGlobalClient(identity, getOrigin());
     }
 }
