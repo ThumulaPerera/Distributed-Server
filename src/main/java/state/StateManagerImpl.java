@@ -56,7 +56,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
 
 
     @Override
-    public boolean checkValidityAndAddLocalClient(String clientId, Socket socket) {
+    public boolean checkAvailabilityAndAddLocalClient(String clientId, Socket socket) {
         synchronized (servers) {
             if (isIdentityTaken(clientId)) return false;
             addLocalClient(clientId, socket);
@@ -70,7 +70,7 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     }
 
     @Override
-    public boolean checkValidityAndAddGlobalClient(String clientId, String serverId) {
+    public boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId) {
         synchronized (servers) {
             if (isIdentityTaken(clientId)) return false;
             addGlobalClient(clientId, serverId);

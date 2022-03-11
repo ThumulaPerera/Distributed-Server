@@ -10,8 +10,8 @@ public interface StateManager {
     ServerModel getSelf();
     void setSelf(String selfId);
     void addLocalClient(String clientId, Socket socket);
-    boolean checkValidityAndAddLocalClient(String clientId, Socket socket);
-    boolean checkValidityAndAddGlobalClient(String clientId, String serverId);
+    boolean checkAvailabilityAndAddLocalClient(String clientId, Socket socket);
+    boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
     LocalClientModel getLocalClient(String clientId);
 

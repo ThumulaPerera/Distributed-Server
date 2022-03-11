@@ -3,7 +3,6 @@ package clientserver.command.clienttoserver;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import command.SocketExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,33 +30,43 @@ public class NewIdentityC2SCommand extends SocketExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for new identity with identity: {}", identity);
 
-        boolean isValid = false;
+        if(!isValid()){
+            LOGGER.debug("Invalid identity: {}", identity);
+            return new NewIdentityS2CCommand(false);
+        }
+
+        boolean isAvailable = isAvailable();
+
+        return new NewIdentityS2CCommand(isAvailable);
+    }
+
+    private boolean isAvailable() {
+        boolean isAvailable = false;
         if (STATE_MANAGER.isLeader()){
-            isValid = STATE_MANAGER.checkValidityAndAddLocalClient(identity, getSocket());
+            isAvailable = STATE_MANAGER.checkAvailabilityAndAddLocalClient(identity, getSocket());
         } else {
             Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
             if (response instanceof CheckIdentityL2FCommand) {
-                isValid = ((CheckIdentityL2FCommand) response).isApproved();
-                if (isValid) {
+                isAvailable = ((CheckIdentityL2FCommand) response).isApproved();
+                if (isAvailable) {
                     STATE_MANAGER.addLocalClient(identity, getSocket());
                 }
             }
         }
-
-        return new NewIdentityS2CCommand(isValid);
+        return isAvailable;
     }
 
-//    private boolean isIdentityValid() {
-//        Sender sender = new Sender();
-//        StateManager stateManager = StateManagerImpl.getInstance();
-//        if (stateManager.isLeader()){
-//            return STATE_MANAGER.checkValidityAndAddClient(identity, STATE_MANAGER.getSelf().getId());
-//        } else {
-//            Command response = sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
-//            if (response instanceof CheckIdentityL2FCommand) {
-//                return ((CheckIdentityL2FCommand) response).isApproved();
-//            }
-//        }
-//        return false;
-//    }
+    private boolean isValid(){
+        /*
+          matches with
+            - starting with lower or upper case letter
+            - containing only lower or upper case letters and numbers
+            - not longer than 16 characters
+            - not shorter than 3 characters
+         */
+        String regex = "^[a-zA-Z][a-zA-Z0-9]{2,15}$";
+
+        return identity.matches(regex);
+    }
+
 }

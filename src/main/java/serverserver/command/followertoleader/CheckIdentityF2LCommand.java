@@ -38,6 +38,6 @@ public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     }
 
     private boolean isIdentityValid() {
-        return STATE_MANAGER.checkValidityAndAddGlobalClient(identity, getOrigin());
+        return STATE_MANAGER.checkAvailabilityAndAddGlobalClient(identity, getOrigin());
     }
 }
