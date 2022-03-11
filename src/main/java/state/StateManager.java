@@ -1,6 +1,8 @@
 package state;
 
-import java.net.Socket;
+import clientserver.ClientSender;
+import serverserver.Sender;
+
 import java.util.List;
 
 public interface StateManager {
@@ -9,8 +11,8 @@ public interface StateManager {
     void setLeader(String leaderId);
     ServerModel getSelf();
     void setSelf(String selfId);
-    void addLocalClient(String clientId, Socket socket);
-    boolean checkAvailabilityAndAddLocalClient(String clientId, Socket socket);
+    void addLocalClient(String clientId, ClientSender sender);
+    boolean checkAvailabilityAndAddLocalClient(String clientId, ClientSender sender);
     boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
     LocalClientModel getLocalClient(String clientId);

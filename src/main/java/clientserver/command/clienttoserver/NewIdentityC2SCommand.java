@@ -3,7 +3,7 @@ package clientserver.command.clienttoserver;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
-import command.SocketExecutableCommand;
+import command.SenderKnownExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import state.StateManagerImpl;
 
 @Getter
 @Setter
-public class NewIdentityC2SCommand extends SocketExecutableCommand {
+public class NewIdentityC2SCommand extends SenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
@@ -43,13 +43,13 @@ public class NewIdentityC2SCommand extends SocketExecutableCommand {
     private boolean isAvailable() {
         boolean isAvailable = false;
         if (STATE_MANAGER.isLeader()){
-            isAvailable = STATE_MANAGER.checkAvailabilityAndAddLocalClient(identity, getSocket());
+            isAvailable = STATE_MANAGER.checkAvailabilityAndAddLocalClient(identity, getSender());
         } else {
             Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
             if (response instanceof CheckIdentityL2FCommand) {
                 isAvailable = ((CheckIdentityL2FCommand) response).isApproved();
                 if (isAvailable) {
-                    STATE_MANAGER.addLocalClient(identity, getSocket());
+                    STATE_MANAGER.addLocalClient(identity, getSender());
                 }
             }
         }

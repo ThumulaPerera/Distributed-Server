@@ -1,5 +1,6 @@
 package state;
 
+import clientserver.ClientSender;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -56,17 +57,17 @@ public class StateManagerImpl implements StateManager, StateInitializer {
 
 
     @Override
-    public boolean checkAvailabilityAndAddLocalClient(String clientId, Socket socket) {
+    public boolean checkAvailabilityAndAddLocalClient(String clientId, ClientSender sender) {
         synchronized (servers) {
             if (isIdentityTaken(clientId)) return false;
-            addLocalClient(clientId, socket);
+            addLocalClient(clientId, sender);
             return true;
         }
     }
 
     @Override
-    public void addLocalClient(String clientId, Socket socket) {
-        self.addClientToMainHall(new LocalClientModel(clientId, socket));
+    public void addLocalClient(String clientId, ClientSender sender) {
+        self.addClientToMainHall(new LocalClientModel(clientId, sender));
     }
 
     @Override

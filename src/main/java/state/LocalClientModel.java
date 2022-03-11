@@ -1,16 +1,23 @@
 package state;
 
-import lombok.AllArgsConstructor;
+import clientserver.ClientSender;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import utils.JsonParser;
 
-import java.net.Socket;
 
 @Getter
 public class LocalClientModel extends ClientModel {
-    private final Socket socket;
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalClientModel.class);
+    private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
-    public LocalClientModel(String id, Socket socket) {
+    private final ClientSender sender;
+
+    public LocalClientModel(String id, ClientSender sender) {
         super(id);
-        this.socket = socket;
+        this.sender = sender;
     }
+
 }
