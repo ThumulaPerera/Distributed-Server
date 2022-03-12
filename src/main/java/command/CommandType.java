@@ -10,6 +10,7 @@ public enum CommandType {
     ROOM_LIST("roomlist"),
     MOVE_JOIN("movejoin"),
     ROOM_CHANGE("roomchange"),
+    QUIT("quit"),
     // server-server commands
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),

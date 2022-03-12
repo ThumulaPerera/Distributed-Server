@@ -32,7 +32,6 @@ public class ServerThread extends Thread {
     @Getter
     private final Socket socket;
     private final ClientSender sender;
-
     private LocalClientModel client;
 
     public ServerThread(Socket socket) {
