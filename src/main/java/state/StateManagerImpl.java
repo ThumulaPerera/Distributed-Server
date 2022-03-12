@@ -137,4 +137,13 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         return self.getRoomOfClient(clientId);
     }
 
+    @Override
+    public List<ChatRoomModel> getAllChatRooms() {
+        List<ChatRoomModel> chatRooms = new ArrayList<>();
+        for (ServerModel server: servers.values()) {
+            chatRooms.addAll(server.getChatRooms().values());
+        }
+        return chatRooms;
+    }
+
 }

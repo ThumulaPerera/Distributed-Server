@@ -14,12 +14,14 @@ import state.StateManager;
 import state.StateManagerImpl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
 public class ListC2SCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(ListC2SCommand.class);
+    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
     private String content;
 
@@ -33,21 +35,8 @@ public class ListC2SCommand extends ExecutableCommand {
         return new ListS2CCommand(getRoomList());
     }
 
-    private ArrayList<String> getRoomList() {
-        ArrayList<String> rooms = new ArrayList<String>();
-        StateManager stateManager = StateManagerImpl.getInstance();
-        ServerModel myServer = stateManager.getSelf();
-
-        Map<String, ChatRoomModel> chatRooms = myServer.getChatRooms();
-        for (var entry : chatRooms.entrySet()) {
-            rooms.add(entry.getKey());
-        }
-
-//        TODO: Remove hardcoded rooms
-        rooms.add("A");
-        rooms.add("B");
-        rooms.add("C");
-        return rooms;
+    private List<String> getRoomList() {
+        return STATE_MANAGER.getAllChatRooms().stream().map(ChatRoomModel::getId).toList();
     }
 
 }

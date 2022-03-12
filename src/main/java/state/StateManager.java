@@ -19,6 +19,7 @@ public interface StateManager {
     boolean isIdLocallyAvailable(String clientId);
     ServerModel getServer(String serverId);
     ChatRoomModel getRoomOfClient(String clientId);
+    List<ChatRoomModel> getAllChatRooms();
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);
 //    Map<String, ChatRoomModel> getLocalChatRooms();

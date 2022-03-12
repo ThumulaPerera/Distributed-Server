@@ -7,17 +7,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 public class ListS2CCommand extends Command {
-    private ArrayList<String> rooms;
+    private List<String> rooms;
 
     public ListS2CCommand() {
         super(CommandType.ROOM_LIST);
     }
 
-    public ListS2CCommand(ArrayList<String> rooms) {
+    public ListS2CCommand(List<String> rooms) {
         this();
         this.rooms = rooms;
     }
