@@ -69,6 +69,14 @@ public class ServerModel {
         return null;
     }
 
+    protected void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId){
+        ChatRoomModel fromRoom = chatRooms.get(fromRoomID);
+        ChatRoomModel toRoom = chatRooms.get(toRoomId);
+        // TODO: synchronize?
+        ClientModel client = fromRoom.removeClient(clientId);
+        toRoom.addClient(client);
+    }
+
     public void addClientToMainHall(ClientModel client) {
         chatRooms.get(mainHall).addClient(client);
     }

@@ -1,6 +1,7 @@
 package state;
 
 import clientserver.ClientSender;
+import clientserver.Server;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -70,6 +71,11 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     }
 
     @Override
+    public ClientModel removeLocalClientFromRoom(String clientId, String chatRoomId) {
+        return self.getChatRoom(chatRoomId).removeClient(clientId);
+    }
+
+    @Override
     public boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId) {
         synchronized (servers) {
             if (isIdentityTaken(clientId)) return false;
@@ -135,6 +141,23 @@ public class StateManagerImpl implements StateManager, StateInitializer {
     @Override
     public ChatRoomModel getRoomOfClient(String clientId) {
         return self.getRoomOfClient(clientId);
+    }
+
+
+
+    @Override
+    public ServerModel getServerIfGlobalChatRoomExists(String chatRoomId) {
+        synchronized (servers) {
+            for (ServerModel server: servers.values()) {
+                if (server != self && server.getChatRooms().get(chatRoomId) != null) return server;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId) {
+        self.moveClientToChatRoom(clientId, fromRoomID, toRoomId);
     }
 
     @Override

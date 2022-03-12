@@ -22,8 +22,8 @@ public class ChatRoomModel {
         clients.put(client.getId(), client);
     }
 
-    public void removeClient(ClientModel client) {
-        clients.remove(client.getId());
+    public ClientModel removeClient(String clientId) {
+        return clients.remove(clientId);
     }
 
     public ClientModel getClient(String id) {

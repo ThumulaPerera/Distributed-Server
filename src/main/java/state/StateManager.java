@@ -11,6 +11,7 @@ public interface StateManager {
     ServerModel getSelf();
     void setSelf(String selfId);
     void addLocalClient(String clientId, ClientSender sender);
+    ClientModel removeLocalClientFromRoom(String clientId, String chatRoomId);
     boolean checkAvailabilityAndAddLocalClient(String clientId, ClientSender sender);
     boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
@@ -19,7 +20,10 @@ public interface StateManager {
     boolean isIdLocallyAvailable(String clientId);
     ServerModel getServer(String serverId);
     ChatRoomModel getRoomOfClient(String clientId);
+    ServerModel getServerIfGlobalChatRoomExists(String chatRoomId);
+    void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId);
     List<ChatRoomModel> getAllChatRooms();
+
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);
 //    Map<String, ChatRoomModel> getLocalChatRooms();

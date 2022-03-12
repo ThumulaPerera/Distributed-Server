@@ -13,6 +13,8 @@ public enum CommandType {
     QUIT("quit"),
     WHO("who"),
     ROOM_CONTENTS("roomcontents"),
+    JOIN_ROOM("joinroom"),
+    ROUTE("route"),
     // server-server commands
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),

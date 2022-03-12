@@ -28,6 +28,7 @@ public class C2SCommandFactory {
                 case MOVE_JOIN -> command = MAPPER.readValue(json, MoveJoinC2SCommand.class);
                 case QUIT -> command = MAPPER.readValue(json, QuitC2SCommand.class);
                 case WHO -> command = MAPPER.readValue(json, WhoC2SCommand.class);
+                case JOIN_ROOM -> command = MAPPER.readValue(json, JoinRoomC2SCommand.class);
             }
         }
         catch (JsonProcessingException e) {
