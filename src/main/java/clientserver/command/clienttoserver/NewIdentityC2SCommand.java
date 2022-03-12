@@ -45,6 +45,9 @@ public class NewIdentityC2SCommand extends SenderKnownExecutableCommand {
         if (STATE_MANAGER.isLeader()){
             isAvailable = STATE_MANAGER.checkAvailabilityAndAddLocalClient(identity, getSender());
         } else {
+            // check local client list first
+            if(!STATE_MANAGER.isIdLocallyAvailable(identity)) return false;
+            // if not locally available, check with leader
             Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
             if (response instanceof CheckIdentityL2FCommand) {
                 isAvailable = ((CheckIdentityL2FCommand) response).isApproved();

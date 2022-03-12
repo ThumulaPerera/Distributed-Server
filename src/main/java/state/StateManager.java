@@ -1,7 +1,6 @@
 package state;
 
 import clientserver.ClientSender;
-import serverserver.Sender;
 
 import java.util.List;
 
@@ -17,6 +16,7 @@ public interface StateManager {
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
     LocalClientModel getLocalClient(String clientId);
     ChatRoomModel getLocalChatRoom(String chatRoomId);
+    boolean isIdLocallyAvailable(String clientId);
     ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);

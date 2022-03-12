@@ -95,6 +95,11 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         return self.getChatRooms().get(chatRoomId);
     }
 
+    @Override
+    public boolean isIdLocallyAvailable(String clientId) {
+        return self.getClient(clientId) == null;
+    }
+
     private void addGlobalClient(String clientId, String serverId) {
         servers.get(serverId).addClientToMainHall(new ClientModel(clientId));
     }
