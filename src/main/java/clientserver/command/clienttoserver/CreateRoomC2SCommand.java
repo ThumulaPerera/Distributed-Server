@@ -35,17 +35,10 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
         String clientId = getClient().getId();
         LOGGER.debug("================== Creating Room for Client: {}", clientId);
         String currentOwnedRoom = STATE_MANAGER.getSelf().getChatRoomByOwner(clientId);
-        boolean isApproved;
+        boolean isApproved = false;
         if (currentOwnedRoom == null) {
             isApproved = checkAndAddRoom(clientId);
             if (isApproved) {
-                joinRoom(clientId, roomid);
-            }
-        } else {
-            isApproved = checkAndAddRoom(clientId);
-            if (isApproved) {
-                // TODO: move others in currentOwnedRoom to Mainhall
-                // TODO: delete currentOwnedRoom
                 joinRoom(clientId, roomid);
             }
         }
@@ -53,10 +46,6 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
         return new CreateRoomS2CCommand(isApproved, roomid);
     }
 
-    private void deleteRoom(String roomId) {
-
-
-    }
 
     private void joinRoom(String clientId, String roomid) {
         // TODO: JoinRoom

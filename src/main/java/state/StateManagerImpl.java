@@ -1,7 +1,5 @@
 package state;
 
-import clientserver.ServerThread;
-import command.Command;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -9,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
 import serverserver.command.leadertofollower.NewRoomL2FCommand;
+import serverserver.command.leadertofollower.RemoveRoomL2FCommand;
 
 import java.net.Socket;
 import java.util.*;
@@ -94,27 +93,24 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         }
     }
 
-//    @Override
-//    public boolean deleteClientOwnRoomIfExists(String clientId) {
-//        // Executed only by the leader
-//        LOGGER.debug("Checking Rooms of client {}", clientId);
-//        synchronized (servers) {
-//            Sender sender = new Sender();
-//            // delete chat room from local list of servers if exist
-//            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
-//                if (server.getValue().containsChatRoom(roomId)) {
-//                    server.getValue().removeChatRoom(roomId);
-//                    LOGGER.debug("================== Deleting Room: {}", roomId);
-//
-//                    // send all the servers req to delete the chat room except leader
-//                    if (!server.getValue().getId().equals(self.getId())) {
-//                        sender.sendCommandToPeer(new DeleteRoomL2FCommand(roomId), server.getValue());
-//                    }
-//                }
-//            }
-//            return true;
-//        }
-//    }
+    @Override
+    public boolean deleteRoom(String roomId) {
+        // Executed only by the leader
+        LOGGER.debug("Checking global rooms for roomid: {}", roomId);
+        synchronized (servers) {
+            Sender sender = new Sender();
+            for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
+                if (server.getValue().containsChatRoom(roomId)) {
+                    server.getValue().removeChatRoom(roomId);
+                    if (!server.getValue().getId().equals(self.getId())) {
+                        sender.sendCommandToPeer(new RemoveRoomL2FCommand(roomId), server.getValue());
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
 
 
     public void addLocalClient(String clientId, Socket socket) {

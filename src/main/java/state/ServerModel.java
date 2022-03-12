@@ -28,11 +28,17 @@ public class ServerModel {
     }
 
     public void addChatRoom(ChatRoomModel chatRoom) {
-        chatRooms.put(chatRoom.getId(), chatRoom);
+        synchronized (chatRooms) {
+            chatRooms.put(chatRoom.getId(), chatRoom);
+        }
     }
 
     public void removeChatRoom(String roomId) {
-        chatRooms.remove(roomId);
+        synchronized (chatRooms) {
+            if (containsChatRoom(roomId)) {
+                chatRooms.remove(roomId);
+            }
+        }
     }
 
     public ChatRoomModel getChatRoom(String chatRoomId) {
@@ -49,7 +55,9 @@ public class ServerModel {
     }
 
     public boolean containsChatRoom(String chatRoomId) {
-        return chatRooms.containsKey(chatRoomId);
+        synchronized (chatRooms) {
+            return chatRooms.containsKey(chatRoomId);
+        }
     }
 
     public Map<String, ChatRoomModel> getChatRooms() {

@@ -22,7 +22,7 @@ public interface StateManager {
     LocalClientModel getLocalClient(String clientId);
 
     boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId);
-//    boolean deleteClientOwnRoomIfExists(String clientId);
+    boolean deleteRoom(String roomId);
 
     ServerModel getServer(String serverId);
 //    void addLocalChatRoom(String chatRoomId);
