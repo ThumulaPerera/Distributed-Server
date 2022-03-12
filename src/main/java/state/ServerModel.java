@@ -23,7 +23,7 @@ public class ServerModel {
         this.coordinationPort = coordinationPort;
         chatRooms = Collections.synchronizedMap(new HashMap<>());
         mainHall = "MainHall-" + id;
-        chatRooms.put(mainHall, new ChatRoomModel(mainHall, null));
+        chatRooms.put(mainHall, new ChatRoomModel(mainHall, new ClientModel("")));
     }
 
     public void addChatRoom(ChatRoomModel chatRoom) {
