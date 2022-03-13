@@ -42,9 +42,9 @@ public class DeleteRoomC2SCommand extends ClientKnownExecutableCommand {
         boolean isApproved = false;
         if (currentOwnedRoom != null) {
             if (currentOwnedRoom.equals(roomid)) {
-                isApproved = deleteRoom(roomid);
+                isApproved = deleteRoom();
                 if (isApproved) {
-                    joinMainHallRoom(clientId);
+                    joinMainHallRoom();
                 }
             }
         }
@@ -52,13 +52,12 @@ public class DeleteRoomC2SCommand extends ClientKnownExecutableCommand {
         return new DeleteRoomS2CCommand(isApproved, roomid);
     }
 
-    private void joinMainHallRoom(String clientId) {
+    private void joinMainHallRoom() {
         //TODO: Join MainHall
     }
 
 
-    private boolean deleteRoom(String roomId) {
-        Sender sender = new Sender();
+    private boolean deleteRoom() {
 
         if (!STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
             return false;
@@ -69,7 +68,7 @@ public class DeleteRoomC2SCommand extends ClientKnownExecutableCommand {
             } else {
                 DeleteRoomF2LCommand deleteRoomF2LCommand = new DeleteRoomF2LCommand(roomid);
                 LOGGER.debug(deleteRoomF2LCommand.toString());
-                Command response = sender.sendCommandToLeaderAndReceive(deleteRoomF2LCommand);
+                Command response = Sender.sendCommandToLeaderAndReceive(deleteRoomF2LCommand);
                 if (response instanceof DeleteRoomL2FCommand) {
                     return ((DeleteRoomL2FCommand) response).isApproved();
                 }

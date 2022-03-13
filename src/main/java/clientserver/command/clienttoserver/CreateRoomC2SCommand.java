@@ -39,7 +39,7 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
         if (currentOwnedRoom == null) {
             isApproved = checkAndAddRoom(clientId);
             if (isApproved) {
-                joinRoom(clientId, roomid);
+                joinRoom();
             }
         }
 
@@ -47,23 +47,23 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
     }
 
 
-    private void joinRoom(String clientId, String roomid) {
+    private void joinRoom() {
         // TODO: JoinRoom
     }
 
     private boolean checkAndAddRoom(String clientId) {
-        Sender sender = new Sender();
 
         if (STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
             return false;
         } else {
             if (STATE_MANAGER.isLeader()) {
+                // TODO: Broadcast
                 return STATE_MANAGER.checkValidityAndAddRoom(roomid, STATE_MANAGER.getSelf().getId(), clientId);
 
             } else {
                 AddRoomF2LCommand addRoomCmnd = new AddRoomF2LCommand(roomid, clientId);
                 LOGGER.debug(addRoomCmnd.toString());
-                Command response = sender.sendCommandToLeaderAndReceive(addRoomCmnd);
+                Command response = Sender.sendCommandToLeaderAndReceive(addRoomCmnd);
                 if (response instanceof AddRoomL2FCommand) {
                     return ((AddRoomL2FCommand) response).isApproved();
                 }

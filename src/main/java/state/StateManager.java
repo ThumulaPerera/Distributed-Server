@@ -1,5 +1,7 @@
 package state;
 
+import clientserver.ClientSender;
+
 import java.net.Socket;
 import java.util.List;
 

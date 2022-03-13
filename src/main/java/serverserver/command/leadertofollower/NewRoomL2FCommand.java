@@ -39,7 +39,7 @@ public class NewRoomL2FCommand extends S2SExecutableCommand {
 
         // Save room locally
         StateManager STATE_MANAGER = StateManagerImpl.getInstance();
-        STATE_MANAGER.getSelf().addChatRoom(new ChatRoomModel(roomid, new ClientModel(ownerclient), STATE_MANAGER.getServer(ownerserver)));
+        STATE_MANAGER.getSelf().addChatRoom(new ChatRoomModel(roomid, new ClientModel(ownerclient)));
 
 
         return this;

@@ -30,8 +30,8 @@ public class ServerModel {
         chatRooms.put(chatRoom.getId(), chatRoom);
     }
 
-    public void removeChatRoom(ChatRoomModel chatRoom) {
-        chatRooms.remove(chatRoom.getId());
+    public ChatRoomModel removeChatRoom(String chatRoomId) {
+        return chatRooms.remove(chatRoomId);
     }
 
     public ChatRoomModel getChatRoom(String chatRoomId) {

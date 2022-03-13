@@ -9,14 +9,12 @@ import java.util.*;
 public class ChatRoomModel {
     private final String id;
     private final ClientModel owner;
-    private final ServerModel server;
     @Getter(AccessLevel.NONE)
     private final Map<String, ClientModel> clients;
 
-    public ChatRoomModel(String id, ClientModel owner, ServerModel server) {
+    public ChatRoomModel(String id, ClientModel owner) {
         this.id = id;
         this.owner = owner;
-        this.server = server;
         clients = Collections.synchronizedMap(new HashMap<>());
     }
 

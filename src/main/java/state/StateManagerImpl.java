@@ -91,13 +91,12 @@ public class StateManagerImpl implements StateManager, StateInitializer {
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
                 if (server.getValue().containsChatRoom(roomId)) return false;
             }
-            Sender sender = new Sender();
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
-                server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId), getServer(serverId)));
+                server.getValue().addChatRoom(new ChatRoomModel(roomId, new ClientModel(clientId)));
 
                 // Send newroom to all the servers except the origin server
                 if (!server.getValue().getId().equals(self.getId())) {
-                    sender.sendCommandToPeer(new NewRoomL2FCommand(roomId, clientId, serverId), server.getValue());
+                    Sender.sendCommandToPeer(new NewRoomL2FCommand(roomId, clientId, serverId), server.getValue());
                 }
             }
             return true;
@@ -109,12 +108,11 @@ public class StateManagerImpl implements StateManager, StateInitializer {
         // Executed only by the leader
         LOGGER.debug("Checking global rooms for roomid: {}", roomId);
         synchronized (servers) {
-            Sender sender = new Sender();
             for (Map.Entry<String, ServerModel> server : servers.entrySet()) {
                 if (server.getValue().containsChatRoom(roomId)) {
                     server.getValue().removeChatRoom(roomId);
                     if (!server.getValue().getId().equals(self.getId())) {
-                        sender.sendCommandToPeer(new RemoveRoomL2FCommand(roomId), server.getValue());
+                        Sender.sendCommandToPeer(new RemoveRoomL2FCommand(roomId), server.getValue());
                     }
                 }
             }
