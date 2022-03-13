@@ -29,7 +29,7 @@ public class HeartbeatF2LCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing Heartbeat from Server {}", from);
+//        LOGGER.debug("Executing Heartbeat from Server {}", from);
         STATE_MANAGER.getLeader().getHeartbeatDetector().updateTime(from,System.currentTimeMillis());
         //TODO send the ack message
         return null;

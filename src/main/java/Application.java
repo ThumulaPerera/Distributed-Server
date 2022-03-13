@@ -51,6 +51,8 @@ public class Application {
         Thread serverThread = new Thread(new Server());
         serverThread.start();
         while (true) {
+//            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
+            Thread.sleep(2000);
             LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
             Thread.sleep(20000);
         }

@@ -1,7 +1,6 @@
 package state;
 
-import clientserver.ClientSender;
-
+import java.net.Socket;
 import java.util.List;
 
 public interface StateManager {
@@ -24,6 +23,8 @@ public interface StateManager {
     ServerModel getServerIfGlobalChatRoomExists(String chatRoomId);
     void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId);
     List<ChatRoomModel> getAllChatRooms();
+    boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId);
+    boolean deleteRoom(String roomId);
 
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);

@@ -20,7 +20,7 @@ public class Sender {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
 
-    public static ExecutableCommand sendCommandToLeaderAndReceive(Command command){
+    public static ExecutableCommand sendCommandToLeaderAndReceive(Command command) {
         return sendCommandToPeerAndReceive(command, STATE_MANAGER.getLeader());
     }
 
@@ -49,13 +49,14 @@ public class Sender {
             response = S2SCommandFactory.createCommand(receivedMessage);
 
             LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
-        }catch(IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Error while sending command to peer: {}", e.getMessage());
             e.printStackTrace();
         }
 
         return response;
     }
+
     public static boolean sendCommandToLeader(Command command) {
         return sendCommandToPeer(command, STATE_MANAGER.getLeader());
     }
@@ -76,10 +77,10 @@ public class Sender {
         ) {
             String sentMessage = MAPPER.writeValueAsString(command);
             pw.println(sentMessage);
-            LOGGER.debug("Sending message to peer: " + sentMessage);
+            LOGGER.debug("Sending message to peer server: {}, message: {}", peer.getId(), sentMessage);
 
             LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
-        }catch(IOException e) {
+        } catch (IOException e) {
             System.out.println(e);
         }
         return true;

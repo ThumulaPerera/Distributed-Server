@@ -38,6 +38,15 @@ public class ServerModel {
         return chatRooms.get(chatRoomId);
     }
 
+    public String getChatRoomByOwner(String owner) {
+        for (Map.Entry<String, ChatRoomModel> room : chatRooms.entrySet()) {
+            if (room.getValue().getOwner() != null) {
+                if (room.getValue().getOwner().getId().equals(owner)) return room.getValue().getId();
+            }
+        }
+        return null;
+    }
+
     public boolean containsChatRoom(String chatRoomId) {
         return chatRooms.containsKey(chatRoomId);
     }
