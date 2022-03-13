@@ -77,7 +77,11 @@ public class ServerModel {
         toRoom.addClient(client);
     }
 
-    public void addClientToMainHall(ClientModel client) {
-        chatRooms.get(mainHall).addClient(client);
+    protected void addClientToChatRoom(ClientModel client, String chatRoomId) {
+        chatRooms.get(chatRoomId).addClient(client);
+    }
+
+    protected void addClientToMainHall(ClientModel client) {
+        addClientToChatRoom(client, mainHall);
     }
 }

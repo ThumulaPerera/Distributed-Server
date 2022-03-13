@@ -15,6 +15,7 @@ public enum CommandType {
     ROOM_CONTENTS("roomcontents"),
     JOIN_ROOM("joinroom"),
     ROUTE("route"),
+    SERVER_CHANGE("serverchange"),
     // server-server commands
     CHECK_IDENTITY_F2L("checkidentityf2l"),
     CHECK_IDENTITY_L2F("checkidentityl2f"),

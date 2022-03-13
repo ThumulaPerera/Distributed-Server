@@ -43,7 +43,7 @@ public class NewIdentityC2SCommand extends SenderKnownExecutableCommand {
     private boolean isAvailable() {
         boolean isAvailable = false;
         if (STATE_MANAGER.isLeader()){
-            isAvailable = STATE_MANAGER.checkAvailabilityAndAddLocalClient(identity, getSender());
+            isAvailable = STATE_MANAGER.checkAvailabilityAndAddNewLocalClient(identity, getSender());
         } else {
             // check local client list first
             if(!STATE_MANAGER.isIdLocallyAvailable(identity)) return false;
@@ -52,7 +52,7 @@ public class NewIdentityC2SCommand extends SenderKnownExecutableCommand {
             if (response instanceof CheckIdentityL2FCommand) {
                 isAvailable = ((CheckIdentityL2FCommand) response).isApproved();
                 if (isAvailable) {
-                    STATE_MANAGER.addLocalClient(identity, getSender());
+                    STATE_MANAGER.addNewLocalClient(identity, getSender());
                 }
             }
         }

@@ -10,9 +10,10 @@ public interface StateManager {
     void setLeader(String leaderId);
     ServerModel getSelf();
     void setSelf(String selfId);
-    void addLocalClient(String clientId, ClientSender sender);
+    void addNewLocalClient(String clientId, ClientSender sender);
+    void addMoveJoinLocalClient(String clientId, ClientSender sender, String chatRoomId);
     ClientModel removeLocalClientFromRoom(String clientId, String chatRoomId);
-    boolean checkAvailabilityAndAddLocalClient(String clientId, ClientSender sender);
+    boolean checkAvailabilityAndAddNewLocalClient(String clientId, ClientSender sender);
     boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
     LocalClientModel getLocalClient(String clientId);

@@ -4,6 +4,7 @@ import clientserver.command.clienttoserver.MoveJoinC2SCommand;
 import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import clientserver.command.servertoclient.RoomChangeS2CCommand;
+import clientserver.command.servertoclient.ServerChangeS2CCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.ClientKnownExecutableCommand;
@@ -69,10 +70,12 @@ public class ServerThread extends Thread {
                     }
 
                 } else if (inputCommand instanceof MoveJoinC2SCommand) {
-                    // TODO: implement
                     inputCommand.execute();
-                    outputCommand = inputCommand.execute();
-                    sendResponse(outputCommand);
+
+                    String clientId = ((MoveJoinC2SCommand) inputCommand).getIdentity();
+
+                    client = STATE_MANAGER.getLocalClient(clientId);
+
                 } else {
                     LOGGER.error("Unknown initial command: " + inputCommand);
                     closeSocket();
