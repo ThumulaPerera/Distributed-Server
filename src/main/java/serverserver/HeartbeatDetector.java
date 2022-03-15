@@ -1,12 +1,12 @@
 package serverserver;
 
-import command.Command;
 import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.ServerAvailability;
-import state.StateManagerImpl;
+import state.StateManager;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -18,7 +18,7 @@ public class HeartbeatDetector {
     private static final int HEARTBEAT_FUNC_CONFIRM_INTERVAL = 3000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatDetector.class);
-    private final StateManagerImpl STATE_MANAGER = StateManagerImpl.getInstance();
+    private final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
     private final HashMap<String, Long> serverUpdateTimes = new HashMap<>();
     private final HashMap<String, ServerAvailability> serverAvailabilityStatus = new HashMap<>();
     private final HashMap<String, TimerTask> serverTimeCheckTasks = new HashMap<>();

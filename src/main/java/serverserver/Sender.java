@@ -3,13 +3,12 @@ package serverserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import command.ExecutableCommand;
-import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.S2SCommandFactory;
+import state.RefinedStateManagerImpl;
 import state.ServerModel;
 import state.StateManager;
-import state.StateManagerImpl;
 import utils.JsonParser;
 
 import java.io.*;
@@ -18,7 +17,7 @@ import java.net.Socket;
 public class Sender {
     private static final Logger LOGGER = LoggerFactory.getLogger(Sender.class);
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     public static ExecutableCommand sendCommandToLeaderAndReceive(Command command) {
         return sendCommandToPeerAndReceive(command, STATE_MANAGER.getLeader());
@@ -85,4 +84,24 @@ public class Sender {
         }
         return true;
     }
+
+    // to be used by leader only
+    public static boolean broadcastCommandToAllFollowers(Command command) {
+        for (ServerModel follower: STATE_MANAGER.getAllRemoteServers()) {
+            sendCommandToPeer(command, follower);
+        }
+        return true;
+    }
+
+    // to be used by leader only
+    public static boolean broadcastCommandToOtherFollowers(Command command, String excludeServerId) {
+        for (ServerModel follower: STATE_MANAGER.getAllRemoteServers()) {
+            if (!follower.getId().equals(excludeServerId)) {
+                sendCommandToPeer(command, follower);
+            }
+        }
+        return true;
+    }
+
+
 }

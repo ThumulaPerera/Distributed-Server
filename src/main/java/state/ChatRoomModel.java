@@ -1,40 +1,13 @@
 package state;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.*;
 
 @Getter
+@AllArgsConstructor
 public class ChatRoomModel {
     private final String id;
-    private final ClientModel owner;
-    @Getter(AccessLevel.NONE)
-    private final Map<String, ClientModel> clients;
-
-    public ChatRoomModel(String id, ClientModel owner) {
-        this.id = id;
-        this.owner = owner;
-        clients = Collections.synchronizedMap(new HashMap<>());
-    }
-
-    public void addClient(ClientModel client) {
-        clients.put(client.getId(), client);
-    }
-
-    public ClientModel removeClient(String clientId) {
-        return clients.remove(clientId);
-    }
-
-    public ClientModel getClient(String id) {
-        return clients.get(id);
-    }
-
-    public boolean containsClient(String id) {
-        return clients.containsKey(id);
-    }
-
-    public List<ClientModel> getClients() {
-        return new ArrayList<ClientModel>(clients.values());
-    }
 }

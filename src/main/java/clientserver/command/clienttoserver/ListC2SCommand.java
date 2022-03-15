@@ -9,19 +9,16 @@ import org.slf4j.LoggerFactory;
 import lombok.Getter;
 import lombok.Setter;
 import state.ChatRoomModel;
-import state.ServerModel;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 public class ListC2SCommand extends ExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(ListC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String content;
 

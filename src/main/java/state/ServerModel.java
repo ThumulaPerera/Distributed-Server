@@ -14,7 +14,7 @@ public class ServerModel {
     private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
     private final String mainHall;
     @Getter(AccessLevel.NONE)
-    private final Map<String, ChatRoomModel> chatRooms;
+    protected final Map<String, ChatRoomModel> chatRooms;
 
     public ServerModel(String serverId, String serverAddress, int clientsPort, int coordinationPort) {
         this.id = serverId;
@@ -23,74 +23,27 @@ public class ServerModel {
         this.coordinationPort = coordinationPort;
         chatRooms = Collections.synchronizedMap(new HashMap<>());
         mainHall = "MainHall-" + id;
-        chatRooms.put(mainHall, new ChatRoomModel(mainHall, new ClientModel("")));
+        chatRooms.put(mainHall, new ChatRoomModel(mainHall));
     }
 
-    public void addChatRoom(ChatRoomModel chatRoom) {
+    protected void addChatRoom(ChatRoomModel chatRoom) {
         chatRooms.put(chatRoom.getId(), chatRoom);
     }
 
-    public ChatRoomModel removeChatRoom(String chatRoomId) {
+    protected ChatRoomModel removeChatRoom(String chatRoomId) {
         return chatRooms.remove(chatRoomId);
     }
 
-    public ChatRoomModel getChatRoom(String chatRoomId) {
+    protected ChatRoomModel getChatRoom(String chatRoomId) {
         return chatRooms.get(chatRoomId);
     }
 
-    public String getChatRoomByOwner(String owner) {
-        for (Map.Entry<String, ChatRoomModel> room : chatRooms.entrySet()) {
-            if (room.getValue().getOwner() != null) {
-                if (room.getValue().getOwner().getId().equals(owner)) return room.getValue().getId();
-            }
-        }
-        return null;
-    }
-
-    public boolean containsChatRoom(String chatRoomId) {
+    protected boolean containsChatRoom(String chatRoomId) {
         return chatRooms.containsKey(chatRoomId);
     }
 
-    public Map<String, ChatRoomModel> getChatRooms() {
+    protected Map<String, ChatRoomModel> getChatRooms() {
         return chatRooms;
     }
 
-    protected ClientModel getClient(String clientId) {
-        synchronized (chatRooms) {
-            for (ChatRoomModel chatRoom : chatRooms.values()) {
-                ClientModel client = chatRoom.getClient(clientId);
-                if (client != null) {
-                    return client;
-                }
-            }
-        }
-        return null;
-    }
-
-    protected ChatRoomModel getRoomOfClient(String clientId) {
-        synchronized (chatRooms) {
-            for (ChatRoomModel chatRoom : chatRooms.values()) {
-                if (chatRoom.containsClient(clientId)) {
-                    return chatRoom;
-                }
-            }
-        }
-        return null;
-    }
-
-    protected void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId){
-        ChatRoomModel fromRoom = chatRooms.get(fromRoomID);
-        ChatRoomModel toRoom = chatRooms.get(toRoomId);
-        // TODO: synchronize?
-        ClientModel client = fromRoom.removeClient(clientId);
-        toRoom.addClient(client);
-    }
-
-    protected void addClientToChatRoom(ClientModel client, String chatRoomId) {
-        chatRooms.get(chatRoomId).addClient(client);
-    }
-
-    protected void addClientToMainHall(ClientModel client) {
-        addClientToChatRoom(client, mainHall);
-    }
 }

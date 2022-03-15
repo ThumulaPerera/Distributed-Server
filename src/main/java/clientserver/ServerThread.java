@@ -16,9 +16,8 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.LocalClientModel;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
-import utils.JsonParser;
 
 import java.io.*;
 import java.net.*;
@@ -28,7 +27,7 @@ import java.net.*;
  */
 public class ServerThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     @Getter
     private final Socket socket;

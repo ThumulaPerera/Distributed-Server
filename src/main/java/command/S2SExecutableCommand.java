@@ -2,13 +2,13 @@ package command;
 
 import lombok.Getter;
 import lombok.Setter;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public abstract class S2SExecutableCommand extends ExecutableCommand {
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
     private String origin;
 
     public S2SExecutableCommand(CommandType type) {

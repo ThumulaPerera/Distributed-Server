@@ -5,21 +5,20 @@ import clientserver.command.servertoclient.RoomChangeS2CCommand;
 import clientserver.command.servertoclient.ServerChangeS2CCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import command.SenderKnownExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.ChatRoomModel;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class MoveJoinC2SCommand extends SenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(MoveJoinC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String former;
     private String roomid;

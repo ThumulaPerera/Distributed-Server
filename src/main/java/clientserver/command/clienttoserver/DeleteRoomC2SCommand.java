@@ -1,6 +1,5 @@
 package clientserver.command.clienttoserver;
 
-import clientserver.command.servertoclient.CreateRoomS2CCommand;
 import clientserver.command.servertoclient.DeleteRoomS2CCommand;
 import command.ClientKnownExecutableCommand;
 import command.Command;
@@ -10,18 +9,16 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.Sender;
-import serverserver.command.followertoleader.AddRoomF2LCommand;
 import serverserver.command.followertoleader.DeleteRoomF2LCommand;
-import serverserver.command.leadertofollower.AddRoomL2FCommand;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class DeleteRoomC2SCommand extends ClientKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String roomid;
 
@@ -38,7 +35,7 @@ public class DeleteRoomC2SCommand extends ClientKnownExecutableCommand {
         // Else: return false
 
         String clientId = getClient().getId();
-        String currentOwnedRoom = STATE_MANAGER.getSelf().getChatRoomByOwner(clientId);
+        String currentOwnedRoom = STATE_MANAGER.getRoomOwnedByClient(clientId).toString();
         boolean isApproved = false;
         if (currentOwnedRoom != null) {
             if (currentOwnedRoom.equals(roomid)) {
@@ -59,7 +56,7 @@ public class DeleteRoomC2SCommand extends ClientKnownExecutableCommand {
 
     private boolean deleteRoom() {
 
-        if (!STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
+        if (STATE_MANAGER.getLocalChatRoom(roomid) == null) {
             return false;
         } else {
             if (STATE_MANAGER.isLeader()) {

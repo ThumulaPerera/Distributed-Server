@@ -4,14 +4,14 @@ import command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.LocalClientModel;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 import java.util.List;
 
 public class Broadcaster {
     private static final Logger LOGGER = LoggerFactory.getLogger(Broadcaster.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     public static void broadcastToOthersInMainHall(Command command, String selfId) {
         String mainHallId = STATE_MANAGER.getSelf().getMainHall();

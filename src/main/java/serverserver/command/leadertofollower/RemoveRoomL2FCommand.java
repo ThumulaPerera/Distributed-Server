@@ -7,15 +7,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import state.ChatRoomModel;
-import state.ClientModel;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class RemoveRoomL2FCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveRoomL2FCommand.class);
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String roomid;
 
@@ -33,8 +32,9 @@ public class RemoveRoomL2FCommand extends S2SExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing Remove Room L2F with roomid: {}", roomid);
 
-        StateManager STATE_MANAGER = StateManagerImpl.getInstance();
-        STATE_MANAGER.getSelf().removeChatRoom(roomid);
+        // TODO: implement
+
+        // STATE_MANAGER.getSelf().removeChatRoom(roomid);
 
         return this;
     }

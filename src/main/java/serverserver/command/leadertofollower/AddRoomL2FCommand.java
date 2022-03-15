@@ -29,6 +29,6 @@ public class AddRoomL2FCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         LOGGER.debug("Executing Add Room L2F with identity: {}", roomid);
-        return this;
+        return null;
     }
 }

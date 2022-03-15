@@ -4,7 +4,6 @@ import clientserver.command.servertoclient.CreateRoomS2CCommand;
 import command.ClientKnownExecutableCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -12,15 +11,15 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.followertoleader.AddRoomF2LCommand;
 import serverserver.command.leadertofollower.AddRoomL2FCommand;
-import state.ChatRoomModel;
+import serverserver.command.leadertofollower.NewRoomL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String roomid;
 
@@ -32,15 +31,18 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for create room with identity: {}", roomid);
 
-        String clientId = getClient().getId();
-        LOGGER.debug("================== Creating Room for Client: {}", clientId);
-        String currentOwnedRoom = STATE_MANAGER.getSelf().getChatRoomByOwner(clientId);
-        boolean isApproved = false;
-        if (currentOwnedRoom == null) {
-            isApproved = checkAndAddRoom(clientId);
-            if (isApproved) {
-                joinRoom();
-            }
+        if(!isValid()){
+            return new CreateRoomS2CCommand(false, roomid);
+        }
+
+        if(alreadyOwnsRoom()){
+            return new CreateRoomS2CCommand(false, roomid);
+        }
+
+        boolean isApproved = checkAndAddRoom();
+
+        if (isApproved) {
+            joinRoom();
         }
 
         return new CreateRoomS2CCommand(isApproved, roomid);
@@ -51,26 +53,49 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
         // TODO: JoinRoom
     }
 
-    private boolean checkAndAddRoom(String clientId) {
+    private boolean checkAndAddRoom() {
+        boolean isAdded = false;
 
-        if (STATE_MANAGER.getSelf().containsChatRoom(roomid)) {
-            return false;
-        } else {
+        if (STATE_MANAGER.getLocalChatRoom(roomid) == null) { // room does not exist locally
             if (STATE_MANAGER.isLeader()) {
-                // TODO: Broadcast
-                return STATE_MANAGER.checkValidityAndAddRoom(roomid, STATE_MANAGER.getSelf().getId(), clientId);
+                isAdded = STATE_MANAGER.checkValidityAndAddLocalRoom(roomid, getClient());
+                if (isAdded) {
+                    NewRoomL2FCommand newRoomL2FCommand = new NewRoomL2FCommand(
+                            roomid,
+                            STATE_MANAGER.getSelf().getId()
+                    );
+                    Sender.broadcastCommandToAllFollowers(newRoomL2FCommand);
+                }
 
             } else {
-                AddRoomF2LCommand addRoomCmnd = new AddRoomF2LCommand(roomid, clientId);
-                LOGGER.debug(addRoomCmnd.toString());
-                Command response = Sender.sendCommandToLeaderAndReceive(addRoomCmnd);
+                AddRoomF2LCommand addRoomF2LCommand = new AddRoomF2LCommand(roomid);
+                Command response = Sender.sendCommandToLeaderAndReceive(addRoomF2LCommand);
                 if (response instanceof AddRoomL2FCommand) {
-                    return ((AddRoomL2FCommand) response).isApproved();
+                    boolean isApproved = ((AddRoomL2FCommand) response).isApproved();
+                    if (isApproved) {
+                        STATE_MANAGER.addLocalRoom(roomid, getClient());
+                        isAdded = true;
+                    }
                 }
             }
-            return false;
         }
+        return isAdded;
+    }
 
+    private boolean alreadyOwnsRoom(){
+        return STATE_MANAGER.getRoomOwnedByClient(getClient().getId())!= null;
+    }
 
+    private boolean isValid(){
+        /*
+          matches with
+            - starting with lower or upper case letter
+            - containing only lower or upper case letters and numbers
+            - not longer than 16 characters
+            - not shorter than 3 characters
+         */
+        String regex = "^[a-zA-Z][a-zA-Z0-9]{2,15}$";
+
+        return roomid.matches(regex);
     }
 }

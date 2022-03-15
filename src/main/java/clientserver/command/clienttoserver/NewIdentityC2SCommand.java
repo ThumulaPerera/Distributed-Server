@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.followertoleader.CheckIdentityF2LCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class NewIdentityC2SCommand extends SenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String identity;
 

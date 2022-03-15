@@ -8,14 +8,14 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckIdentityF2LCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String identity;
 

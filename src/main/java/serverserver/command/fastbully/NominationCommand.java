@@ -2,14 +2,16 @@ package serverserver.command.fastbully;
 
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import serverserver.FastBully;
-import state.StateManagerImpl;
+import state.RefinedStateManagerImpl;
+import state.StateManager;
 
 public class NominationCommand extends S2SExecutableCommand {
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
+
     @Getter @Setter private String from;
     public NominationCommand() {
         super(CommandType.NOMINATION);
@@ -17,7 +19,6 @@ public class NominationCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        StateManagerImpl STATE_MANAGER = StateManagerImpl.getInstance();
         CoordinatorCommand coordinatorCommand = new CoordinatorCommand();
         coordinatorCommand.setFrom(STATE_MANAGER.getSelf().getId());
         STATE_MANAGER.setElectionAllowed(false);

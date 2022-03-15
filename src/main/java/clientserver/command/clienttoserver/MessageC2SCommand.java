@@ -5,19 +5,18 @@ import clientserver.command.servertoclient.MessageS2CCommand;
 import command.ClientKnownExecutableCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class MessageC2SCommand extends ClientKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String content;
 

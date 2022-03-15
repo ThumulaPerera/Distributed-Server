@@ -2,7 +2,6 @@ package state;
 
 import clientserver.ClientSender;
 
-import java.net.Socket;
 import java.util.List;
 
 public interface StateManager {
@@ -10,23 +9,37 @@ public interface StateManager {
     ServerModel getLeader();
     void setLeader(String leaderId);
     ServerModel getSelf();
-    void setSelf(String selfId);
     void addNewLocalClient(String clientId, ClientSender sender);
     void addMoveJoinLocalClient(String clientId, ClientSender sender, String chatRoomId);
-    ClientModel removeLocalClientFromRoom(String clientId, String chatRoomId);
+    LocalClientModel removeLocalClientFromRoom(String clientId, String chatRoomId);
     boolean checkAvailabilityAndAddNewLocalClient(String clientId, ClientSender sender);
     boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId);
     List<LocalClientModel> getLocalChatRoomClients(String chatRoomId);
     LocalClientModel getLocalClient(String clientId);
-    ChatRoomModel getLocalChatRoom(String chatRoomId);
+    LocalChatRoomModel getLocalChatRoom(String chatRoomId);
     boolean isIdLocallyAvailable(String clientId);
     ServerModel getServer(String serverId);
-    ChatRoomModel getRoomOfClient(String clientId);
+    LocalChatRoomModel getRoomOfClient(String clientId);
+    LocalChatRoomModel getRoomOwnedByClient(String clientId);
     ServerModel getServerIfGlobalChatRoomExists(String chatRoomId);
     void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId);
     List<ChatRoomModel> getAllChatRooms();
-    boolean checkValidityAndAddRoom(String roomId, String serverId, String clientId);
+    void addLocalRoom(String roomId, LocalClientModel owner);
+    boolean checkValidityAndAddLocalRoom(String roomId, LocalClientModel owner);
+    boolean checkValidityAndAddRemoteRoom(String roomId, String managingServerId);
     boolean deleteRoom(String roomId);
+
+    List<ServerModel> getAllRemoteServers();
+    void addRemoteChatRoom(String chatRoomId, String managingServerId);
+
+    // for fast bully
+    void addAvailableServerId(String serverId);
+    void setLeaderOnStartup();
+    List<String> getAvailableServerIds();
+    void setElectionAllowed(boolean electionAllowed);
+    boolean isElectionAllowed();
+
+
 
 //    void addLocalChatRoom(String chatRoomId);
 //    void removeLocalChatRoom(String chatRoomId);

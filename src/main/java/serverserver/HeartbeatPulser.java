@@ -3,8 +3,8 @@ package serverserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.followertoleader.HeartbeatF2LCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,7 +12,7 @@ import java.util.TimerTask;
 public class HeartbeatPulser {
     private static final int HEARTBEAT_PULSE_INTERVAL = 5000;
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatPulser.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     public void initiatePulse() {
         Timer timer = new Timer();

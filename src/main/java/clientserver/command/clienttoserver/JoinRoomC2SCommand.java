@@ -10,16 +10,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import state.ChatRoomModel;
-import state.ServerModel;
-import state.StateManager;
-import state.StateManagerImpl;
+import state.*;
 
 @Getter
 @Setter
 public class JoinRoomC2SCommand extends ClientKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(JoinRoomC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String roomid;
 
@@ -31,7 +28,7 @@ public class JoinRoomC2SCommand extends ClientKnownExecutableCommand {
     public Command execute() {
         String clientId = getClient().getId();
 
-        ChatRoomModel currentRoom = STATE_MANAGER.getRoomOfClient(clientId);
+        LocalChatRoomModel currentRoom = STATE_MANAGER.getRoomOfClient(clientId);
         String currentRoomId = currentRoom.getId();
 
         // if client is the owner of current room
@@ -62,7 +59,7 @@ public class JoinRoomC2SCommand extends ClientKnownExecutableCommand {
         return new RoomChangeS2CCommand(clientId, currentRoomId, currentRoomId);
     }
 
-    private boolean isRoomOwner(String clientId, ChatRoomModel room) {
+    private boolean isRoomOwner(String clientId, LocalChatRoomModel room) {
         String roomOwnerId = room.getOwner().getId();
         return clientId.equals(roomOwnerId);
     }
