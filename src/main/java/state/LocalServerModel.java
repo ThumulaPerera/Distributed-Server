@@ -1,13 +1,6 @@
 package state;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import serverserver.HeartbeatDetector;
-
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LocalServerModel extends ServerModel {
     public LocalServerModel(String serverId, String serverAddress, int clientsPort, int coordinationPort) {
