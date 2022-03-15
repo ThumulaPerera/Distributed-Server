@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public class LocalServerModel extends ServerModel {
-
     public LocalServerModel(String serverId, String serverAddress, int clientsPort, int coordinationPort) {
         super(serverId, serverAddress, clientsPort, coordinationPort);
+        chatRooms.remove(getMainHall());
+        chatRooms.put(getMainHall(), new LocalChatRoomModel(getMainHall(), new LocalClientModel("", null)));
     }
 
     protected LocalChatRoomModel getChatRoomByOwner(String owner) {
