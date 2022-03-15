@@ -42,8 +42,8 @@ public class ServerModel {
         return chatRooms.containsKey(chatRoomId);
     }
 
-    protected Map<String, ChatRoomModel> getChatRooms() {
-        return chatRooms;
+    protected List<ChatRoomModel> getChatRooms() {
+        return chatRooms.values().stream().toList();
     }
 
 }

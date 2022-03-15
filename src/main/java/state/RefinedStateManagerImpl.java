@@ -146,9 +146,9 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public List<ChatRoomModel> getAllChatRooms() {
         List<ChatRoomModel> chatRooms = new ArrayList<>();
         for (ServerModel server: remoteServers.values()) {
-            chatRooms.addAll(server.getChatRooms().values());
+            chatRooms.addAll(server.getChatRooms());
         }
-        chatRooms.addAll(localServer.getChatRooms().values());
+        chatRooms.addAll(localServer.getChatRooms());
         return chatRooms;
     }
 
@@ -189,6 +189,16 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     @Override
     public void addRemoteChatRoom(String chatRoomId, String managingServerId) {
         remoteServers.get(managingServerId).addChatRoom(new ChatRoomModel(chatRoomId));
+    }
+
+    @Override
+    public List<LocalChatRoomModel> getAllLocalChatRooms() {
+        return localServer.getChatRooms().stream().map(chatRoomModel -> (LocalChatRoomModel)chatRoomModel).toList();
+    }
+
+    @Override
+    public List<LocalClientModel> getAllLocalClients() {
+        return localServer.getAllClients();
     }
 
     @Override

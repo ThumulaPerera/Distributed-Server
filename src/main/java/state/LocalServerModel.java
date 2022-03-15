@@ -67,4 +67,14 @@ public class LocalServerModel extends ServerModel {
     protected List<LocalClientModel> getClientsOfChatRoom(String chatRoomId) {
         return ((LocalChatRoomModel) chatRooms.get(chatRoomId)).getClients();
     }
+
+    protected List<LocalClientModel> getAllClients() {
+        List<LocalClientModel> clients = new java.util.ArrayList<>();
+        synchronized (chatRooms) {
+            for (ChatRoomModel chatRoom : chatRooms.values()) {
+                clients.addAll(getClientsOfChatRoom(chatRoom.getId()));
+            }
+        }
+        return clients;
+    }
 }
