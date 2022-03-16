@@ -237,10 +237,19 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         return true;
     }
 
+    public void addClientData(List<String> clientIds) {
+        synchronized (allClientIds) {
+            allClientIds.addAll(clientIds);
+        }
+    }
 
-
-
-
+    public void addChatroomData(List<String> chatroomIds, String serverId) {
+        synchronized (remoteServers) {
+            for (String roomId : chatroomIds) {
+                remoteServers.get(serverId).addChatRoom(new ChatRoomModel(roomId));
+            }
+        }
+    }
 
 
 }

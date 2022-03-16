@@ -43,6 +43,7 @@ public class S2SCommandFactory {
                 case ELECTION -> command = MAPPER.readValue(json, ElectionCommand.class);
                 case ANSWER -> command = MAPPER.readValue(json, AnswerCommand.class);
                 case NOMINATION -> command = MAPPER.readValue(json, NominationCommand.class);
+                case NEW_DATA -> command = MAPPER.readValue(json, NewDataF2LCommand.class);
 
             }
         } catch (JsonProcessingException e) {

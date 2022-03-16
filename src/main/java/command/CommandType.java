@@ -30,6 +30,7 @@ public enum CommandType {
     HEARTBEAT("heartbeat"),
     HEARTBEAT_STATUS_CHECK("statuscheck"),
     HEARTBEAT_STATUS_REPLY("statuscheckreply"),
+    NEW_DATA("newdata"),
 
     //fast bully commands
     IAMUP("iamup"),

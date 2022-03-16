@@ -19,6 +19,8 @@ public class NominationCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
+        // TODO: Since now I am the new leader,
+        //  copy my local room data and client data to all room data and all client data (in STATE_MANAGER)
         CoordinatorCommand coordinatorCommand = new CoordinatorCommand();
         coordinatorCommand.setFrom(STATE_MANAGER.getSelf().getId());
         STATE_MANAGER.setElectionAllowed(false);
