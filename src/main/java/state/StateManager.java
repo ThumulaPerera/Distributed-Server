@@ -32,6 +32,7 @@ public interface StateManager {
     void addRemoteChatRoom(String chatRoomId, String managingServerId);
     List<LocalChatRoomModel> getAllLocalChatRooms();
     List<LocalClientModel> getAllLocalClients();
+    public boolean isRoomIdAvailable(String roomId);
 
     // for fast bully
     void addAvailableServerId(String serverId);

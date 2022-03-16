@@ -219,6 +219,15 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         return new ArrayList<>(availableServers);
     }
 
+    @Override
+    public boolean isRoomIdAvailable(String roomId) {
+        synchronized (remoteServers) {
+            for (ServerModel server: remoteServers.values()) {
+                if (server.containsChatRoom(roomId)) return false;
+            }
+        }
+        return !localServer.containsChatRoom(roomId);
+    }
 
     private boolean checkAndGrabClientId(String clientId) {
         synchronized (allClientIds) {
@@ -228,14 +237,6 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         return true;
     }
 
-    private boolean isRoomIdAvailable(String roomId) {
-        synchronized (remoteServers) {
-            for (ServerModel server: remoteServers.values()) {
-                if (server.containsChatRoom(roomId)) return false;
-            }
-        }
-        return !localServer.containsChatRoom(roomId);
-    }
 
 
 

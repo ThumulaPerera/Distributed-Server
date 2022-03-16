@@ -56,7 +56,7 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
     private boolean checkAndAddRoom() {
         boolean isAdded = false;
 
-        if (STATE_MANAGER.getLocalChatRoom(roomid) == null) { // room does not exist locally
+        if (STATE_MANAGER.isRoomIdAvailable(roomid)) { // room does not exist according to the locally maintained list of all room ids
             if (STATE_MANAGER.isLeader()) {
                 isAdded = STATE_MANAGER.checkValidityAndAddLocalRoom(roomid, getClient());
                 if (isAdded) {
