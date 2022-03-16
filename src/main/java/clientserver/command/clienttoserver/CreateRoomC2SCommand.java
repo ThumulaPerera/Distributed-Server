@@ -1,7 +1,9 @@
 package clientserver.command.clienttoserver;
 
+import clientserver.Broadcaster;
 import clientserver.command.servertoclient.CreateRoomS2CCommand;
-import command.ClientKnownExecutableCommand;
+import clientserver.command.servertoclient.RoomChangeS2CCommand;
+import command.ClientAndSenderKnownExecutableCommand;
 import command.Command;
 import command.CommandType;
 import lombok.Getter;
@@ -17,7 +19,7 @@ import state.StateManager;
 
 @Getter
 @Setter
-public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
+public class CreateRoomC2SCommand extends ClientAndSenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
@@ -32,25 +34,35 @@ public class CreateRoomC2SCommand extends ClientKnownExecutableCommand {
         LOGGER.debug("Executing client request for create room with identity: {}", roomid);
 
         if(!isValid()){
-            return new CreateRoomS2CCommand(false, roomid);
+            getSender().send(new CreateRoomS2CCommand(false, roomid));
+            return null;
         }
 
         if(alreadyOwnsRoom()){
-            return new CreateRoomS2CCommand(false, roomid);
+            getSender().send(new CreateRoomS2CCommand(false, roomid));
+            return null;
         }
 
         boolean isApproved = checkAndAddRoom();
+        getSender().send(new CreateRoomS2CCommand(isApproved, roomid));
 
         if (isApproved) {
             joinRoom();
         }
 
-        return new CreateRoomS2CCommand(isApproved, roomid);
+        return null;
     }
 
 
     private void joinRoom() {
-        // TODO: JoinRoom
+        String clientId = getClient().getId();
+        String currentRoomId = STATE_MANAGER.getRoomOfClient(clientId).getId();
+
+        STATE_MANAGER.moveClientToChatRoom(clientId, currentRoomId, roomid);
+
+        RoomChangeS2CCommand roomChangeBroadcastMessage = new RoomChangeS2CCommand(clientId, currentRoomId, roomid);
+        Broadcaster.broadcastToAll(currentRoomId, roomChangeBroadcastMessage);
+        Broadcaster.broadcastToAll(roomid, roomChangeBroadcastMessage);
     }
 
     private boolean checkAndAddRoom() {

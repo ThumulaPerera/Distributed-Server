@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class SenderKnownExecutableCommand extends ExecutableCommand {
+public abstract class ClientAndSenderKnownExecutableCommand extends ClientKnownExecutableCommand {
     @JsonIgnore
     private ClientSender sender;
 
-    public SenderKnownExecutableCommand(CommandType type) {
+    public ClientAndSenderKnownExecutableCommand(CommandType type) {
         super(type);
     }
 }

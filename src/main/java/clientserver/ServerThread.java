@@ -4,14 +4,12 @@ import clientserver.command.clienttoserver.MoveJoinC2SCommand;
 import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import clientserver.command.servertoclient.RoomChangeS2CCommand;
-import clientserver.command.servertoclient.ServerChangeS2CCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import command.ClientKnownExecutableCommand;
 import command.Command;
 import command.ExecutableCommand;
 import clientserver.command.clienttoserver.C2SCommandFactory;
-import command.SenderKnownExecutableCommand;
+import command.ClientAndSenderKnownExecutableCommand;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,8 +117,8 @@ public class ServerThread extends Thread {
     }
 
     private void setSocket(ExecutableCommand command) {
-        if (command instanceof SenderKnownExecutableCommand) {
-            ((SenderKnownExecutableCommand) command).setSender(sender);
+        if (command instanceof ClientAndSenderKnownExecutableCommand) {
+            ((ClientAndSenderKnownExecutableCommand) command).setSender(sender);
         }
     }
 

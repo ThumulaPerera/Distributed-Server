@@ -3,7 +3,7 @@ package clientserver.command.clienttoserver;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
-import command.SenderKnownExecutableCommand;
+import command.ClientAndSenderKnownExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import state.StateManager;
 
 @Getter
 @Setter
-public class NewIdentityC2SCommand extends SenderKnownExecutableCommand {
+public class NewIdentityC2SCommand extends ClientAndSenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 

@@ -5,7 +5,7 @@ import clientserver.command.servertoclient.RoomChangeS2CCommand;
 import clientserver.command.servertoclient.ServerChangeS2CCommand;
 import command.Command;
 import command.CommandType;
-import command.SenderKnownExecutableCommand;
+import command.ClientAndSenderKnownExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import state.StateManager;
 
 @Getter
 @Setter
-public class MoveJoinC2SCommand extends SenderKnownExecutableCommand {
+public class MoveJoinC2SCommand extends ClientAndSenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(MoveJoinC2SCommand.class);
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
