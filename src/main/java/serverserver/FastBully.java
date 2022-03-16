@@ -3,6 +3,7 @@ package serverserver;
 import config.Config;
 import serverserver.command.fastbully.*;
 import state.RefinedStateManagerImpl;
+import state.ServerModel;
 import state.StateManager;
 
 import java.util.ArrayList;
@@ -62,6 +63,19 @@ public class FastBully {
                 }
             }
         });
+
+        if (candidates.isEmpty()){
+            // if no higher process answers, then I am the leader
+            STATE_MANAGER.setLeader(STATE_MANAGER.getSelf().getId());
+            CoordinatorCommand command = new CoordinatorCommand();
+            command.setFrom(STATE_MANAGER.getSelf().getId());
+            for (ServerModel server : STATE_MANAGER.getAllRemoteServers()) {
+                if (server.getId().compareTo(STATE_MANAGER.getSelf().getId()) < 0) {
+                    Sender.sendCommandToPeer(command, server);
+                }
+            }
+            return;
+        }
         Collections.sort(candidates);
         boolean electionSuccess = false;
         while (candidates.size() > 0) {
@@ -76,7 +90,7 @@ public class FastBully {
                 break;
             }
         }
-        // TODO: handle infinite re-elections
+
         if (!electionSuccess) {
             try {
                 Thread.sleep(Config.getFASTBULLY_T2());
