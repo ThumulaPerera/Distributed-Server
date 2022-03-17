@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.leadertofollower.AddRoomL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
 
@@ -30,6 +31,11 @@ public class QuitNotificationF2LCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
+        // TODO: add leader check
+//        if (!STATE_MANAGER.isLeader()){
+//            return new AddRoomL2FCommand(roomid, false);
+//        }
+
         STATE_MANAGER.removeClientFromAllClients(identity);
         return null;
     }

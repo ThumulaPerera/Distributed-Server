@@ -33,6 +33,9 @@ public class AddRoomF2LCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         // executed by leader only
+        if (!STATE_MANAGER.isLeader()){
+            return new AddRoomL2FCommand(roomid, false);
+        }
 
         LOGGER.debug("Executing Add Room F2L with roomid: {}", roomid);
 

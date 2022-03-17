@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.leadertofollower.AddRoomL2FCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
@@ -31,6 +32,9 @@ public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         // executed by leader only
+        if (!STATE_MANAGER.isLeader()){
+            return new CheckIdentityL2FCommand(identity, false);
+        }
 
         LOGGER.debug("Executing Check Identity F2L with identity: {}", identity);
 
