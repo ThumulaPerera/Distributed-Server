@@ -2,6 +2,7 @@ package clientserver;
 
 import clientserver.command.clienttoserver.MoveJoinC2SCommand;
 import clientserver.command.clienttoserver.NewIdentityC2SCommand;
+import clientserver.command.clienttoserver.QuitC2SCommand;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import clientserver.command.servertoclient.RoomChangeS2CCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,27 +52,14 @@ public class ServerThread extends Thread {
                 inputCommand = getCommand(json);
 
                 if (inputCommand instanceof NewIdentityC2SCommand) {
-                    outputCommand = inputCommand.execute();
-
-                    String clientId = ((NewIdentityC2SCommand) inputCommand).getIdentity();
-                    boolean isApproved = ((NewIdentityS2CCommand) outputCommand).isApproved();
-
-                    if (isApproved){
-                        client = STATE_MANAGER.getLocalClient(clientId);
-                    }
-                    sendResponse(outputCommand);
-                    if (isApproved) {
-                        Broadcaster.broadcastToAllInMainHall(
-                                new RoomChangeS2CCommand(clientId, "", STATE_MANAGER.getSelf().getMainHall())
-                        );
+                    boolean isApproved = handleNewIdentity(inputCommand);
+                    if (!isApproved) {
+                        closeSocket();
+                        return;
                     }
 
                 } else if (inputCommand instanceof MoveJoinC2SCommand) {
-                    inputCommand.execute();
-
-                    String clientId = ((MoveJoinC2SCommand) inputCommand).getIdentity();
-
-                    client = STATE_MANAGER.getLocalClient(clientId);
+                    handleMoveJoin(inputCommand);
 
                 } else {
                     LOGGER.error("Unknown initial command: " + inputCommand);
@@ -83,18 +71,57 @@ public class ServerThread extends Thread {
                     inputCommand = getCommand(json);
                     if (inputCommand instanceof NewIdentityC2SCommand || inputCommand instanceof MoveJoinC2SCommand) {
                         LOGGER.error("Un-allowed command for already connected client: " + inputCommand);
+                    } else if (inputCommand instanceof QuitC2SCommand) {
+                        inputCommand.execute();
+                        closeSocket();
+                        return;
                     } else {
                         outputCommand = inputCommand.execute();
                         sendResponse(outputCommand);
                     }
                 }
             } catch (IOException ex) {
+                LOGGER.error("Error while reading from client: " + ex.getMessage());
                 handleIoException(ex);
             }
+            LOGGER.info("Client abruptly disconnected: " + socket.getInetAddress() + ":" + socket.getPort());
+
+            QuitC2SCommand abruptQuitCommand = new QuitC2SCommand();
+            setClient(abruptQuitCommand);
+            abruptQuitCommand.execute();
+
             closeSocket();
         } catch (IOException ex) {
             handleIoException(ex);
         }
+    }
+
+    private void handleMoveJoin(ExecutableCommand inputCommand) {
+        inputCommand.execute();
+
+        String clientId = ((MoveJoinC2SCommand) inputCommand).getIdentity();
+
+        client = STATE_MANAGER.getLocalClient(clientId);
+    }
+
+    private boolean handleNewIdentity(ExecutableCommand inputCommand) throws JsonProcessingException {
+        Command outputCommand;
+        outputCommand = inputCommand.execute();
+
+        String clientId = ((NewIdentityC2SCommand) inputCommand).getIdentity();
+        boolean isApproved = ((NewIdentityS2CCommand) outputCommand).isApproved();
+
+        if (isApproved){
+            client = STATE_MANAGER.getLocalClient(clientId);
+        }
+        sendResponse(outputCommand);
+        if (isApproved) {
+            Broadcaster.broadcastToAllInMainHall(
+                    new RoomChangeS2CCommand(clientId, "", STATE_MANAGER.getSelf().getMainHall())
+            );
+            return true;
+        }
+        return false;
     }
 
     private ExecutableCommand getCommand(String json) {

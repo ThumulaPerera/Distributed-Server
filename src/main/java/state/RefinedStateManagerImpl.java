@@ -229,6 +229,11 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         return !localServer.containsChatRoom(roomId);
     }
 
+    @Override
+    public void removeClientFromAllClients(String clientId) {
+        allClientIds.remove(clientId);
+    }
+
     private boolean checkAndGrabClientId(String clientId) {
         synchronized (allClientIds) {
             if (allClientIds.contains(clientId)) return false;
