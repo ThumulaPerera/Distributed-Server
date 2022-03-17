@@ -35,9 +35,19 @@ public class Application {
 
         Thread serverThread = new Thread(new Server());
         serverThread.start();
+//        if (STATE_MANAGER.getSelf().getId().equals("s1")) {
+//            new Thread(() -> {
+//                try {
+//                    Thread.sleep(20000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                FastBully.startElection();
+//            }).start();
+//        }
 
         while (true) {
-            Thread.sleep(20000);
+            Thread.sleep(2000);
             LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
         }
     }
