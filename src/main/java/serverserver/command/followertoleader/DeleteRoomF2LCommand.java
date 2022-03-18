@@ -43,6 +43,9 @@ public class DeleteRoomF2LCommand extends S2SExecutableCommand {
     }
 
     private boolean deleteRoom() {
-        return STATE_MANAGER.deleteRoom(roomid);
+        STATE_MANAGER.deleteGlobalRoom(roomid);
+        LOGGER.debug("============ isGloballydeleted");
+        // TODO: Bradcast to all servers to deleteroom
+        return  true;
     }
 }

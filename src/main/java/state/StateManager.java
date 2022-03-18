@@ -27,7 +27,8 @@ public interface StateManager {
     void addLocalRoom(String roomId, LocalClientModel owner);
     boolean checkValidityAndAddLocalRoom(String roomId, LocalClientModel owner);
     boolean checkValidityAndAddRemoteRoom(String roomId, String managingServerId);
-    boolean deleteRoom(String roomId);
+    boolean deleteLocalRoom(String roomId);
+    void deleteGlobalRoom(String roomId);
     List<ServerModel> getAllRemoteServers();
     void addRemoteChatRoom(String chatRoomId, String managingServerId);
     List<LocalChatRoomModel> getAllLocalChatRooms();

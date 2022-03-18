@@ -176,9 +176,27 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     }
 
     @Override
-    public boolean deleteRoom(String roomId) {
-        // TODO: implement
-        return false;
+    public boolean deleteLocalRoom(String roomId) {
+        synchronized (this) {
+            if (!localServer.containsChatRoom(roomId)) return false;
+            ChatRoomModel r = localServer.removeChatRoom(roomId);
+            LOGGER.debug("======== deleted room: {}", r.getId());
+            return true;
+        }
+    }
+
+    @Override
+    public void deleteGlobalRoom(String roomId) {
+        // executed by leader only
+        synchronized (this) {
+//            if (!isRoomIdAvailable(roomId)) return false;
+            for (ServerModel server: remoteServers.values()) {
+                if (server.containsChatRoom(roomId)) {
+                    server.removeChatRoom(roomId);
+                };
+            }
+            LOGGER.debug("======== deleted room by leader: {}", roomId);
+        }
     }
 
     @Override
