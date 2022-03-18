@@ -88,6 +88,7 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
             STATE_MANAGER.moveClientToChatRoom(client.getId(), formerRoomId, mainHallId);
             RoomChangeS2CCommand roomChangeBroadcastMessage = new RoomChangeS2CCommand(client.getId(), formerRoomId, mainHallId);
             Broadcaster.broadcastToAll(mainHallId, roomChangeBroadcastMessage);
+            Broadcaster.broadcastToAll(formerRoomId, roomChangeBroadcastMessage);
         }
     }
 
