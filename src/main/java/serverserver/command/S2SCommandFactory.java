@@ -3,7 +3,6 @@ package serverserver.command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.CommandType;
-import command.ExecutableCommand;
 import command.S2SExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +36,7 @@ public class S2SCommandFactory {
                 case HEARTBEAT -> command = MAPPER.readValue(json, HeartbeatF2LCommand.class);
                 case HEARTBEAT_STATUS_CHECK -> command = MAPPER.readValue(json, HbStatusCheckL2FCommand.class);
                 case HEARTBEAT_STATUS_REPLY -> command = MAPPER.readValue(json, HbStatusReplyF2LCommand.class);
+                case HEARTBEAT_STATUS_NOTIFY -> command = MAPPER.readValue(json, HbStatusNotifyL2FCommand.class);
                 case IAMUP -> command = MAPPER.readValue(json, IamUpCommand.class);
                 case VIEW -> command = MAPPER.readValue(json, ViewCommand.class);
                 case COORDINATOR -> command = MAPPER.readValue(json, CoordinatorCommand.class);
