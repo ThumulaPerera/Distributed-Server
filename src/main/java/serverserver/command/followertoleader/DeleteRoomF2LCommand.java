@@ -38,7 +38,6 @@ public class DeleteRoomF2LCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         // executed by leader only
-
         LOGGER.debug("Executing Delete Room F2L with roomid: {}", roomid);
 
         return new DeleteRoomL2FCommand(roomid, deleteRoom());
@@ -46,10 +45,8 @@ public class DeleteRoomF2LCommand extends S2SExecutableCommand {
 
     private boolean deleteRoom() {
         STATE_MANAGER.deleteGlobalRoom(roomid);
-        LOGGER.debug("============ isGloballydeleted");
-        // TODO: Bradcast to all servers to deleteroom
-        RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid                );
+        RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid);
         Sender.broadcastCommandToAllFollowers(removeRoomL2FCommand);
-        return  true;
+        return true;
     }
 }

@@ -36,20 +36,17 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
     public Command execute() {
         LOGGER.debug("Executing client request for delete room with identity: {}", roomid);
 
-        // If such room is available and the owner is client:
-        //      send leader to delete from all
-        // Else: return false
-
         String clientId = getClient().getId();
         String currentOwnedRoom = STATE_MANAGER.getRoomOwnedByClient(clientId).getId();
         String currentRoom = STATE_MANAGER.getRoomOfClient(clientId).getId();
+
         if (roomid.equals(currentOwnedRoom) && roomid.equals(currentRoom)) {
-            LOGGER.debug("==================valid to delete");
+            LOGGER.debug("Room {} is deletable", roomid);
             if (deleteRoom()) {
                 return new DeleteRoomS2CCommand(true, roomid);
             }
         }
-        LOGGER.debug("Invalid - clientId:{}, roomId:{}, currentOwnedRoom:{}, curentRoom:{}", clientId, roomid, currentOwnedRoom, currentRoom);
+        LOGGER.debug("Cannot delete room [clientId:{}, roomId:{}, currentOwnedRoom:{}, curentRoom:{}]", clientId, roomid, currentOwnedRoom, currentRoom);
         return new DeleteRoomS2CCommand(false, roomid);
 
 
@@ -61,18 +58,14 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
         if (STATE_MANAGER.getLocalChatRoom(roomid) == null) {
             return false;
         } else {
-            ServerModel myServer = STATE_MANAGER.getSelf();
-            ChatRoomModel room = STATE_MANAGER.getLocalChatRoom(roomid);
             List<LocalClientModel> roomMembers = STATE_MANAGER.getLocalChatRoomClients(roomid);
-            // TODO: move all clients to mainhall
             joinMainHallRoom(roomMembers, roomid);
 
             if (STATE_MANAGER.isLeader()) {
                 STATE_MANAGER.deleteGlobalRoom(roomid);
-                // TODO: If true broadcast to all servers to remove the room
-                RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid                );
+                RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid);
                 Sender.broadcastCommandToAllFollowers(removeRoomL2FCommand);
-                LOGGER.info("Deleted from Leader");
+                LOGGER.debug("Deleted from Leader");
             } else {
                 // notify leader
                 DeleteRoomF2LCommand deleteRoomF2LCommand = new DeleteRoomF2LCommand(roomid);
@@ -80,26 +73,20 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
                 Sender.sendCommandToLeader(deleteRoomF2LCommand);
                 STATE_MANAGER.deleteLocalRoom(roomid);
             }
-
             return true;
         }
-
-
     }
 
     private void joinMainHallRoom(List<LocalClientModel> roomMembers, String formerRoomId) {
-        LOGGER.info("==========Move all to Mainhall");
-        String clientId = getClient().getId();
         String mainHallId = STATE_MANAGER.getSelf().getMainHall();
+        LOGGER.debug("Moving all the clients in the room to {}", mainHallId);
 
         for (LocalClientModel client : roomMembers) {
-            LOGGER.info("========== Moved to Mainhall - Client:{}", client.getId());
+            LOGGER.debug("Room Member {} Moved to {}", client.getId(), mainHallId);
             STATE_MANAGER.moveClientToChatRoom(client.getId(), formerRoomId, mainHallId);
             RoomChangeS2CCommand roomChangeBroadcastMessage = new RoomChangeS2CCommand(client.getId(), formerRoomId, mainHallId);
             Broadcaster.broadcastToAll(mainHallId, roomChangeBroadcastMessage);
-
         }
-
     }
 
 

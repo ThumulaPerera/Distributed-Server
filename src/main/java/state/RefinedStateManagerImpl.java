@@ -179,8 +179,7 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public boolean deleteLocalRoom(String roomId) {
         synchronized (this) {
             if (!localServer.containsChatRoom(roomId)) return false;
-            ChatRoomModel r = localServer.removeChatRoom(roomId);
-            LOGGER.debug("======== deleted room: {}", r.getId());
+            localServer.removeChatRoom(roomId);
             return true;
         }
     }
@@ -189,13 +188,11 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public void deleteGlobalRoom(String roomId) {
         // executed by leader only
         synchronized (this) {
-//            if (!isRoomIdAvailable(roomId)) return false;
             for (ServerModel server: remoteServers.values()) {
                 if (server.containsChatRoom(roomId)) {
                     server.removeChatRoom(roomId);
                 };
             }
-            LOGGER.debug("======== deleted room by leader: {}", roomId);
         }
     }
 
