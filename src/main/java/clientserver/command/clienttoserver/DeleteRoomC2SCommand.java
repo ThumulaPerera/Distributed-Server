@@ -59,7 +59,6 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
         if (STATE_MANAGER.getLocalChatRoom(roomid) == null) {
             return false;
         } else {
-
             ServerModel myServer = STATE_MANAGER.getSelf();
             ChatRoomModel room = STATE_MANAGER.getLocalChatRoom(roomid);
             List<LocalClientModel> roomMembers = STATE_MANAGER.getLocalChatRoomClients(roomid);
@@ -74,15 +73,11 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
                 // notify leader
                 DeleteRoomF2LCommand deleteRoomF2LCommand = new DeleteRoomF2LCommand(roomid);
                 LOGGER.debug(deleteRoomF2LCommand.toString());
-                Command response = Sender.sendCommandToLeaderAndReceive(deleteRoomF2LCommand);
-                if (response instanceof DeleteRoomL2FCommand) {
-                    return ((DeleteRoomL2FCommand) response).isApproved();
-                }
+                Sender.sendCommandToLeader(deleteRoomF2LCommand);
+                STATE_MANAGER.deleteLocalRoom(roomid);
             }
-            boolean isDeleted = STATE_MANAGER.deleteLocalRoom(roomid);
 
-
-            return isDeleted;
+            return true;
         }
 
 
@@ -93,8 +88,8 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
         String clientId = getClient().getId();
         String mainHallId = STATE_MANAGER.getSelf().getMainHall();
 
-        for (LocalClientModel client: roomMembers) {
-            LOGGER.info("========== Moved to Mainhall - Client:{}",client.getId());
+        for (LocalClientModel client : roomMembers) {
+            LOGGER.info("========== Moved to Mainhall - Client:{}", client.getId());
             STATE_MANAGER.moveClientToChatRoom(client.getId(), formerRoomId, mainHallId);
             RoomChangeS2CCommand roomChangeBroadcastMessage = new RoomChangeS2CCommand(client.getId(), formerRoomId, mainHallId);
             Broadcaster.broadcastToAll(mainHallId, roomChangeBroadcastMessage);
