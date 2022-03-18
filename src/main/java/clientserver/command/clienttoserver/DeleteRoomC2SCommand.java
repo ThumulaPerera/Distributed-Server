@@ -51,7 +51,6 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
         LOGGER.debug("Cannot delete room [clientId:{}, roomId:{}, currentOwnedRoom:{}, curentRoom:{}]", clientId, roomid, currentOwnedRoom, currentRoom);
         return new DeleteRoomS2CCommand(false, roomid);
 
-
     }
 
 
@@ -84,11 +83,15 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
         LOGGER.debug("Moving all the clients in the room to {}", mainHallId);
 
         for (LocalClientModel client : roomMembers) {
-            LOGGER.debug("Room Member {} Moved to {}", client.getId(), mainHallId);
-            STATE_MANAGER.moveClientToChatRoom(client.getId(), formerRoomId, mainHallId);
             RoomChangeS2CCommand roomChangeBroadcastMessage = new RoomChangeS2CCommand(client.getId(), formerRoomId, mainHallId);
             Broadcaster.broadcastToAll(mainHallId, roomChangeBroadcastMessage);
-            Broadcaster.broadcastToAll(formerRoomId, roomChangeBroadcastMessage);
+            Broadcaster.broadcastToOthers(formerRoomId, roomChangeBroadcastMessage, client.getId());
+        }
+
+        for (LocalClientModel client : roomMembers) {
+            LOGGER.debug("Room Member {} Moved to {}", client.getId(), mainHallId);
+            STATE_MANAGER.moveClientToChatRoom(client.getId(), formerRoomId, mainHallId);
+            client.getSender().send(new RoomChangeS2CCommand(client.getId(), formerRoomId, mainHallId));
         }
     }
 
