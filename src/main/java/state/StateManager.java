@@ -38,6 +38,7 @@ public interface StateManager {
 
     // for fast bully
     void addAvailableServerId(String serverId);
+    void removeAvailableServerId(String serverId);
     void setLeaderOnStartup();
     List<String> getAvailableServerIds();
     void setElectionAllowed(boolean electionAllowed);
