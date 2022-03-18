@@ -186,7 +186,6 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
 
     @Override
     public void deleteGlobalRoom(String roomId) {
-        // executed by leader only
         synchronized (this) {
             for (ServerModel server: remoteServers.values()) {
                 if (server.containsChatRoom(roomId)) {

@@ -32,7 +32,7 @@ public class RemoveRoomL2FCommand extends S2SExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing Remove Room L2F with roomid: {}", roomid);
 
-        STATE_MANAGER.deleteLocalRoom(roomid);
+        STATE_MANAGER.deleteGlobalRoom(roomid);
 
         return this;
     }

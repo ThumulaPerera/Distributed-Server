@@ -37,6 +37,8 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
         LOGGER.debug("Executing client request for delete room with identity: {}", roomid);
 
         String clientId = getClient().getId();
+        if (STATE_MANAGER.getRoomOwnedByClient(clientId) == null) return new DeleteRoomS2CCommand(false, roomid);
+
         String currentOwnedRoom = STATE_MANAGER.getRoomOwnedByClient(clientId).getId();
         String currentRoom = STATE_MANAGER.getRoomOfClient(clientId).getId();
 
