@@ -32,9 +32,7 @@ public class RemoveRoomL2FCommand extends S2SExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing Remove Room L2F with roomid: {}", roomid);
 
-        // TODO: implement
-
-        // STATE_MANAGER.getSelf().removeChatRoom(roomid);
+        STATE_MANAGER.deleteGlobalRoom(roomid);
 
         return this;
     }

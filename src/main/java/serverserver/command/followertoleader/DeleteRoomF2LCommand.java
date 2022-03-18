@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.Sender;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
+import serverserver.command.leadertofollower.RemoveRoomL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
 
@@ -36,13 +38,15 @@ public class DeleteRoomF2LCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         // executed by leader only
-
         LOGGER.debug("Executing Delete Room F2L with roomid: {}", roomid);
 
         return new DeleteRoomL2FCommand(roomid, deleteRoom());
     }
 
     private boolean deleteRoom() {
-        return STATE_MANAGER.deleteRoom(roomid);
+        STATE_MANAGER.deleteGlobalRoom(roomid);
+        RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid);
+        Sender.broadcastCommandToOtherFollowers(removeRoomL2FCommand, getOrigin());
+        return true;
     }
 }

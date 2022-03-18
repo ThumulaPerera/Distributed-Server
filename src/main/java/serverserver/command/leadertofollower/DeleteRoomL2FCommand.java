@@ -7,11 +7,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import state.RefinedStateManagerImpl;
+import state.StateManager;
 
 @Getter
 @Setter
 public class DeleteRoomL2FCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteRoomL2FCommand.class);
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String roomid;
     private boolean approved;
@@ -29,6 +32,9 @@ public class DeleteRoomL2FCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         LOGGER.debug("Executing Delete Room L2F with identity: {}", roomid);
+
+        STATE_MANAGER.deleteLocalRoom(roomid);
+
         return this;
     }
 }
