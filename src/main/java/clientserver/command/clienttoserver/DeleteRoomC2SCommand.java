@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.followertoleader.DeleteRoomF2LCommand;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
+import serverserver.command.leadertofollower.NewRoomL2FCommand;
+import serverserver.command.leadertofollower.RemoveRoomL2FCommand;
 import state.*;
 
 import java.util.List;
@@ -68,6 +70,8 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
             if (STATE_MANAGER.isLeader()) {
                 STATE_MANAGER.deleteGlobalRoom(roomid);
                 // TODO: If true broadcast to all servers to remove the room
+                RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid                );
+                Sender.broadcastCommandToAllFollowers(removeRoomL2FCommand);
                 LOGGER.info("Deleted from Leader");
             } else {
                 // notify leader

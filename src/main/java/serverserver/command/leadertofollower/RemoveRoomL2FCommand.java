@@ -34,7 +34,7 @@ public class RemoveRoomL2FCommand extends S2SExecutableCommand {
 
         // TODO: implement
 
-        // STATE_MANAGER.getSelf().removeChatRoom(roomid);
+         STATE_MANAGER.deleteLocalRoom(roomid);
 
         return this;
     }

@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.Sender;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
+import serverserver.command.leadertofollower.RemoveRoomL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
 
@@ -46,6 +48,8 @@ public class DeleteRoomF2LCommand extends S2SExecutableCommand {
         STATE_MANAGER.deleteGlobalRoom(roomid);
         LOGGER.debug("============ isGloballydeleted");
         // TODO: Bradcast to all servers to deleteroom
+        RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid                );
+        Sender.broadcastCommandToAllFollowers(removeRoomL2FCommand);
         return  true;
     }
 }
