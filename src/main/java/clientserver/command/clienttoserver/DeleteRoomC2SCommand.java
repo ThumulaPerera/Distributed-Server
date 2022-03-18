@@ -4,7 +4,6 @@ import clientserver.Broadcaster;
 import clientserver.command.servertoclient.DeleteRoomS2CCommand;
 import clientserver.command.servertoclient.RoomChangeS2CCommand;
 import command.ClientAndSenderKnownExecutableCommand;
-import command.ClientKnownExecutableCommand;
 import command.Command;
 import command.CommandType;
 import lombok.Getter;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import serverserver.Sender;
 import serverserver.command.followertoleader.DeleteRoomF2LCommand;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
-import serverserver.command.leadertofollower.NewRoomL2FCommand;
 import serverserver.command.leadertofollower.RemoveRoomL2FCommand;
 import state.*;
 
@@ -71,8 +69,10 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
                 // notify leader
                 DeleteRoomF2LCommand deleteRoomF2LCommand = new DeleteRoomF2LCommand(roomid);
                 LOGGER.debug(deleteRoomF2LCommand.toString());
-                Sender.sendCommandToLeader(deleteRoomF2LCommand);
-                STATE_MANAGER.deleteLocalRoom(roomid);
+                Command response = Sender.sendCommandToLeaderAndReceive(deleteRoomF2LCommand);
+                if (response instanceof DeleteRoomL2FCommand) {
+                    ((DeleteRoomL2FCommand) response).execute();
+                }
             }
             return true;
         }

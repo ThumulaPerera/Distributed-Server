@@ -46,7 +46,7 @@ public class DeleteRoomF2LCommand extends S2SExecutableCommand {
     private boolean deleteRoom() {
         STATE_MANAGER.deleteGlobalRoom(roomid);
         RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid);
-        Sender.broadcastCommandToAllFollowers(removeRoomL2FCommand);
+        Sender.broadcastCommandToOtherFollowers(removeRoomL2FCommand, getOrigin());
         return true;
     }
 }
