@@ -64,7 +64,7 @@ public class DeleteRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
             joinMainHallRoom(roomMembers, roomid);
 
             if (STATE_MANAGER.isLeader()) {
-                STATE_MANAGER.deleteGlobalRoom(roomid);
+                STATE_MANAGER.deleteLocalRoom(roomid);
                 RemoveRoomL2FCommand removeRoomL2FCommand = new RemoveRoomL2FCommand(roomid);
                 Sender.broadcastCommandToAllFollowers(removeRoomL2FCommand);
                 LOGGER.debug("Deleted from Leader");
