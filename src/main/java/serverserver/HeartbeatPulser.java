@@ -1,5 +1,6 @@
 package serverserver;
 
+import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.followertoleader.HeartbeatF2LCommand;
@@ -27,6 +28,9 @@ public class HeartbeatPulser {
     }
 
     private void sendPulse() {
-        Sender.sendCommandToLeader(new HeartbeatF2LCommand(STATE_MANAGER.getSelf().getId()));
+        ExecutableCommand serverListCommand = Sender.sendCommandToLeaderAndReceive(new HeartbeatF2LCommand(STATE_MANAGER.getSelf().getId()));
+        if (serverListCommand != null) {
+            serverListCommand.execute();
+        }
     }
 }
