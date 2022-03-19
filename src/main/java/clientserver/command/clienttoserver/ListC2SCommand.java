@@ -33,7 +33,7 @@ public class ListC2SCommand extends ExecutableCommand {
     }
 
     private List<String> getRoomList() {
-        return STATE_MANAGER.getAllChatRooms().stream().map(ChatRoomModel::getId).toList();
+        return STATE_MANAGER.getAllAvailableChatRooms().stream().map(ChatRoomModel::getId).toList();
     }
 
 }

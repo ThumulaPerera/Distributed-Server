@@ -23,7 +23,7 @@ public interface StateManager {
     LocalChatRoomModel getRoomOwnedByClient(String clientId);
     ServerModel getServerIfGlobalChatRoomExists(String chatRoomId);
     void moveClientToChatRoom(String clientId, String fromRoomID, String toRoomId);
-    List<ChatRoomModel> getAllChatRooms();
+    List<ChatRoomModel> getAllAvailableChatRooms();
     void addLocalRoom(String roomId, LocalClientModel owner);
     boolean checkValidityAndAddLocalRoom(String roomId, LocalClientModel owner);
     boolean checkValidityAndAddRemoteRoom(String roomId, String managingServerId);
