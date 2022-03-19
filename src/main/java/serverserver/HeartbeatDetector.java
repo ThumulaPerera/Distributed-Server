@@ -1,17 +1,15 @@
 package serverserver;
 
 import command.ExecutableCommand;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
-import serverserver.command.leadertofollower.HbStatusNotifyL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.ServerAvailability;
 import state.StateManager;
 
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class HeartbeatDetector {
     private static final int HEARTBEAT_CHECK_INTERVAL = 10000;
@@ -23,6 +21,8 @@ public class HeartbeatDetector {
     private final HashMap<String, Long> serverUpdateTimes = new HashMap<>();
     private final HashMap<String, ServerAvailability> serverAvailabilityStatus = new HashMap<>();
     private final HashMap<String, TimerTask> serverTimeCheckTasks = new HashMap<>();
+    @Getter
+    private final Set<String> activeServers = new HashSet<>();
     private final Timer taskScheduler = new Timer();
 
 
@@ -38,7 +38,7 @@ public class HeartbeatDetector {
             serverUpdateTimes.put(serverID, time);
             if (serverAvailabilityStatus.get(serverID) != ServerAvailability.ACTIVE) {
                 if (serverAvailabilityStatus.get(serverID) == ServerAvailability.INACTIVE) {
-                    Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.ACTIVE));
+//                    Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.ACTIVE));
                 }
                 LOGGER.debug("Server " + serverID + " again marked : ACTIVE");
                 markActive(serverID);
@@ -54,15 +54,11 @@ public class HeartbeatDetector {
     public void handleHbStatusReply(String serverID) {
         switch (serverAvailabilityStatus.get(serverID)) {
             case ACTIVE -> {/*ignore*/}
-            case SUSPICIOUS -> {
+            case SUSPICIOUS, INACTIVE -> {
                 markActive(serverID);
                 scheduleHbCheckTask(serverID);
             }
-            case INACTIVE -> {
-                markActive(serverID);
-                Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.ACTIVE));
-                scheduleHbCheckTask(serverID);
-            }
+            //                Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.ACTIVE));
         }
     }
 
@@ -72,10 +68,12 @@ public class HeartbeatDetector {
 
     public void markInactive(String serverID) {
         serverAvailabilityStatus.put(serverID, ServerAvailability.INACTIVE);
+        activeServers.remove(serverID);
     }
 
     public void markActive(String serverID) {
         serverAvailabilityStatus.put(serverID, ServerAvailability.ACTIVE);
+        activeServers.add(serverID);
     }
 
     private void scheduleHbCheckTask(String serverID) {
@@ -136,7 +134,7 @@ public class HeartbeatDetector {
         @Override
         public void run() {
             markInactive(serverID);
-            Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.INACTIVE));
+//            Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.INACTIVE));
             LOGGER.debug("Server " + serverID + " marked : INACTIVE");
         }
     }
