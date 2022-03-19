@@ -17,7 +17,7 @@ import java.net.Socket;
 /**
  * This thread is responsible to handle client connection. * * @author www.codejava.net
  */
-public class ReceiverThread extends Thread {
+public class ReceiverThread implements Runnable {
     private static Logger LOGGER = LoggerFactory.getLogger(ReceiverThread.class);
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
 

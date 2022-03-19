@@ -20,7 +20,8 @@ public class Config {
 
     @Getter private static final int MIN_CLIENT_THREADS = 20;
     @Getter private static final int MAX_CLIENT_THREADS = 100;
-
+    @Getter private static final int MIN_SERVER_THREADS = 5;
+    @Getter private static final int MAX_SERVER_THREADS = 100;
 
     @Getter private static final int FASTBULLY_T1 = 5000;
     @Getter private static final int FASTBULLY_T2 = 5000;
