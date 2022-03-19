@@ -31,6 +31,11 @@ public class JoinRoomC2SCommand extends ClientKnownExecutableCommand {
         LocalChatRoomModel currentRoom = STATE_MANAGER.getRoomOfClient(clientId);
         String currentRoomId = currentRoom.getId();
 
+        // If the client is already in the room
+        if (currentRoomId.equals(roomid)) {
+            return new RoomChangeS2CCommand(clientId, currentRoomId, currentRoomId);
+        }
+
         // if client is the owner of current room
         if (isRoomOwner(clientId, currentRoom)) {
             return new RoomChangeS2CCommand(clientId, currentRoomId, currentRoomId);
