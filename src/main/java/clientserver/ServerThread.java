@@ -24,7 +24,7 @@ import java.net.*;
 /**
  * This thread is responsible to handle client connection. * * @author www.codejava.net
  */
-public class ServerThread extends Thread {
+public class ServerThread implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
