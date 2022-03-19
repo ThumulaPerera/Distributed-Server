@@ -221,6 +221,11 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     }
 
     @Override
+    public void removeAvailableServerId(String serverId) {
+        availableServers.remove(serverId);
+    }
+
+    @Override
     public void setLeaderOnStartup() {
         synchronized (availableServers) {
             String leaderId = Collections.max(availableServers);

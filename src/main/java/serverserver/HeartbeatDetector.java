@@ -4,6 +4,7 @@ import command.ExecutableCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
+import serverserver.command.leadertofollower.HbStatusNotifyL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.ServerAvailability;
 import state.StateManager;
@@ -24,16 +25,28 @@ public class HeartbeatDetector {
     private final HashMap<String, TimerTask> serverTimeCheckTasks = new HashMap<>();
     private final Timer taskScheduler = new Timer();
 
+
+    public void stopDetector() {
+        //TODO: call this method whenever leader changes
+        for (TimerTask t : serverTimeCheckTasks.values()) {
+            t.cancel();
+        }
+    }
+
     public void updateTime(String serverID, long time) {
         if (serverUpdateTimes.containsKey(serverID)) {
             serverUpdateTimes.put(serverID, time);
             if (serverAvailabilityStatus.get(serverID) != ServerAvailability.ACTIVE) {
+                if (serverAvailabilityStatus.get(serverID) == ServerAvailability.INACTIVE) {
+                    Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.ACTIVE));
+                }
                 LOGGER.debug("Server " + serverID + " again marked : ACTIVE");
                 markActive(serverID);
             }
         } else {
             serverUpdateTimes.put(serverID, time);
             markActive(serverID);
+            //TODO: notify if needed initially
         }
         scheduleHbCheckTask(serverID);
     }
@@ -41,8 +54,13 @@ public class HeartbeatDetector {
     public void handleHbStatusReply(String serverID) {
         switch (serverAvailabilityStatus.get(serverID)) {
             case ACTIVE -> {/*ignore*/}
-            case SUSPICIOUS, INACTIVE -> {
+            case SUSPICIOUS -> {
                 markActive(serverID);
+                scheduleHbCheckTask(serverID);
+            }
+            case INACTIVE -> {
+                markActive(serverID);
+                Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.ACTIVE));
                 scheduleHbCheckTask(serverID);
             }
         }
@@ -97,7 +115,6 @@ public class HeartbeatDetector {
                 LOGGER.debug("Server " + serverID + " marked : SUSPICIOUS");
                 ExecutableCommand statusReply = Sender.sendCommandToPeerAndReceive(
                         new HbStatusCheckL2FCommand(), STATE_MANAGER.getServer(serverID));
-                //TODO is there a better way to handle
                 if (statusReply != null) {
                     statusReply.execute();
                 }
@@ -119,6 +136,7 @@ public class HeartbeatDetector {
         @Override
         public void run() {
             markInactive(serverID);
+            Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.INACTIVE));
             LOGGER.debug("Server " + serverID + " marked : INACTIVE");
         }
     }
