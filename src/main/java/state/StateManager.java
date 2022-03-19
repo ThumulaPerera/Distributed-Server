@@ -3,6 +3,7 @@ package state;
 import clientserver.ClientSender;
 
 import java.util.List;
+import java.util.Set;
 
 public interface StateManager {
     boolean isLeader();
@@ -35,10 +36,11 @@ public interface StateManager {
     List<LocalClientModel> getAllLocalClients();
     boolean isRoomIdAvailable(String roomId);
     void removeClientFromAllClients(String clientId);
+    void updateAvailableServersList(Set<String> servers);
 
     // for fast bully
     void addAvailableServerId(String serverId);
-    void removeAvailableServerId(String serverId);
+//    void removeAvailableServerId(String serverId);
     void setLeaderOnStartup();
     List<String> getAvailableServerIds();
     void setElectionAllowed(boolean electionAllowed);

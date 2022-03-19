@@ -12,7 +12,7 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(RefinedStateManagerImpl.class);
     private static final RefinedStateManagerImpl instance = new RefinedStateManagerImpl();
     private final Map<String, ServerModel> remoteServers = Collections.synchronizedMap(new HashMap<>());;
-    private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
+    private Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
     private final Set<String> allClientIds = Collections.synchronizedSet(new HashSet<>());
     @Getter
     @Setter
@@ -223,8 +223,8 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     }
 
     @Override
-    public void removeAvailableServerId(String serverId) {
-        availableServers.remove(serverId);
+    public void updateAvailableServersList(Set<String> servers) {
+        this.availableServers = servers;
     }
 
     @Override
