@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.ServerAvailability;
+import state.ServerModel;
 import state.StateManager;
 
 import java.util.*;
@@ -20,16 +21,17 @@ public class HeartbeatDetector {
     private final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
     private final HashMap<String, Long> serverUpdateTimes = new HashMap<>();
     private final HashMap<String, ServerAvailability> serverAvailabilityStatus = new HashMap<>();
-    private final HashMap<String, TimerTask> serverTimeCheckTasks = new HashMap<>();
+    private final Map<String, TimerTask> serverTimeCheckTasks = Collections.synchronizedMap(new HashMap<>());
     @Getter
     private final Set<String> activeServers = new HashSet<>();
     private final Timer taskScheduler = new Timer();
 
 
     public void stopDetector() {
-        //TODO: call this method whenever leader changes
-        for (TimerTask t : serverTimeCheckTasks.values()) {
-            t.cancel();
+        synchronized (serverTimeCheckTasks) {
+            for (TimerTask t : serverTimeCheckTasks.values()) {
+                t.cancel();
+            }
         }
     }
 
