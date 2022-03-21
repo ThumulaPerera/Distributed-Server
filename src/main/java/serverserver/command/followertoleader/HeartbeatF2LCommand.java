@@ -30,7 +30,7 @@ public class HeartbeatF2LCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        STATE_MANAGER.getLeader().getHeartbeatDetector().updateTime(from,System.currentTimeMillis());
-        return new HbActiveServersL2FCommand(STATE_MANAGER.getLeader().getHeartbeatDetector().getActiveServers());
+        STATE_MANAGER.getHeartbeatDetector().updateTime(from,System.currentTimeMillis());
+        return new HbActiveServersL2FCommand(STATE_MANAGER.getHeartbeatDetector().getActiveServers());
     }
 }
