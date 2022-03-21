@@ -255,6 +255,14 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         allClientIds.remove(clientId);
     }
 
+    @Override
+    public void changeServerOfClient(String clientId, String serverId) {
+        synchronized (allClientIds){
+            allClientIds.remove(clientId);
+            allClientIds.put(clientId, serverId);
+        }
+    }
+
     private boolean checkAndGrabClientId(String clientId, String serverId) {
         synchronized (allClientIds) {
             if (allClientIds.containsKey(clientId)) return false;

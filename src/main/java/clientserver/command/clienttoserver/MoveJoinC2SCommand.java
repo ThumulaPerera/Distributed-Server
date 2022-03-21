@@ -6,10 +6,14 @@ import clientserver.command.servertoclient.ServerChangeS2CCommand;
 import command.Command;
 import command.CommandType;
 import command.ClientAndSenderKnownExecutableCommand;
+import command.ExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.Sender;
+import serverserver.command.followertoleader.ServerChangeNotificationF2LCommand;
+import serverserver.command.leadertofollower.ServerChangeNotedL2FCommand;
 import state.ChatRoomModel;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
@@ -35,6 +39,20 @@ public class MoveJoinC2SCommand extends ClientAndSenderKnownExecutableCommand {
         ServerChangeS2CCommand serverChangeMsg = new ServerChangeS2CCommand(
                 true, STATE_MANAGER.getSelf().getId()
         );
+
+        if (STATE_MANAGER.isLeader()){
+            STATE_MANAGER.changeServerOfClient(identity, STATE_MANAGER.getSelf().getId());
+        } else {
+            ExecutableCommand response = Sender.sendCommandToLeaderAndReceive(
+                    new ServerChangeNotificationF2LCommand(identity)
+            );
+
+            if (!(response instanceof ServerChangeNotedL2FCommand) || !((ServerChangeNotedL2FCommand) response).isNoted()){
+                LOGGER.error("Notifying leader about server change failed");
+                getSender().send(new ServerChangeS2CCommand(false, STATE_MANAGER.getSelf().getId()));
+                return null;
+            }
+        }
 
         if (chatRoom == null) {
             LOGGER.info("Requested Local Chatroom no longer available. Placing client in Main Hall instead.");

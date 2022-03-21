@@ -35,6 +35,7 @@ public interface StateManager {
     List<LocalClientModel> getAllLocalClients();
     boolean isRoomIdAvailable(String roomId);
     void removeClientFromAllClients(String clientId);
+    void changeServerOfClient(String clientId, String serverId);
 
     // for fast bully
     void addAvailableServerId(String serverId);
