@@ -7,6 +7,7 @@ import command.Command;
 import command.CommandType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.Sender;
 import serverserver.command.followertoleader.DeleteRoomF2LCommand;
 import serverserver.command.leadertofollower.DeleteRoomL2FCommand;
@@ -15,6 +16,7 @@ import state.LocalClientModel;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
 
+import java.io.IOException;
 import java.util.List;
 
 public abstract class RoomDeletableC2SCommand extends ClientAndSenderKnownExecutableCommand {
@@ -52,10 +54,15 @@ public abstract class RoomDeletableC2SCommand extends ClientAndSenderKnownExecut
             // notify leader
             DeleteRoomF2LCommand deleteRoomF2LCommand = new DeleteRoomF2LCommand(roomId);
             LOGGER.debug(deleteRoomF2LCommand.toString());
-            Command response = Sender.sendCommandToLeaderAndReceive(deleteRoomF2LCommand);
-            if (response instanceof DeleteRoomL2FCommand) {
-                ((DeleteRoomL2FCommand) response).execute();
+            try{
+                Command response = Sender.sendCommandToLeaderAndReceive(deleteRoomF2LCommand);
+                if (response instanceof DeleteRoomL2FCommand) {
+                    ((DeleteRoomL2FCommand) response).execute();
+                }
+            } catch (IOException e){
+                FastBully.startElection();
             }
+
         }
     }
 }

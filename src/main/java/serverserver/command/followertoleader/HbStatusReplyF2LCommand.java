@@ -30,7 +30,7 @@ public class HbStatusReplyF2LCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         LOGGER.debug("Executing Heartbeat status reply to Leader");
-        STATE_MANAGER.getLeader().getHeartbeatDetector().handleHbStatusReply(from);
+        STATE_MANAGER.getHeartbeatDetector().handleHbStatusReply(from);
         return null;
     }
 }

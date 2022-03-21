@@ -30,7 +30,7 @@ public enum CommandType {
     HEARTBEAT("heartbeat"),
     HEARTBEAT_STATUS_CHECK("statuscheck"),
     HEARTBEAT_STATUS_REPLY("statuscheckreply"),
-    HEARTBEAT_STATUS_NOTIFY("notifystatus"),
+    HEARTBEAT_ACTIVE_SERVERS("activeservers"),
     QUIT_NOTIFICATION("quitnotification"),
     NEW_DATA("newdata"),
     SERVER_CHANGE_NOTIFICATION("serverchangenotification"),

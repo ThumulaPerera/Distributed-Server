@@ -21,12 +21,15 @@ public class FastBully {
         // TODO: setup T2 timeout for this
         STATE_MANAGER.getAllRemoteServers().forEach(server -> {
             // send only to other peers
-            ViewCommand viewCommand = (ViewCommand) Sender.sendCommandToPeerAndReceive(
-                    new IamUpCommand(), server);
-
-            if (viewCommand != null) {
-                viewCommand.execute();
+            try {
+                ViewCommand viewCommand = (ViewCommand) Sender.sendCommandToPeerAndReceive(
+                        new IamUpCommand(), server);
+                if (viewCommand != null) {
+                    viewCommand.execute();
+                }
+            } catch (Exception ignored){
             }
+
         });
 
         // mark self as available
@@ -55,11 +58,15 @@ public class FastBully {
             if (!STATE_MANAGER.isElectionAllowed()) return;
             // send only to higher priority peers
             if (server.getId().compareTo(selfId) > 0) {
-                AnswerCommand answerCommand = (AnswerCommand) Sender.sendCommandToPeerAndReceive(
-                        new ElectionCommand(), server);
+                try {
+                    AnswerCommand answerCommand = (AnswerCommand) Sender.sendCommandToPeerAndReceive(
+                            new ElectionCommand(), server);
 
-                if (answerCommand != null) {
-                    candidates.add(answerCommand.getFrom());
+                    if (answerCommand != null) {
+                        candidates.add(answerCommand.getFrom());
+                    }
+                } catch (Exception ignored){
+
                 }
             }
         });
@@ -81,14 +88,19 @@ public class FastBully {
         while (candidates.size() > 0) {
             if (!STATE_MANAGER.isElectionAllowed()) return;
             String serverId = candidates.remove(candidates.size() - 1);
-            CoordinatorCommand coordinatorCommand = (CoordinatorCommand) Sender.sendCommandToPeerAndReceive(
-                    new NominationCommand(), STATE_MANAGER.getServer(serverId));
+            try {
+                CoordinatorCommand coordinatorCommand = (CoordinatorCommand) Sender.sendCommandToPeerAndReceive(
+                        new NominationCommand(), STATE_MANAGER.getServer(serverId));
 
-            if (coordinatorCommand != null) {
-                coordinatorCommand.execute();
-                electionSuccess = true;
-                break;
+                if (coordinatorCommand != null) {
+                    coordinatorCommand.execute();
+                    electionSuccess = true;
+                    break;
+                }
+            }catch (Exception ignored){
+
             }
+
         }
 
         if (!electionSuccess) {
