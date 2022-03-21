@@ -19,8 +19,8 @@ public class HeartbeatDetector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatDetector.class);
     private final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
-    private final HashMap<String, Long> serverUpdateTimes = new HashMap<>();
-    private final HashMap<String, ServerAvailability> serverAvailabilityStatus = new HashMap<>();
+    private final Map<String, Long> serverUpdateTimes = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, ServerAvailability> serverAvailabilityStatus = Collections.synchronizedMap(new HashMap<>());
     private final Map<String, TimerTask> serverTimeCheckTasks = Collections.synchronizedMap(new HashMap<>());
     @Getter
     private final Set<String> activeServers = new HashSet<>();
