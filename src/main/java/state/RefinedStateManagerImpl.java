@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.HeartbeatDetector;
 
 import java.util.*;
 
@@ -14,6 +15,8 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     private final Map<String, ServerModel> remoteServers = Collections.synchronizedMap(new HashMap<>());
     private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
     private final Set<String> allClientIds = Collections.synchronizedSet(new HashSet<>());
+    @Getter
+    private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
     @Getter
     @Setter
     private volatile boolean electionAllowed = false;

@@ -1,6 +1,7 @@
 package state;
 
 import clientserver.ClientSender;
+import serverserver.HeartbeatDetector;
 
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,7 @@ public interface StateManager {
     boolean isRoomIdAvailable(String roomId);
     void removeClientFromAllClients(String clientId);
     void updateAvailableServersList(Set<String> servers);
+    HeartbeatDetector getHeartbeatDetector();
 
     // for fast bully
     void addAvailableServerId(String serverId);
