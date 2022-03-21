@@ -131,7 +131,11 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public ServerModel getServerIfGlobalChatRoomExists(String chatRoomId) {
         synchronized (remoteServers) {
             for (ServerModel server: remoteServers.values()) {
-                if (server.getChatRoom(chatRoomId) != null) return server;
+                if (server.getChatRoom(chatRoomId) != null
+                        && availableServers.contains(server.getId())
+                ) {
+                    return server;
+                }
             }
         }
         return null;
