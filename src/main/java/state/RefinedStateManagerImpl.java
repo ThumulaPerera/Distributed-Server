@@ -279,5 +279,15 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         }
     }
 
+    @Override
+    public void removeClientsOfRemoteServer(String serverId) {
+        synchronized (allClientIds) {
+            for (Map.Entry<String, String> entry : allClientIds.entrySet()) {
+                if (entry.getValue().equals(serverId)) {
+                    allClientIds.remove(entry.getKey());
+                }
+            }
+        }
+    }
 
 }

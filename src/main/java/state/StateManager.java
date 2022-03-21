@@ -45,6 +45,8 @@ public interface StateManager {
     boolean isElectionAllowed();
     void addClientData(List<String> clientIds, String serverId);
     void addChatroomData(List<String> chatroomIds, String serverId);
+    void removeClientsOfRemoteServer(String serverId);
+
 
 
 
