@@ -11,7 +11,6 @@ public class ServerModel {
     private final String address;
     private final int clientsPort;
     private final int coordinationPort;
-    private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
     private final String mainHall;
     @Getter(AccessLevel.NONE)
     protected final Map<String, ChatRoomModel> chatRooms;
