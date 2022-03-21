@@ -51,6 +51,7 @@ public interface StateManager {
     void addClientData(List<String> clientIds, String serverId);
     void addChatroomData(List<String> chatroomIds, String serverId);
     void removeClientsOfRemoteServer(String serverId);
+    void removeAllChatRoomsOfRemoteServer(String serverId);
 
 
 

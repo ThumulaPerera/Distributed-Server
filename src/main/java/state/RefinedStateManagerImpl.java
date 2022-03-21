@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.HeartbeatDetector;
-import serverserver.HeartbeatDetector;
 
 import java.util.*;
 
@@ -257,7 +256,9 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public boolean isRoomIdAvailable(String roomId) {
         synchronized (remoteServers) {
             for (ServerModel server: remoteServers.values()) {
-                if (server.containsChatRoom(roomId)) return false;
+                if (availableServers.contains(server.getId())) {
+                    if (server.containsChatRoom(roomId)) return false;
+                }
             }
         }
         return !localServer.containsChatRoom(roomId);
@@ -309,6 +310,11 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
                 }
             }
         }
+    }
+
+    @Override
+    public void removeAllChatRoomsOfRemoteServer(String serverId) {
+        remoteServers.get(serverId).removeAllChatRoomsExceptMainHall();
     }
 
 }
