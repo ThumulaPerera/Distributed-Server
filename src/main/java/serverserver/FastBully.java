@@ -42,7 +42,11 @@ public class FastBully {
             command.setFrom(STATE_MANAGER.getSelf().getId());
             for (String serverId : STATE_MANAGER.getAvailableServerIds()) {
                 if (serverId.compareTo(STATE_MANAGER.getSelf().getId()) < 0) {
-                    Sender.sendCommandToPeer(command, STATE_MANAGER.getServer(serverId));
+                    try {
+                        Sender.sendCommandToPeer(command, STATE_MANAGER.getServer(serverId));
+                    } catch (Exception ignore){
+
+                    }
                 }
             }
         }
@@ -78,7 +82,11 @@ public class FastBully {
             command.setFrom(STATE_MANAGER.getSelf().getId());
             for (ServerModel server : STATE_MANAGER.getAllRemoteServers()) {
                 if (server.getId().compareTo(STATE_MANAGER.getSelf().getId()) < 0) {
-                    Sender.sendCommandToPeer(command, server);
+                    try{
+                        Sender.sendCommandToPeer(command, server);
+                    } catch (Exception ignore){
+
+                    }
                 }
             }
             return;
@@ -120,7 +128,11 @@ public class FastBully {
         String selfId = STATE_MANAGER.getSelf().getId();
         STATE_MANAGER.getAllRemoteServers().forEach(server -> {
             if (server.getId().compareTo(selfId) < 0 && !server.getId().equals(excludeServer)) {
-                Sender.sendCommandToPeer(coordinatorCommand, server);
+                try{
+                    Sender.sendCommandToPeer(coordinatorCommand, server);
+                }catch (Exception ignore){
+
+                }
             }
         });
     }

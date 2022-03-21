@@ -40,7 +40,12 @@ public class CoordinatorCommand extends S2SExecutableCommand {
         NewDataF2LCommand newDataF2LCommand = new NewDataF2LCommand();
         newDataF2LCommand.setClients(allLocalClients);
         newDataF2LCommand.setChatRooms(allLocalRooms);
-        Sender.sendCommandToLeader(newDataF2LCommand);
+        try {
+            Sender.sendCommandToLeader(newDataF2LCommand);
+        }
+        catch (Exception ignore){
+            //TODO: check whether we need an elecion here (probably not)
+        }
         return null;
     }
 }
