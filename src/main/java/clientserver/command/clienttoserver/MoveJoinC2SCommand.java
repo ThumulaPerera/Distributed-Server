@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.Sender;
 import serverserver.command.followertoleader.ServerChangeNotificationF2LCommand;
 import serverserver.command.leadertofollower.ServerChangeNotedL2FCommand;
@@ -43,12 +44,19 @@ public class MoveJoinC2SCommand extends ClientAndSenderKnownExecutableCommand {
         if (STATE_MANAGER.isLeader()){
             STATE_MANAGER.changeServerOfClient(identity, STATE_MANAGER.getSelf().getId());
         } else {
-            ExecutableCommand response = Sender.sendCommandToLeaderAndReceive(
-                    new ServerChangeNotificationF2LCommand(identity)
-            );
+            try {
+                ExecutableCommand response = Sender.sendCommandToLeaderAndReceive(
+                        new ServerChangeNotificationF2LCommand(identity)
+                );
 
-            if (!(response instanceof ServerChangeNotedL2FCommand) || !((ServerChangeNotedL2FCommand) response).isNoted()){
-                LOGGER.error("Notifying leader about server change failed");
+                if (!(response instanceof ServerChangeNotedL2FCommand) || !((ServerChangeNotedL2FCommand) response).isNoted()) {
+                    LOGGER.error("Notifying leader about server change failed");
+                    getSender().send(new ServerChangeS2CCommand(false, STATE_MANAGER.getSelf().getId()));
+                    return null;
+                }
+            }catch (Exception e){
+                FastBully.startElection();
+                LOGGER.error("Leader not available, calling election");
                 getSender().send(new ServerChangeS2CCommand(false, STATE_MANAGER.getSelf().getId()));
                 return null;
             }
