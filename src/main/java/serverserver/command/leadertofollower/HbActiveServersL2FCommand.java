@@ -35,6 +35,7 @@ public class HbActiveServersL2FCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         STATE_MANAGER.updateAvailableServersList(serverlist);
+        STATE_MANAGER.addAvailableServerId(this.getOrigin());
         return null;
     }
 }

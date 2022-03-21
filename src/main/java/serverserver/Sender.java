@@ -12,6 +12,7 @@ import state.StateManager;
 import utils.JsonParser;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class Sender {
@@ -19,11 +20,11 @@ public class Sender {
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
-    public static ExecutableCommand sendCommandToLeaderAndReceive(Command command) {
+    public static ExecutableCommand sendCommandToLeaderAndReceive(Command command) throws IOException {
         return sendCommandToPeerAndReceive(command, STATE_MANAGER.getLeader());
     }
 
-    public static ExecutableCommand sendCommandToPeerAndReceive(Command command, ServerModel peer) {
+    public static ExecutableCommand sendCommandToPeerAndReceive(Command command, ServerModel peer) throws IOException {
         ExecutableCommand response = null;
 
         if (command == null) {
@@ -50,7 +51,7 @@ public class Sender {
             LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
         } catch (IOException e) {
             LOGGER.error("Error while sending command to peer: {}", e.getMessage());
-            e.printStackTrace();
+            throw e;
         }
 
         return response;

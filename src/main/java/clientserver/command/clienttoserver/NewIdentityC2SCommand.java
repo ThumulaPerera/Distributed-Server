@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.Sender;
 import serverserver.command.followertoleader.CheckIdentityF2LCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
@@ -48,13 +49,18 @@ public class NewIdentityC2SCommand extends ClientAndSenderKnownExecutableCommand
             // check local client list first
             if(!STATE_MANAGER.isIdLocallyAvailable(identity)) return false;
             // if not locally available, check with leader
-            Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
-            if (response instanceof CheckIdentityL2FCommand) {
-                isAvailable = ((CheckIdentityL2FCommand) response).isApproved();
-                if (isAvailable) {
-                    STATE_MANAGER.addNewLocalClient(identity, getSender());
+            try{
+                Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
+                if (response instanceof CheckIdentityL2FCommand) {
+                    isAvailable = ((CheckIdentityL2FCommand) response).isApproved();
+                    if (isAvailable) {
+                        STATE_MANAGER.addNewLocalClient(identity, getSender());
+                    }
                 }
+            }catch (Exception e){
+                FastBully.startElection();
             }
+
         }
         return isAvailable;
     }

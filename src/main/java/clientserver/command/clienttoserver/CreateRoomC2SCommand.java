@@ -10,12 +10,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.Sender;
 import serverserver.command.followertoleader.AddRoomF2LCommand;
 import serverserver.command.leadertofollower.AddRoomL2FCommand;
 import serverserver.command.leadertofollower.NewRoomL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.StateManager;
+
+import java.io.IOException;
+import java.net.ConnectException;
 
 @Getter
 @Setter
@@ -81,14 +85,20 @@ public class CreateRoomC2SCommand extends ClientAndSenderKnownExecutableCommand 
 
             } else {
                 AddRoomF2LCommand addRoomF2LCommand = new AddRoomF2LCommand(roomid);
-                Command response = Sender.sendCommandToLeaderAndReceive(addRoomF2LCommand);
-                if (response instanceof AddRoomL2FCommand) {
-                    boolean isApproved = ((AddRoomL2FCommand) response).isApproved();
-                    if (isApproved) {
-                        STATE_MANAGER.addLocalRoom(roomid, getClient());
-                        isAdded = true;
+                try{
+                    Command response = Sender.sendCommandToLeaderAndReceive(addRoomF2LCommand);
+                    if (response instanceof AddRoomL2FCommand) {
+                        boolean isApproved = ((AddRoomL2FCommand) response).isApproved();
+                        if (isApproved) {
+                            STATE_MANAGER.addLocalRoom(roomid, getClient());
+                            isAdded = true;
+                        }
                     }
+                } catch (IOException e){
+                    FastBully.startElection();
                 }
+
+
             }
         }
         return isAdded;

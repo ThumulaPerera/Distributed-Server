@@ -28,9 +28,14 @@ public class HeartbeatPulser {
     }
 
     private void sendPulse() {
-        ExecutableCommand serverListCommand = Sender.sendCommandToLeaderAndReceive(new HeartbeatF2LCommand(STATE_MANAGER.getSelf().getId()));
-        if (serverListCommand != null) {
-            serverListCommand.execute();
+        try{
+            ExecutableCommand serverListCommand = Sender.sendCommandToLeaderAndReceive(new HeartbeatF2LCommand(STATE_MANAGER.getSelf().getId()));
+            if (serverListCommand != null) {
+                serverListCommand.execute();
+            }
+        } catch (Exception ignored){
+
         }
+
     }
 }

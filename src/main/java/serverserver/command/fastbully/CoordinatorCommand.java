@@ -26,6 +26,7 @@ public class CoordinatorCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
+        STATE_MANAGER.getHeartbeatDetector().stopDetector();
         STATE_MANAGER.setLeader(from);
         STATE_MANAGER.setElectionAllowed(false);
         List<String> allLocalClients = STATE_MANAGER.getAllLocalClients()

@@ -113,11 +113,16 @@ public class HeartbeatDetector {
             if (dif > HEARTBEAT_CHECK_FRACTION * HEARTBEAT_CHECK_INTERVAL) {
                 markSuspicious(serverID);
                 LOGGER.debug("Server " + serverID + " marked : SUSPICIOUS");
-                ExecutableCommand statusReply = Sender.sendCommandToPeerAndReceive(
-                        new HbStatusCheckL2FCommand(), STATE_MANAGER.getServer(serverID));
-                if (statusReply != null) {
-                    statusReply.execute();
+                try{
+                    ExecutableCommand statusReply = Sender.sendCommandToPeerAndReceive(
+                            new HbStatusCheckL2FCommand(), STATE_MANAGER.getServer(serverID));
+                    if (statusReply != null) {
+                        statusReply.execute();
+                    }
+                }catch (Exception ignored){
+
                 }
+
                 scheduleStatusCheckTask(serverID);
             } else {
                 LOGGER.debug("Server " + serverID + " not marked");

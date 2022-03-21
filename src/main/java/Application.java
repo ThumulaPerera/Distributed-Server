@@ -48,7 +48,7 @@ public class Application {
 
         while (true) {
             Thread.sleep(2000);
-            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId());
+            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId()+ "\t servers: "+ STATE_MANAGER.getAvailableServerIds());
         }
     }
 

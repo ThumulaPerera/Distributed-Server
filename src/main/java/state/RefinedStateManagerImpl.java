@@ -15,8 +15,7 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     private final Map<String, ServerModel> remoteServers = Collections.synchronizedMap(new HashMap<>());
     private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
     private final Set<String> allClientIds = Collections.synchronizedSet(new HashSet<>());
-    @Getter
-    private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
+    @Getter private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
     @Getter
     @Setter
     private volatile boolean electionAllowed = false;
@@ -228,9 +227,10 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     @Override
     public void updateAvailableServersList(Set<String> servers) {
         synchronized (availableServers){
-            for (String old : availableServers) {
-                availableServers.remove(old);
-            }
+//            for (String old : availableServers) {
+//                availableServers.remove(old);
+//            }
+            availableServers.clear();
             availableServers.addAll(servers);
         }
     }
