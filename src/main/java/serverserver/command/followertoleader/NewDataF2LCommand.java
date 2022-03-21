@@ -31,7 +31,7 @@ public class NewDataF2LCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        STATE_MANAGER.addClientData(clients);
+        STATE_MANAGER.addClientData(clients, getOrigin());
         STATE_MANAGER.addChatroomData(chatRooms, getOrigin());
         return null;
     }

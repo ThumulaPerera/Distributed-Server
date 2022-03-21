@@ -13,7 +13,7 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     private static final RefinedStateManagerImpl instance = new RefinedStateManagerImpl();
     private final Map<String, ServerModel> remoteServers = Collections.synchronizedMap(new HashMap<>());;
     private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
-    private final Set<String> allClientIds = Collections.synchronizedSet(new HashSet<>());
+    private final Map<String, String> allClientIds = Collections.synchronizedMap(new HashMap<>());
     @Getter
     @Setter
     private volatile boolean electionAllowed = false;
@@ -79,14 +79,14 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
 
     @Override
     public boolean checkAvailabilityAndAddNewLocalClient(String clientId, ClientSender sender) {
-        if (!checkAndGrabClientId(clientId)) return false;
+        if (!checkAndGrabClientId(clientId, localServer.getId())) return false;
         addNewLocalClient(clientId, sender);
         return true;
     }
 
     @Override
     public boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId) {
-        return checkAndGrabClientId(clientId);
+        return checkAndGrabClientId(clientId, serverId);
     }
 
     @Override
@@ -255,17 +255,19 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         allClientIds.remove(clientId);
     }
 
-    private boolean checkAndGrabClientId(String clientId) {
+    private boolean checkAndGrabClientId(String clientId, String serverId) {
         synchronized (allClientIds) {
-            if (allClientIds.contains(clientId)) return false;
-            allClientIds.add(clientId);
+            if (allClientIds.containsKey(clientId)) return false;
+            allClientIds.put(clientId, serverId);
         }
         return true;
     }
 
-    public void addClientData(List<String> clientIds) {
+    public void addClientData(List<String> clientIds, String serverId) {
         synchronized (allClientIds) {
-            allClientIds.addAll(clientIds);
+            for (String clientId: clientIds) {
+                allClientIds.put(clientId, serverId);
+            }
         }
     }
 

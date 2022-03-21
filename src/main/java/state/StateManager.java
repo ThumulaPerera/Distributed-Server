@@ -43,7 +43,7 @@ public interface StateManager {
     List<String> getAvailableServerIds();
     void setElectionAllowed(boolean electionAllowed);
     boolean isElectionAllowed();
-    void addClientData(List<String> clientIds);
+    void addClientData(List<String> clientIds, String serverId);
     void addChatroomData(List<String> chatroomIds, String serverId);
 
 
