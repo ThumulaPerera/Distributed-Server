@@ -61,8 +61,10 @@ public abstract class RoomDeletableC2SCommand extends ClientAndSenderKnownExecut
                 }
             } catch (IOException e){
                 FastBully.startElection();
+                // leader down. delete room locally.
+                // when newly elected leader comes online, local room list will be sent to the new leader
+                STATE_MANAGER.deleteLocalRoom(roomId);
             }
-
         }
     }
 }
