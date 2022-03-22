@@ -227,9 +227,6 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     @Override
     public void updateAvailableServersList(Set<String> servers) {
         synchronized (availableServers){
-//            for (String old : availableServers) {
-//                availableServers.remove(old);
-//            }
             availableServers.clear();
             availableServers.addAll(servers);
         }
