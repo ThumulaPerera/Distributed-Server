@@ -18,6 +18,8 @@ public class Config {
     private static final StateInitializer STATE_INITIALIZER = RefinedStateManagerImpl.getInstance();
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
+    @Getter private static final int SOCKET_TIMEOUT = 300000;  // 5 minutes
+
     @Getter private static final int MIN_CLIENT_THREADS = 20;
     @Getter private static final int MAX_CLIENT_THREADS = 100;
     @Getter private static final int MIN_SERVER_THREADS = 5;
