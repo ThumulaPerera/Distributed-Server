@@ -20,4 +20,9 @@ public class LocalClientModel extends ClientModel {
         this.sender = sender;
     }
 
+    @Override
+    public String toString() {
+        return getId();
+    }
+
 }

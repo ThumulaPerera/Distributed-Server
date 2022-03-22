@@ -62,7 +62,7 @@ public class ServerThread implements Runnable {
                     handleMoveJoin(inputCommand);
 
                 } else {
-                    LOGGER.error("Unknown initial command: " + inputCommand);
+                    LOGGER.error("Unknown initial command: {}", inputCommand);
                     closeSocket();
                     return;
                 }
@@ -70,7 +70,7 @@ public class ServerThread implements Runnable {
                 while ((json = br.readLine()) != null) {
                     inputCommand = getCommand(json);
                     if (inputCommand instanceof NewIdentityC2SCommand || inputCommand instanceof MoveJoinC2SCommand) {
-                        LOGGER.error("Un-allowed command for already connected client: " + inputCommand);
+                        LOGGER.error("Un-allowed command for already connected client: {}", inputCommand);
                     } else if (inputCommand instanceof QuitC2SCommand) {
                         inputCommand.execute();
                         closeSocket();
@@ -81,10 +81,10 @@ public class ServerThread implements Runnable {
                     }
                 }
             } catch (IOException ex) {
-                LOGGER.error("Error while reading from client: " + ex.getMessage());
+                LOGGER.error("Error while reading from client [" + client + "]", ex);
                 handleIoException(ex);
             }
-            LOGGER.info("Client abruptly disconnected: " + socket.getInetAddress() + ":" + socket.getPort());
+            LOGGER.info("Client [{}] abruptly disconnected: {}:{} ", client, socket.getInetAddress(), socket.getPort());
 
             QuitC2SCommand abruptQuitCommand = new QuitC2SCommand();
             setClient(abruptQuitCommand);
@@ -102,6 +102,7 @@ public class ServerThread implements Runnable {
         String clientId = ((MoveJoinC2SCommand) inputCommand).getIdentity();
 
         client = STATE_MANAGER.getLocalClient(clientId);
+        sender.setClientId(clientId);
     }
 
     private boolean handleNewIdentity(ExecutableCommand inputCommand) throws JsonProcessingException {
@@ -113,6 +114,7 @@ public class ServerThread implements Runnable {
 
         if (isApproved){
             client = STATE_MANAGER.getLocalClient(clientId);
+            sender.setClientId(clientId);
         }
         sendResponse(outputCommand);
         if (isApproved) {
@@ -133,7 +135,7 @@ public class ServerThread implements Runnable {
     }
 
     private void closeSocket() throws IOException {
-        LOGGER.debug("Closing connection with client : {}", socket.getRemoteSocketAddress());
+        LOGGER.debug("Closing connection with client [{}] : {}", client, socket.getRemoteSocketAddress());
         socket.close();
     }
 
@@ -156,7 +158,7 @@ public class ServerThread implements Runnable {
     }
 
     private ExecutableCommand getExecutableCommand(String json) {
-        LOGGER.debug("Received from client: " + json);
+        LOGGER.debug("Received from client [{}]: {}" ,client, json);
         return C2SCommandFactory.createC2SCommand(json);
     }
 

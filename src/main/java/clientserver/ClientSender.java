@@ -3,6 +3,7 @@ package clientserver;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.JsonParser;
@@ -18,6 +19,7 @@ public class ClientSender implements AutoCloseable{
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
     private BufferedWriter bw;
+    @Setter private String clientId;
 
     public ClientSender(Socket socket) {
         try {
@@ -41,13 +43,13 @@ public class ClientSender implements AutoCloseable{
                 e.printStackTrace();
                 return false;
             }
-            LOGGER.debug("Sending to client: " + jsonOutputMessage);
+            LOGGER.debug("Sending to client [{}]: {}", clientId, jsonOutputMessage);
             try {
                 bw.write(jsonOutputMessage);
                 bw.newLine(); //HERE!!!!!!
                 bw.flush();
             } catch (IOException e) {
-                LOGGER.error("Error while sending message", e);
+                LOGGER.error("Error while sending message to client [" + clientId + "]", e);
                 e.printStackTrace();
                 return false;
             }

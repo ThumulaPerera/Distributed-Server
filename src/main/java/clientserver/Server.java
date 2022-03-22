@@ -26,7 +26,7 @@ public class Server implements Runnable {
             LOGGER.info("clientserver.Server is listening on port {}", port);
             while (true) {
                 Socket socket = serverSocket.accept();
-                LOGGER.info("New client connected : {}", socket.getRemoteSocketAddress());
+                LOGGER.info("New client connected on : {}", socket.getRemoteSocketAddress());
                 executorService.submit(new ServerThread(socket));
             }
         } catch (IOException e) {
