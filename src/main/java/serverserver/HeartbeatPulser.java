@@ -11,7 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HeartbeatPulser {
-    private static final int HEARTBEAT_PULSE_INTERVAL = 5000;
+    private static final int HEARTBEAT_PULSE_INTERVAL = 3000;
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatPulser.class);
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 

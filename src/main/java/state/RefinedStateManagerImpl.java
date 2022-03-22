@@ -229,11 +229,13 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     }
 
     @Override
+    public void removeAvailableServerId(String serverId){
+        availableServers.remove(serverId);
+    }
+
+    @Override
     public void updateAvailableServersList(Set<String> servers) {
         synchronized (availableServers){
-//            for (String old : availableServers) {
-//                availableServers.remove(old);
-//            }
             availableServers.clear();
             availableServers.addAll(servers);
         }
@@ -304,11 +306,15 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     @Override
     public void removeClientsOfRemoteServer(String serverId) {
         synchronized (allClientIds) {
-            for (Map.Entry<String, String> entry : allClientIds.entrySet()) {
-                if (entry.getValue().equals(serverId)) {
-                    allClientIds.remove(entry.getKey());
-                }
-            }
+            allClientIds.entrySet()
+                        .removeIf(
+                            entry -> (entry.getValue().equals(serverId))
+                        );
+//            for (Map.Entry<String, String> entry : allClientIds.entrySet()) {
+//                if (entry.getValue().equals(serverId)) {
+//                    allClientIds.remove(entry.getKey());
+//                }
+//            }
         }
     }
 
