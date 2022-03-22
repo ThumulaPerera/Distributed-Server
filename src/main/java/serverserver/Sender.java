@@ -14,6 +14,7 @@ import utils.JsonParser;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Sender {
     private static final Logger LOGGER = LoggerFactory.getLogger(Sender.class);
@@ -36,7 +37,7 @@ public class Sender {
 
         try (Socket socket = new Socket(peer.getAddress(), peer.getCoordinationPort());
              BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
+             PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
         ) {
             String sentMessage = MAPPER.writeValueAsString(command);
             pw.println(sentMessage);
@@ -73,7 +74,7 @@ public class Sender {
 
         try (Socket socket = new Socket(peer.getAddress(), peer.getCoordinationPort());
              BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true)
+             PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
         ) {
             String sentMessage = MAPPER.writeValueAsString(command);
             pw.println(sentMessage);

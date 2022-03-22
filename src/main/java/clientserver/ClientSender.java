@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class ClientSender implements AutoCloseable{
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientSender.class);
@@ -20,7 +21,7 @@ public class ClientSender implements AutoCloseable{
 
     public ClientSender(Socket socket) {
         try {
-            bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
         }
