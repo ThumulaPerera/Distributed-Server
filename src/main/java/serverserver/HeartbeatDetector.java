@@ -19,7 +19,7 @@ public class HeartbeatDetector {
     private static final int HEARTBEAT_FUNC_CONFIRM_INTERVAL = 3000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatDetector.class);
-    private final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
     private final Map<String, Long> serverUpdateTimes = Collections.synchronizedMap(new HashMap<>());
     private final Map<String, ServerAvailability> serverAvailabilityStatus = Collections.synchronizedMap(new HashMap<>());
     private final Map<String, TimerTask> serverTimeCheckTasks = Collections.synchronizedMap(new HashMap<>());
@@ -101,6 +101,8 @@ public class HeartbeatDetector {
 
     private class checkHbIntervalTask extends TimerTask {
         String serverID;
+        private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
+
 
         public checkHbIntervalTask(String id) {
             super();
@@ -120,8 +122,8 @@ public class HeartbeatDetector {
                     if (statusReply != null) {
                         statusReply.execute();
                     }
-                }catch (Exception ignored){
-
+                }catch (Exception e){
+                    LOGGER.error(e.getMessage());
                 }
 
                 scheduleStatusCheckTask(serverID);
@@ -133,6 +135,8 @@ public class HeartbeatDetector {
 
     private class checkFunctionalityTask extends TimerTask {
         String serverID;
+        private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
+
 
         public checkFunctionalityTask(String id) {
             super();
@@ -142,6 +146,13 @@ public class HeartbeatDetector {
         @Override
         public void run() {
             markInactive(serverID);
+
+            //update my (leader) state
+            STATE_MANAGER.removeAvailableServerId(serverID);
+            STATE_MANAGER.removeAllChatRoomsOfRemoteServer(serverID);
+            STATE_MANAGER.removeClientsOfRemoteServer(serverID);
+
+            //inform followers about the inactivity of this server
             Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID));
             LOGGER.debug("Server " + serverID + " marked : INACTIVE");
         }

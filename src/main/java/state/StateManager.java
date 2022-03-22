@@ -38,6 +38,7 @@ public interface StateManager {
     boolean isRoomIdAvailable(String roomId);
     void removeClientFromAllClients(String clientId);
     void updateAvailableServersList(Set<String> servers);
+    void removeAvailableServerId(String serverId);
     HeartbeatDetector getHeartbeatDetector();
     void changeServerOfClient(String clientId, String serverId);
 

@@ -32,7 +32,9 @@ public class HbStatusNotifyL2FCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        //Command
+        STATE_MANAGER.removeAvailableServerId(this.inactiveServer);
+        STATE_MANAGER.removeAllChatRoomsOfRemoteServer(this.inactiveServer);
+        STATE_MANAGER.removeClientsOfRemoteServer(this.inactiveServer);
         return null;
     }
 }
