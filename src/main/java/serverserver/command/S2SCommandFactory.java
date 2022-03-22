@@ -36,6 +36,7 @@ public class S2SCommandFactory {
                 case HEARTBEAT -> command = MAPPER.readValue(json, HeartbeatF2LCommand.class);
                 case HEARTBEAT_STATUS_CHECK -> command = MAPPER.readValue(json, HbStatusCheckL2FCommand.class);
                 case HEARTBEAT_STATUS_REPLY -> command = MAPPER.readValue(json, HbStatusReplyF2LCommand.class);
+                case HEARTBEAT_NOTIFY_STATUS -> command = MAPPER.readValue(json,HbStatusNotifyL2FCommand.class);
                 case HEARTBEAT_ACTIVE_SERVERS -> command = MAPPER.readValue(json, HbActiveServersL2FCommand.class);
                 case IAMUP -> command = MAPPER.readValue(json, IamUpCommand.class);
                 case VIEW -> command = MAPPER.readValue(json, ViewCommand.class);
