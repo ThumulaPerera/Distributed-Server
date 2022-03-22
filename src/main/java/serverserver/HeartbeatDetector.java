@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import serverserver.command.leadertofollower.HbStatusCheckL2FCommand;
+import serverserver.command.leadertofollower.HbStatusNotifyL2FCommand;
 import state.RefinedStateManagerImpl;
 import state.ServerAvailability;
 import state.ServerModel;
@@ -141,7 +142,7 @@ public class HeartbeatDetector {
         @Override
         public void run() {
             markInactive(serverID);
-//            Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID, ServerAvailability.INACTIVE));
+            Sender.broadcastCommandToAllFollowers(new HbStatusNotifyL2FCommand(serverID));
             LOGGER.debug("Server " + serverID + " marked : INACTIVE");
         }
     }
