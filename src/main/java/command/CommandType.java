@@ -34,6 +34,8 @@ public enum CommandType {
     HEARTBEAT_ACTIVE_SERVERS("activeservers"),
     QUIT_NOTIFICATION("quitnotification"),
     NEW_DATA("newdata"),
+    SERVER_CHANGE_NOTIFICATION("serverchangenotification"),
+    SERVER_CHANGE_NOTED("serverchangenoted"),
 
     //fast bully commands
     IAMUP("iamup"),

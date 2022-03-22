@@ -6,6 +6,7 @@ import command.Command;
 import command.CommandType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.Sender;
 import serverserver.command.followertoleader.QuitNotificationF2LCommand;
 import state.LocalChatRoomModel;
@@ -53,7 +54,11 @@ public class QuitC2SCommand extends RoomDeletableC2SCommand {
         if (STATE_MANAGER.isLeader()){
             STATE_MANAGER.removeClientFromAllClients(clientId);
         } else {
-            Sender.sendCommandToLeader(new QuitNotificationF2LCommand(clientId));
+            try {
+                Sender.sendCommandToLeader(new QuitNotificationF2LCommand(clientId));
+            }catch (Exception e){
+                FastBully.startElection();
+            }
         }
 
         return null;

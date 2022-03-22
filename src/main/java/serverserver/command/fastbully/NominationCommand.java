@@ -27,7 +27,8 @@ public class NominationCommand extends S2SExecutableCommand {
                 STATE_MANAGER
                     .getAllLocalClients()
                     .stream()
-                    .map(client -> client.getId()).toList()
+                    .map(client -> client.getId()).toList(),
+                STATE_MANAGER.getSelf().getId()
         );
 
         CoordinatorCommand coordinatorCommand = new CoordinatorCommand();

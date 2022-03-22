@@ -57,12 +57,12 @@ public class Sender {
         return response;
     }
 
-    public static boolean sendCommandToLeader(Command command) {
+    public static boolean sendCommandToLeader(Command command) throws IOException {
         return sendCommandToPeer(command, STATE_MANAGER.getLeader());
     }
 
 
-    public static boolean sendCommandToPeer(Command command, ServerModel peer) {
+    public static boolean sendCommandToPeer(Command command, ServerModel peer) throws IOException {
 
         if (command == null) {
             LOGGER.error("Command is null");
@@ -82,6 +82,7 @@ public class Sender {
             LOGGER.debug("Closing connection to peer: {}", socket.getRemoteSocketAddress());
         } catch (IOException e) {
             System.out.println(e);
+            throw e;
         }
         return true;
     }
@@ -89,7 +90,11 @@ public class Sender {
     // to be used by leader only
     public static boolean broadcastCommandToAllFollowers(Command command) {
         for (ServerModel follower: STATE_MANAGER.getAllRemoteServers()) {
-            sendCommandToPeer(command, follower);
+            try{
+                sendCommandToPeer(command, follower);
+            }catch (Exception ignore){
+
+            }
         }
         return true;
     }
@@ -98,7 +103,11 @@ public class Sender {
     public static boolean broadcastCommandToOtherFollowers(Command command, String excludeServerId) {
         for (ServerModel follower: STATE_MANAGER.getAllRemoteServers()) {
             if (!follower.getId().equals(excludeServerId)) {
-                sendCommandToPeer(command, follower);
+                try{
+                    sendCommandToPeer(command, follower);
+                }catch (Exception ignore){
+
+                }
             }
         }
         return true;

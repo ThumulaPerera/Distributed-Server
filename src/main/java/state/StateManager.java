@@ -39,6 +39,7 @@ public interface StateManager {
     void removeClientFromAllClients(String clientId);
     void updateAvailableServersList(Set<String> servers);
     HeartbeatDetector getHeartbeatDetector();
+    void changeServerOfClient(String clientId, String serverId);
 
     // for fast bully
     void addAvailableServerId(String serverId);
@@ -47,8 +48,11 @@ public interface StateManager {
     List<String> getAvailableServerIds();
     void setElectionAllowed(boolean electionAllowed);
     boolean isElectionAllowed();
-    void addClientData(List<String> clientIds);
+    void addClientData(List<String> clientIds, String serverId);
     void addChatroomData(List<String> chatroomIds, String serverId);
+    void removeClientsOfRemoteServer(String serverId);
+    void removeAllChatRoomsOfRemoteServer(String serverId);
+
 
 
 

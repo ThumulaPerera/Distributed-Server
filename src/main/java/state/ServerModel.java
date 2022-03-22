@@ -2,7 +2,7 @@ package state;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import serverserver.HeartbeatDetector;
+
 import java.util.*;
 
 @Getter
@@ -43,6 +43,12 @@ public class ServerModel {
 
     protected List<ChatRoomModel> getChatRooms() {
         return chatRooms.values().stream().toList();
+    }
+
+    protected void removeAllChatRoomsExceptMainHall(){
+        synchronized (chatRooms) {
+            chatRooms.keySet().removeIf(chatRoomId -> !chatRoomId.equals(mainHall));
+        }
     }
 
 }

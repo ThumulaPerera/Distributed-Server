@@ -14,7 +14,7 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     private static final RefinedStateManagerImpl instance = new RefinedStateManagerImpl();
     private final Map<String, ServerModel> remoteServers = Collections.synchronizedMap(new HashMap<>());
     private final Set<String> availableServers = Collections.synchronizedSet(new HashSet<>());
-    private final Set<String> allClientIds = Collections.synchronizedSet(new HashSet<>());
+    private final Map<String, String> allClientIds = Collections.synchronizedMap(new HashMap<>());
     @Getter private final HeartbeatDetector heartbeatDetector = new HeartbeatDetector();
     @Getter
     @Setter
@@ -81,14 +81,14 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
 
     @Override
     public boolean checkAvailabilityAndAddNewLocalClient(String clientId, ClientSender sender) {
-        if (!checkAndGrabClientId(clientId)) return false;
+        if (!checkAndGrabClientId(clientId, localServer.getId())) return false;
         addNewLocalClient(clientId, sender);
         return true;
     }
 
     @Override
     public boolean checkAvailabilityAndAddGlobalClient(String clientId, String serverId) {
-        return checkAndGrabClientId(clientId);
+        return checkAndGrabClientId(clientId, serverId);
     }
 
     @Override
@@ -133,7 +133,11 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public ServerModel getServerIfGlobalChatRoomExists(String chatRoomId) {
         synchronized (remoteServers) {
             for (ServerModel server: remoteServers.values()) {
-                if (server.getChatRoom(chatRoomId) != null) return server;
+                if (server.getChatRoom(chatRoomId) != null
+                        && availableServers.contains(server.getId())
+                ) {
+                    return server;
+                }
             }
         }
         return null;
@@ -249,7 +253,9 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
     public boolean isRoomIdAvailable(String roomId) {
         synchronized (remoteServers) {
             for (ServerModel server: remoteServers.values()) {
-                if (server.containsChatRoom(roomId)) return false;
+                if (availableServers.contains(server.getId())) {
+                    if (server.containsChatRoom(roomId)) return false;
+                }
             }
         }
         return !localServer.containsChatRoom(roomId);
@@ -260,17 +266,27 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         allClientIds.remove(clientId);
     }
 
-    private boolean checkAndGrabClientId(String clientId) {
+    @Override
+    public void changeServerOfClient(String clientId, String serverId) {
+        synchronized (allClientIds){
+            allClientIds.remove(clientId);
+            allClientIds.put(clientId, serverId);
+        }
+    }
+
+    private boolean checkAndGrabClientId(String clientId, String serverId) {
         synchronized (allClientIds) {
-            if (allClientIds.contains(clientId)) return false;
-            allClientIds.add(clientId);
+            if (allClientIds.containsKey(clientId)) return false;
+            allClientIds.put(clientId, serverId);
         }
         return true;
     }
 
-    public void addClientData(List<String> clientIds) {
+    public void addClientData(List<String> clientIds, String serverId) {
         synchronized (allClientIds) {
-            allClientIds.addAll(clientIds);
+            for (String clientId: clientIds) {
+                allClientIds.put(clientId, serverId);
+            }
         }
     }
 
@@ -282,5 +298,20 @@ public class RefinedStateManagerImpl implements StateInitializer, StateManager {
         }
     }
 
+    @Override
+    public void removeClientsOfRemoteServer(String serverId) {
+        synchronized (allClientIds) {
+            for (Map.Entry<String, String> entry : allClientIds.entrySet()) {
+                if (entry.getValue().equals(serverId)) {
+                    allClientIds.remove(entry.getKey());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void removeAllChatRoomsOfRemoteServer(String serverId) {
+        remoteServers.get(serverId).removeAllChatRoomsExceptMainHall();
+    }
 
 }
