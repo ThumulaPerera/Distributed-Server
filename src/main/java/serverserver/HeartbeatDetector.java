@@ -14,7 +14,7 @@ import state.StateManager;
 import java.util.*;
 
 public class HeartbeatDetector {
-    private static final int HEARTBEAT_CHECK_INTERVAL = 10000;
+    private static final int HEARTBEAT_CHECK_INTERVAL = 6000;
     private static final float HEARTBEAT_CHECK_FRACTION = 0.9f;
     private static final int HEARTBEAT_FUNC_CONFIRM_INTERVAL = 3000;
 
