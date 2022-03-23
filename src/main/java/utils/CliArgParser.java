@@ -20,6 +20,10 @@ public class CliArgParser {
         serversConf.setRequired(true);
         options.addOption(serversConf);
 
+        Option socketTimeout = new Option("t", "socket_timeout", true, "socket timeout");
+        socketTimeout.setRequired(false);
+        options.addOption(socketTimeout);
+
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd = null;

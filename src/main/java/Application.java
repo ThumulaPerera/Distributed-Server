@@ -1,7 +1,6 @@
 import clientserver.Server;
 import config.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import serverserver.FastBully;
 import serverserver.HeartbeatPulser;
 import serverserver.Receiver;
@@ -14,11 +13,12 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 
+@Slf4j
 public class Application {
 
     public static void main(String[] args) throws InterruptedException {
         initConfig(args);
-        Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
         StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
         Thread serverToServerReceiver = new Thread(new Receiver());
@@ -26,7 +26,7 @@ public class Application {
 
         FastBully.executeStartup();
         STATE_MANAGER.setElectionAllowed(false);
-        LOGGER.debug("servers: " + STATE_MANAGER.getAvailableServerIds().toString() +
+        log.debug("servers: " + STATE_MANAGER.getAvailableServerIds().toString() +
                 "\tLeader: " + STATE_MANAGER.getLeader().getId());
 
 
@@ -35,29 +35,25 @@ public class Application {
 
         Thread serverThread = new Thread(new Server());
         serverThread.start();
-//        if (STATE_MANAGER.getSelf().getId().equals("s1")) {
-//            new Thread(() -> {
-//                try {
-//                    Thread.sleep(20000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                FastBully.startElection();
-//            }).start();
-//        }
 
         while (true) {
             Thread.sleep(2000);
-            LOGGER.debug("Leader: " + STATE_MANAGER.getLeader().getId()+ "\t servers: "+ STATE_MANAGER.getAvailableServerIds());
+            log.debug("Leader: " + STATE_MANAGER.getLeader().getId()+ "\t servers: "+ STATE_MANAGER.getAvailableServerIds());
         }
     }
 
     public static void initConfig(String[] args) {
         Map<String, String> parsedArgs = CliArgParser.parse(args);
 
+        log.debug("parsed args: " + parsedArgs.toString());
+
         String serverId = parsedArgs.get("serverid");
         Path serverConfigPath = Paths.get(parsedArgs.get("servers_conf"));
 
         Config.loadProperties(serverId, serverConfigPath);
+
+        if (parsedArgs.containsKey("socket_timeout")) {
+            Config.setSOCKET_TIMEOUT(Integer.parseInt(parsedArgs.get("socket_timeout")));
+        }
     }
 }

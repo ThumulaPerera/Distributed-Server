@@ -1,6 +1,7 @@
 package config;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import state.RefinedStateManagerImpl;
@@ -18,7 +19,8 @@ public class Config {
     private static final StateInitializer STATE_INITIALIZER = RefinedStateManagerImpl.getInstance();
     private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
-    @Getter private static final int SOCKET_TIMEOUT = 300000;  // 5 minutes
+    @Getter@Setter
+    private static int SOCKET_TIMEOUT = 1800000;  // 30 minutes
 
     @Getter private static final int MIN_CLIENT_THREADS = 20;
     @Getter private static final int MAX_CLIENT_THREADS = 100;
