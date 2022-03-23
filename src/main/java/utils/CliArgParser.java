@@ -12,7 +12,7 @@ public class CliArgParser {
 
         Options options = new Options();
 
-        Option serverId = new Option("i", "serverid", true, "name of the server");
+        Option serverId = new Option("i", "serverid", true, "id of the server");
         serverId.setRequired(true);
         options.addOption(serverId);
 
@@ -20,7 +20,7 @@ public class CliArgParser {
         serversConf.setRequired(true);
         options.addOption(serversConf);
 
-        Option socketTimeout = new Option("t", "socket_timeout", true, "socket timeout");
+        Option socketTimeout = new Option("t", "socket_timeout", true, "socket timeout in milliseconds");
         socketTimeout.setRequired(false);
         options.addOption(socketTimeout);
 
