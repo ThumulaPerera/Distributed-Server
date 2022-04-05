@@ -25,6 +25,9 @@ public class JsonParser {
         SimpleModule simpleModule = new SimpleModule("BooleanAsString", new Version(1, 0, 0, null, null, null));
         simpleModule.addSerializer(Boolean.class,new BooleanSerializer());
         simpleModule.addSerializer(boolean.class,new BooleanSerializer());
+        simpleModule.addSerializer(Integer.class,new IntegerSerializer());
+        simpleModule.addSerializer(int.class,new IntegerSerializer());
+
 
         mapper.registerModule(simpleModule);
     }
@@ -43,11 +46,24 @@ public class JsonParser {
     }
 }
 
+// reference: https://stackoverflow.com/questions/47104817/how-can-i-configure-jackson-to-serialize-longs-as-strings-but-not-integers-or-d
+
 class BooleanSerializer extends JsonSerializer<Boolean> {
     private final static Logger LOGGER = LoggerFactory.getLogger(BooleanSerializer.class);
 
     @Override
     public void serialize(Boolean value, JsonGenerator jgen, SerializerProvider provider)
+            throws IOException, JsonGenerationException {
+        jgen.writeString(value.toString());
+    }
+
+}
+
+class IntegerSerializer extends JsonSerializer<Integer> {
+    private final static Logger LOGGER = LoggerFactory.getLogger(BooleanSerializer.class);
+
+    @Override
+    public void serialize(Integer value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonGenerationException {
         jgen.writeString(value.toString());
     }

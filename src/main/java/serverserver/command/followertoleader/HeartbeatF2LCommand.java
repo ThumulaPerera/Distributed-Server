@@ -7,14 +7,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.leadertofollower.HbActiveServersL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class HeartbeatF2LCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatF2LCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String from;
 
@@ -29,9 +30,13 @@ public class HeartbeatF2LCommand extends S2SExecutableCommand {
 
     @Override
     public Command execute() {
-        LOGGER.debug("Executing Heartbeat from Server {}", from);
-        STATE_MANAGER.getLeader().getHeartbeatDetector().updateTime(from,System.currentTimeMillis());
-        //TODO send the ack message
-        return null;
+        STATE_MANAGER.getHeartbeatDetector().updateTime(from,System.currentTimeMillis());
+
+        // update the available server list in state manager
+        STATE_MANAGER.updateAvailableServersList(STATE_MANAGER.getHeartbeatDetector().getActiveServers());
+        
+        //add myself as well
+        STATE_MANAGER.addAvailableServerId(STATE_MANAGER.getSelf().getId());
+        return new HbActiveServersL2FCommand(STATE_MANAGER.getHeartbeatDetector().getActiveServers());
     }
 }

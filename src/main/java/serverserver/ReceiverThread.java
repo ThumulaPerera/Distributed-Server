@@ -17,7 +17,7 @@ import java.net.Socket;
 /**
  * This thread is responsible to handle client connection. * * @author www.codejava.net
  */
-public class ReceiverThread extends Thread {
+public class ReceiverThread implements Runnable {
     private static Logger LOGGER = LoggerFactory.getLogger(ReceiverThread.class);
     private static final ObjectMapper MAPPER = JsonParser.getMapper();
 
@@ -43,7 +43,7 @@ public class ReceiverThread extends Thread {
 
                 if (outputMessage != null) {
                     String outputMessageJson = MAPPER.writeValueAsString(outputMessage);
-                    LOGGER.debug("Sending to peer: " + outputMessageJson);
+//                    LOGGER.debug("Sending to peer: " + outputMessageJson);
                     pw.println(outputMessageJson);
                 }
 
@@ -51,7 +51,7 @@ public class ReceiverThread extends Thread {
                 LOGGER.error("serverserver.Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
-            LOGGER.debug("Closing connection: " + socket.getRemoteSocketAddress());
+//            LOGGER.debug("Closing connection: " + socket.getRemoteSocketAddress());
             socket.close();
         } catch (IOException ex) {
             LOGGER.error("serverserver.Server exception: " + ex.getMessage());

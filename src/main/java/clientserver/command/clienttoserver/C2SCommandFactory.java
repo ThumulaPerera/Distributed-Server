@@ -25,6 +25,12 @@ public class C2SCommandFactory {
                 case NEW_IDENTITY -> command = MAPPER.readValue(json, NewIdentityC2SCommand.class);
                 case MESSAGE -> command = MAPPER.readValue(json, MessageC2SCommand.class);
                 case LIST -> command = MAPPER.readValue(json, ListC2SCommand.class);
+                case MOVE_JOIN -> command = MAPPER.readValue(json, MoveJoinC2SCommand.class);
+                case CREATE_ROOM -> command = MAPPER.readValue(json, CreateRoomC2SCommand.class);
+                case DELETE_ROOM -> command = MAPPER.readValue(json, DeleteRoomC2SCommand.class);
+                case QUIT -> command = MAPPER.readValue(json, QuitC2SCommand.class);
+                case WHO -> command = MAPPER.readValue(json, WhoC2SCommand.class);
+                case JOIN_ROOM -> command = MAPPER.readValue(json, JoinRoomC2SCommand.class);
             }
         }
         catch (JsonProcessingException e) {

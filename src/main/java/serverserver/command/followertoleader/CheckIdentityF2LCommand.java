@@ -1,23 +1,22 @@
 package serverserver.command.followertoleader;
 
-import clientserver.command.clienttoserver.NewIdentityC2SCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
 import command.S2SExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.command.leadertofollower.AddRoomL2FCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
 public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckIdentityF2LCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String identity;
 
@@ -33,6 +32,9 @@ public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     @Override
     public Command execute() {
         // executed by leader only
+        if (!STATE_MANAGER.isLeader()){
+            return new CheckIdentityL2FCommand(identity, false);
+        }
 
         LOGGER.debug("Executing Check Identity F2L with identity: {}", identity);
 
@@ -40,6 +42,6 @@ public class CheckIdentityF2LCommand extends S2SExecutableCommand {
     }
 
     private boolean isIdentityValid() {
-        return STATE_MANAGER.checkValidityAndAddClient(identity, getOrigin());
+        return STATE_MANAGER.checkAvailabilityAndAddGlobalClient(identity, getOrigin());
     }
 }

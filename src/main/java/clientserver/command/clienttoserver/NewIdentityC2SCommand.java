@@ -3,22 +3,23 @@ package clientserver.command.clienttoserver;
 import clientserver.command.servertoclient.NewIdentityS2CCommand;
 import command.Command;
 import command.CommandType;
-import command.ExecutableCommand;
+import command.ClientAndSenderKnownExecutableCommand;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import serverserver.FastBully;
 import serverserver.Sender;
 import serverserver.command.followertoleader.CheckIdentityF2LCommand;
 import serverserver.command.leadertofollower.CheckIdentityL2FCommand;
+import state.RefinedStateManagerImpl;
 import state.StateManager;
-import state.StateManagerImpl;
 
 @Getter
 @Setter
-public class NewIdentityC2SCommand extends ExecutableCommand {
+public class NewIdentityC2SCommand extends ClientAndSenderKnownExecutableCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewIdentityC2SCommand.class);
-    private static final StateManager STATE_MANAGER = StateManagerImpl.getInstance();
+    private static final StateManager STATE_MANAGER = RefinedStateManagerImpl.getInstance();
 
     private String identity;
 
@@ -30,20 +31,51 @@ public class NewIdentityC2SCommand extends ExecutableCommand {
     public Command execute() {
         LOGGER.debug("Executing client request for new identity with identity: {}", identity);
 
-        return new NewIdentityS2CCommand(isIdentityValid());
+        if(!isValid()){
+            LOGGER.debug("Invalid identity: {}", identity);
+            return new NewIdentityS2CCommand(false);
+        }
+
+        boolean isAvailable = isAvailable();
+
+        return new NewIdentityS2CCommand(isAvailable);
     }
 
-    private boolean isIdentityValid() {
-        Sender sender = new Sender();
-        StateManager stateManager = StateManagerImpl.getInstance();
-        if (stateManager.isLeader()){
-            return STATE_MANAGER.checkValidityAndAddClient(identity, STATE_MANAGER.getSelf().getId());
+    private boolean isAvailable() {
+        boolean isAvailable = false;
+        if (STATE_MANAGER.isLeader()){
+            isAvailable = STATE_MANAGER.checkAvailabilityAndAddNewLocalClient(identity, getSender());
         } else {
-            Command response = sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
-            if (response instanceof CheckIdentityL2FCommand) {
-                return ((CheckIdentityL2FCommand) response).isApproved();
+            // check local client list first
+            if(!STATE_MANAGER.isIdLocallyAvailable(identity)) return false;
+            // if not locally available, check with leader
+            try{
+                Command response = Sender.sendCommandToLeaderAndReceive(new CheckIdentityF2LCommand(identity));
+                if (response instanceof CheckIdentityL2FCommand) {
+                    isAvailable = ((CheckIdentityL2FCommand) response).isApproved();
+                    if (isAvailable) {
+                        STATE_MANAGER.addNewLocalClient(identity, getSender());
+                    }
+                }
+            }catch (Exception e){
+                FastBully.startElection();
             }
+
         }
-        return false;
+        return isAvailable;
     }
+
+    private boolean isValid(){
+        /*
+          matches with
+            - starting with lower or upper case letter
+            - containing only lower or upper case letters and numbers
+            - not longer than 16 characters
+            - not shorter than 3 characters
+         */
+        String regex = "^[a-zA-Z][a-zA-Z0-9]{2,15}$";
+
+        return identity.matches(regex);
+    }
+
 }
